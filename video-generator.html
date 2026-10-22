@@ -62,16 +62,20 @@ async function run(it,payload){
 }
 function fin(it){save();refreshBal();if(it.gone)return;const[,k,,b]=location.hash.split('/');if(k!=='v'||b===it.id){const y=scrollY;route();scrollTo(0,y)}}
 async function generate(p,src,prompt){
- const m=cur(),mode=src?src.type:'text',pr=prompt.trim();
+ const m=cur(),selected=!src?(p.items||[]).filter(x=>x.type==='image'&&x.kind==='upload'&&(p.refIds||[]).includes(x.id)):[],mode=src?src.type:(selected.length?'image':'text'),pr=prompt.trim();
  if(!ok(m,mode))return toast('Model ini belum mendukung mode itu. Pilih model lain.');
  if(!pr)return toast('Tulis prompt dulu.');
  if(SB&&!SES)return openAuth('Masuk dulu untuk generate video.');
  if(BAL!==null&&price()>BAL)return toast('Saldo kredit kurang.');
  if(mode==='video'&&!src.url)return toast('Video unggahan butuh penyimpanan online (segera hadir). Pakai gambar atau video hasil generate.');
- let image=null;if(mode==='image'){try{image=await imgData(src.blob)}catch{return toast('Gambar tidak bisa dibaca.')}}
+ let image=null,reference_image_urls=[];
+ if(mode==='image'){try{
+   if(src){image=await imgData(src.blob)}
+   else {if(!selected.length)return toast('Pilih gambar referensi atau hapus pilihan untuk generate dari teks.');if(selected.length>9)return toast('Maksimal 9 gambar referensi untuk Seedance 2.0 Fast.');toast('Mengunggah '+selected.length+' gambar referensi…');for(const ref of selected){const data=await imgData(ref.blob);const up=await api({action:'upload_reference',image:data});reference_image_urls.push(up.url)}}
+  }catch(e){return toast('Gagal menyiapkan gambar referensi: '+e.message)}}
  for(let k=0;k<S.set.n;k++){
   const it={id:uid(),kind:'result',type:'video',status:'processing',prompt:pr,model:m.id,srcId:src?.id};p.items.unshift(it);
-  run(it,{action:'create',model:m.id,prompt:pr,ratio:S.set.ratio,resolution:S.set.res,duration:m.dur?S.set.dur:undefined,image,video_url:mode==='video'?src.url:undefined})}
+  run(it,{action:'create',model:m.id,prompt:pr,ratio:S.set.ratio,resolution:S.set.res,duration:m.dur?S.set.dur:undefined,image,reference_image_urls,video_url:mode==='video'?src.url:undefined})}
  save();toast(`${S.set.n} video diproses. Boleh geser ke item lain.`);
  if(!src){p.draft='';route()}
 }
@@ -114,11 +118,12 @@ ${S.projects.map(p=>`<div class="flex items-center gap-2 mb-3"><a href="#/p/${p.
  $('newF').onsubmit=e=>{e.preventDefault();const n=$('newN').value.trim();if(!n)return;const p={id:uid(),name:n,items:[]};S.projects.unshift(p);save();location.hash='#/p/'+p.id};
  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{const p=S.projects.find(x=>x.id===b.dataset.del);if(confirm(`Hapus project "${p.name}" beserta isinya?`)){p.items.forEach(i=>i.gone=true);S.projects=S.projects.filter(x=>x!==p);save();route()}})}
 
-function viewProject(p){fit('text');if(PEND&&!p.draft){p.draft=PEND;PEND=null;try{localStorage.removeItem('kh_vprompt')}catch{}}
+function viewProject(p){fit('text');p.refIds=p.refIds||[];if(PEND&&!p.draft){p.draft=PEND;PEND=null;try{localStorage.removeItem('kh_vprompt')}catch{}}
  $('view').innerHTML=`<div class="max-w-xl mx-auto"><div class="flex items-center gap-3 px-4 h-14"><a href="#/" aria-label="Kembali" class="w-11 h-11 grid place-items-center rounded-2xl bg-neutral-900">←</a><h1 class="font-bold truncate flex-1">${esc(p.name)}</h1><button id="ren" type="button" aria-label="Ganti nama project" class="w-11 h-11 text-neutral-400">✎</button></div>
-<div class="grid grid-cols-2 gap-2 px-1 pb-56">${p.items.map(it=>`<a href="#/v/${p.id}/${it.id}" class="relative block">${thumb(it,'w-full aspect-[3/4] rounded-2xl')}${it.type==='video'&&it.status==='ready'?'<span class="absolute top-2 left-2 w-7 h-7 grid place-items-center rounded-full bg-white text-black text-[10px]">▶</span>':''}</a>`).join('')||'<p class="col-span-2 px-3 text-sm text-neutral-400">Tekan ＋ untuk unggah banyak gambar atau video, atau tulis prompt di bawah untuk membuat video dari teks.</p>'}</div></div>${panel('Apa yang ingin Anda buat?',p.draft)}`;
+<div class="grid grid-cols-2 gap-2 px-1 pb-56">${p.items.map(it=>`<div class="relative"><a href="#/v/${p.id}/${it.id}" class="relative block">${thumb(it,'w-full aspect-[3/4] rounded-2xl')}${it.type==='video'&&it.status==='ready'?'<span class="absolute top-2 left-2 w-7 h-7 grid place-items-center rounded-full bg-white text-black text-[10px]">▶</span>':''}</a>${it.type==='image'&&it.kind==='upload'?`<button type="button" data-ref="${it.id}" class="absolute right-2 top-2 rounded-full px-3 py-2 text-xs font-bold shadow ${p.refIds.includes(it.id)?'bg-amber-400 text-black':'bg-black/75 text-white border border-white/40'}">${p.refIds.includes(it.id)?'✓ Dipilih':'＋ Referensi'}</button>`:''}</div>`).join('')}||'<p class="col-span-2 px-3 text-sm text-neutral-400">Tekan ＋ untuk unggah banyak gambar atau video, atau tulis prompt di bawah untuk membuat video dari teks.</p>'}</div></div>${panel('Apa yang ingin Anda buat?',p.draft)}`;
  $('ren').onclick=()=>{const n=prompt('Nama project',p.name);if(n&&n.trim()){p.name=n.trim().slice(0,40);save();route()}};
- bindPanel(p,null)}
+ document.querySelectorAll('[data-ref]').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();const id=b.dataset.ref;p.refIds=p.refIds||[];p.refIds=p.refIds.includes(id)?p.refIds.filter(x=>x!==id):[...p.refIds,id];if(p.refIds.length>9){p.refIds=p.refIds.slice(0,9);toast('Maksimal 9 gambar referensi.')}save();viewProject(p)});
+ bindPanel(p,null);if(p.refIds.length)toast(p.refIds.length+' gambar referensi dipilih. Tekan → untuk generate.')}
 
 function viewItem(p,it){const i=p.items.indexOf(it),rdy=it.status==='ready';if(rdy)fit(it.type);const c=DIR?(DIR>0?'sl':'sr'):'';DIR=0;
  const media=!rdy?(it.status==='failed'?`<p class="text-sm text-red-400 text-center px-6">${esc(it.error||'Pembuatan video gagal.')}</p>`:`<div class="text-center text-sm text-neutral-300 px-6"><div class="w-9 h-9 mx-auto mb-3 rounded-full border-2 border-amber-500 border-t-transparent animate-spin"></div>Sedang dibuat. Geser ke item lain, proses tetap berjalan.<p class="mt-3 text-xs text-neutral-500">${esc(it.prompt)}</p></div>`):it.type==='image'?`<img src="${src(it)}" alt="" class="max-h-full max-w-full rounded-2xl">`:`<video src="${src(it)}" controls playsinline loop class="max-h-full max-w-full rounded-2xl"></video>`;
