@@ -1,14 +1,16 @@
 // KreatorHub — generate video: verifikasi login -> potong kredit di server -> panggil penyedia -> refund bila gagal.
-// ENV Netlify: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SEEDANCE_API_KEY, SEEDANCE_API_BASE, VIDEO_GEN_ENABLED=true
-// Opsional: SEEDANCE_CREATE_PATH (/videos), SEEDANCE_STATUS_PATH (/videos/{id})
-// "SESUAIKAN" = bagian yang harus dicocokkan dengan dokumentasi penyedia API.
+// Loopling adapter: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SEEDANCE_API_KEY, SEEDANCE_API_BASE=https://loopling.ai/v1, VIDEO_GEN_ENABLED=true
+// Loopling endpoints: POST /video/generations, GET /video/generations/{id}.
 const H = { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' };
 const reply = (d, s = 200) => new Response(JSON.stringify(d), { status: s, headers: H });
 
-// Harga RESMI ada di sini (klien hanya menampilkan). Sinkronkan dgn MODELS di video-generator.html. Angka = sementara.
-const PRICE = { 'omni-flash': { per: 10 }, 'seedance-2.0-fast': { perSec: 20, maxSec: 15 } };
-const RATIOS = new Set(['16:9', '9:16', '1:1']);
-const MAX_IMAGE = 5000000; // batas body Netlify Functions ±6 MB
+// Harga kredit internal Kamisah (sementara); sinkronkan dengan MODELS di video-generator.html.
+const PRICE = {
+  'seedance-2.0-fast': { minSec: 4, maxSec: 15, perSec: { '480p': 13, '720p': 26 } },
+  'seedance-2.0': { minSec: 4, maxSec: 15, perSec: { '480p': 16, '720p': 32, '1080p': 80 } },
+  'seedance-2.5': { minSec: 4, maxSec: 30, perSec: { '480p': 24, '720p': 49, '1080p': 120 } }
+};
+const RATIOS = new Set(['21:9', '16:9', '4:3', '1:1', '3:4', '9:16', 'adaptive']);
 const UUID = /^[0-9a-f-]{36}$/i;
 
 const SU = process.env.SUPABASE_URL, SK = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -31,35 +33,71 @@ export default async (req) => {
   let b; try { b = await req.json(); } catch { return reply({ error: 'Data permintaan tidak valid.' }, 400); }
   const prov = { authorization: `Bearer ${key}`, 'content-type': 'application/json' };
 
+  // Unggah referensi gambar ke bucket publik Supabase agar Loopling dapat mengambil URL HTTPS.
+  if (b.action === 'upload_reference') {
+    const dataUrl = String(b.data_url || '');
+    const match = dataUrl.match(/^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/);
+    if (!match) return reply({ error: 'Format gambar harus JPEG, PNG, atau WebP.' }, 400);
+    const ext = match[1] === 'jpeg' ? 'jpg' : match[1];
+    const bytes = Buffer.from(match[2], 'base64');
+    if (!bytes.length || bytes.length > 5 * 1024 * 1024) return reply({ error: 'Gambar terlalu besar (maksimal 5 MB setelah kompresi).' }, 413);
+    const objectPath = `${uid}/${crypto.randomUUID()}.${ext}`;
+    const upload = await fetch(`${SU}/storage/v1/object/video-references/${objectPath}`, {
+      method: 'POST',
+      headers: { apikey: SK, authorization: `Bearer ${SK}`, 'content-type': `image/${match[1]}`, 'x-upsert': 'false' },
+      body: bytes
+    });
+    if (!upload.ok) {
+      const detail = await upload.text().catch(() => '');
+      return reply({ error: `Gagal mengunggah gambar referensi ke Supabase Storage. ${detail.slice(0,180)}` }, 502);
+    }
+    return reply({ url: `${SU}/storage/v1/object/public/video-references/${objectPath}` });
+  }
+
   try {
     if (b.action === 'create') {
-      const model = String(b.model || ''), unit = PRICE[model];
-      const prompt = String(b.prompt || '').trim().slice(0, 2000), ratio = String(b.ratio || '');
+      const requestedModel = String(b.model || ''), unit = PRICE[requestedModel];
+      // Model ID Loopling harus persis seperti ID resmi. Omni bukan model video Loopling.
+      const model = requestedModel;
+      const prompt = String(b.prompt || '').trim().slice(0, 4000), ratio = String(b.ratio || '16:9');
       const duration = Number(b.duration);
-      if (!unit) return reply({ error: 'Model belum tersedia.' }, 400);
+      if (!unit) return reply({ error: requestedModel === 'omni-flash' ? 'Omni tidak tersedia melalui endpoint video Loopling ini.' : 'Model belum tersedia di integrasi Loopling.' }, 400);
       if (!prompt) return reply({ error: 'Prompt wajib diisi.' }, 400);
       if (!RATIOS.has(ratio)) return reply({ error: 'Rasio tidak didukung.' }, 400);
-      if (unit.maxSec && (!Number.isInteger(duration) || duration < 3 || duration > unit.maxSec)) return reply({ error: `Durasi 3–${unit.maxSec} detik.` }, 400);
-      const resolution = ['360p', '720p'].includes(b.resolution) ? b.resolution : undefined;
-      const videoUrl = b.video_url ? String(b.video_url) : null;
-      if (videoUrl && !/^https:\/\/\S{5,2000}$/.test(videoUrl)) return reply({ error: 'Tautan video tidak valid.' }, 400);
-      const image = b.image ? String(b.image) : null;
-      if (image && (!/^data:image\/(jpeg|png|webp);base64,/.test(image) || image.length > MAX_IMAGE)) return reply({ error: 'Gambar tidak valid atau terlalu besar.' }, 400);
+      if (!Number.isInteger(duration) || duration < unit.minSec || duration > unit.maxSec) return reply({ error: `Durasi ${unit.minSec}–${unit.maxSec} detik untuk ${model}.` }, 400);
+      const resolutionOptions = model === 'seedance-2.0-fast' ? ['480p', '720p'] : ['480p', '720p', '1080p'];
+      const resolution = resolutionOptions.includes(b.resolution) ? b.resolution : '720p';
+      if (ratio === '9:16' && model === 'seedance-2.5' && resolution === '1080p') return reply({ error: 'Seedance 2.5 membatasi rasio 9:16 hingga 720p.' }, 400);
+      const validUrls = (value, max, label) => {
+        if (value == null) return [];
+        const arr = Array.isArray(value) ? value : [value];
+        if (arr.length > max || arr.some(x => typeof x !== 'string' || x.length > 2048 || !/^https:\/\/[^\s]+$/i.test(x))) throw new Error(`${label}: gunakan maksimal ${max} URL HTTPS publik.`);
+        return arr;
+      };
+      let imageUrls, videoUrls, audioUrls;
+      try { imageUrls = validUrls(b.reference_image_urls, requestedModel === 'seedance-2.5' ? 30 : 9, 'Referensi gambar'); videoUrls = validUrls(b.reference_video_urls, 3, 'Referensi video'); audioUrls = validUrls(b.reference_audio_urls, 3, 'Referensi audio'); }
+      catch (e) { return reply({ error: e.message }, 400); }
+      const firstFrameUrl = b.first_frame_url ? String(b.first_frame_url) : null;
+      const lastFrameUrl = b.last_frame_url ? String(b.last_frame_url) : null;
+      if (firstFrameUrl && !/^https:\/\/[^\s]+$/i.test(firstFrameUrl)) return reply({ error: 'first_frame_url harus berupa URL HTTPS publik.' }, 400);
+      if (lastFrameUrl && (!firstFrameUrl || !/^https:\/\/[^\s]+$/i.test(lastFrameUrl))) return reply({ error: 'last_frame_url memerlukan first_frame_url dan URL HTTPS publik.' }, 400);
+      if ((firstFrameUrl || lastFrameUrl) && (imageUrls.length || videoUrls.length || audioUrls.length)) return reply({ error: 'Pilih first/last frame atau referensi, jangan digabung.' }, 400);
+      if (audioUrls.length && !imageUrls.length && !videoUrls.length) return reply({ error: 'Referensi audio perlu disertai referensi gambar atau video untuk Seedance 2.0 Fast.' }, 400);
 
-      const cost = unit.per ?? unit.perSec * duration;
+      const cost = Math.ceil(unit.perSec[resolution] * duration);
       const cr = await rpc('charge_credits', { p_user: uid, p_cost: cost, p_model: model });
       if (!cr.ok) { const t = await cr.text(); if (/PHONE_REQUIRED/.test(t)) return reply({ error: 'Verifikasi nomor HP dulu untuk generate.' }, 403); const low = /INSUFFICIENT/.test(t); return reply({ error: low ? 'Saldo kredit tidak cukup.' : 'Gagal memotong kredit.' }, low ? 402 : 500); }
       const jobId = await cr.json();
 
       try {
-        // SESUAIKAN: path dan field sesuai dokumentasi penyedia.
-        const res = await fetch(base + (process.env.SEEDANCE_CREATE_PATH || '/videos'), {
-          method: 'POST', headers: prov,
-          body: JSON.stringify({ model, prompt, aspect_ratio: ratio, ...(unit.maxSec ? { duration } : {}), ...(resolution ? { resolution } : {}), ...(image ? { image } : {}), ...(videoUrl ? { video_url: videoUrl } : {}) })
+        // Kirim permintaan ke endpoint resmi Loopling.
+        const res = await fetch(base.replace(/\/$/, '') + '/video/generations', {
+          method: 'POST', headers: { ...prov, 'Idempotency-Key': `kamisah-${crypto.randomUUID()}` },
+          body: JSON.stringify({ model, prompt, aspect_ratio: ratio, duration, resolution, generate_audio: b.generate_audio !== false, ...(firstFrameUrl ? { first_frame_url: firstFrameUrl } : {}), ...(lastFrameUrl ? { last_frame_url: lastFrameUrl } : {}), ...(imageUrls.length ? { reference_image_urls: imageUrls } : {}), ...(videoUrls.length ? { reference_video_urls: videoUrls } : {}), ...(audioUrls.length ? { reference_audio_urls: audioUrls } : {}) })
         });
         const d = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(d?.error?.message || d?.message || `Penyedia merespons HTTP ${res.status}.`);
-        const pid = d.id || d.task_id || d.data?.id;
+        const pid = d.id || d.data?.id;
         if (!pid) throw new Error('Penyedia tidak mengembalikan ID tugas.');
         await patchJob(jobId, { provider_id: String(pid) });
         return reply({ id: jobId });
@@ -81,18 +119,18 @@ export default async (req) => {
         return reply({ state: 'failed', error: 'Waktu habis. Kredit dikembalikan.' });
       }
       if (!job.provider_id) return reply({ state: 'processing' });
-      // SESUAIKAN: path status & nama field hasil.
-      const path = (process.env.SEEDANCE_STATUS_PATH || '/videos/{id}').replace('{id}', encodeURIComponent(job.provider_id));
-      const res = await fetch(base + path, { headers: prov });
+      // Poll status dan URL video dari Loopling.
+      const path = `/video/generations/${encodeURIComponent(job.provider_id)}`;
+      const res = await fetch(base.replace(/\/$/, '') + path, { headers: prov });
       const d = await res.json().catch(() => ({}));
       if (!res.ok) return reply({ state: 'processing' }); // gangguan sementara: coba lagi di polling berikutnya
-      const s = String(d.status || d.data?.status || '').toLowerCase();
-      const url = d.video_url || d.output?.url || d.content?.video_url || d.data?.video_url || null;
-      if (['succeeded', 'success', 'completed', 'done'].includes(s)) {
+      const s = String(d.status || '').toLowerCase();
+      const url = d.video?.url || null;
+      if (s === 'succeeded') {
         if (!url) return reply({ state: 'processing' }); // tunggu URL hasil tersedia; timeout akan mengembalikan kredit
         await patchJob(id, { status: 'done' }); return reply({ state: 'done', url });
       }
-      if (['failed', 'error', 'cancelled', 'canceled'].includes(s)) { await rpc('refund_job', { p_job: id }); return reply({ state: 'failed', error: (d.error?.message || d.message || 'Pembuatan video gagal.') + ' Kredit dikembalikan.' }); }
+      if (s === 'failed') { await rpc('refund_job', { p_job: id }); return reply({ state: 'failed', error: (d.error?.message || d.message || 'Pembuatan video gagal.') + ' Kredit dikembalikan.' }); }
       return reply({ state: 'processing' });
     }
     return reply({ error: 'Aksi tidak dikenal.' }, 400);
