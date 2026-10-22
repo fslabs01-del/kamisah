@@ -2,7 +2,8 @@
 // "SESUAIKAN" = cocokkan dengan dokumentasi payment gateway pilihanmu (Midtrans/Xendit/dll).
 const H = { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' };
 const reply = (d, s = 200) => new Response(JSON.stringify(d), { status: s, headers: H });
-const PACKS = [10000, 25000, 50000]; // minimum Rp10.000, harus cocok dengan constraint topups yang aktif
+const MIN_AMOUNT = 10000;
+const MAX_AMOUNT = 10000000; // batas aman aplikasi: Rp10 juta per tagihan
 const SU = process.env.SUPABASE_URL, SK = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const sb = (path, init = {}) => fetch(SU + path, { ...init, headers: { apikey: SK, authorization: 'Bearer ' + SK, 'content-type': 'application/json', ...(init.headers || {}) } });
 
@@ -17,7 +18,9 @@ export default async (req) => {
   if (!uid) return reply({ error: 'Silakan masuk dulu.' }, 401);
   let b; try { b = await req.json(); } catch { return reply({ error: 'Data tidak valid.' }, 400); }
   const amount = Number(b.amount);
-  if (!PACKS.includes(amount)) return reply({ error: 'Nominal tidak tersedia.' }, 400);
+  if (!Number.isSafeInteger(amount) || amount < MIN_AMOUNT || amount > MAX_AMOUNT || amount % 100 !== 0) {
+    return reply({ error: 'Nominal harus Rp10.000 sampai Rp10.000.000 dan kelipatan Rp100.' }, 400);
+  }
 
   const ins = await sb('/rest/v1/topups', { method: 'POST', headers: { prefer: 'return=representation' }, body: JSON.stringify({ user_id: uid, amount_idr: amount, credits: amount / 100 }) });
   const row = ins.ok ? (await ins.json())[0] : null;
