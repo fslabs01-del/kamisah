@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>AI Story Generator — Kamisah</title>
+<meta name="google-site-verification" content="KCP7oIVcMGBj-562M0-17TOQTb08VqAHyn9xyszXQQ0" />
+<meta name="description" content="Ubah ide jadi naskah, alur cerita, dan prompt visual untuk video AI.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Plus Jakarta Sans','sans-serif']}}}}</script>
+<style>@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}</style>
+</head>
+<body class="bg-black text-neutral-100 font-sans" style="padding-bottom:calc(5rem + env(safe-area-inset-bottom))">
+<header class="max-w-xl mx-auto flex items-center justify-between px-4 h-14"><a href="/" class="font-extrabold text-lg">Kamisah</a></header>
+<main class="max-w-xl mx-auto px-4 space-y-4">
+  <div class="rounded-xl border border-amber-500/30 bg-amber-950/20 p-3 text-xs text-amber-200">💳 Biaya kredit akan ditampilkan sebelum fitur AI dijalankan. Sistem kredit belum aktif sampai backend dikonfigurasi.</div>
+  <div><h1 class="text-2xl font-bold">Story AI</h1><p class="text-xs text-neutral-400 mt-1">Ubah ide jadi naskah dan prompt visual per scene, lalu kirim ke Video AI.</p></div>
+  <div><label for="mode" class="block text-xs font-bold text-neutral-300 mb-1.5">Format</label>
+  <select id="mode" class="w-full p-3.5 rounded-2xl bg-neutral-900 border border-neutral-800 text-sm outline-none focus:border-amber-500">
+    <option value="recap">Alur Cerita &amp; Film Recap Sinematik</option><option value="survival">Film Pendek AI / Survival &amp; Sci-Fi</option>
+    <option value="misteri">Dokumenter Misteri &amp; Teori Konspirasi</option><option value="fakta">Edukasi Fakta Unik</option></select></div>
+  <div><label for="inp" class="block text-xs font-bold text-neutral-300 mb-1.5">Topik atau ringkasan cerita</label>
+  <textarea id="inp" rows="5" maxlength="8000" placeholder="Contoh: Seorang astronot terjebak di stasiun luar angkasa yang tiba-tiba tidak merespons Bumi…" class="w-full p-3.5 rounded-2xl bg-neutral-900 border border-neutral-800 text-sm placeholder-neutral-600 outline-none focus:border-amber-500"></textarea></div>
+  <button id="go" type="button" class="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-700 text-black text-sm font-extrabold disabled:opacity-60">Buat naskah</button>
+  <p id="st" role="status" class="text-xs text-neutral-400"></p>
+  <div id="out" class="space-y-3"></div>
+  <section id="video-analysis" class="rounded-2xl bg-neutral-900/70 border border-emerald-700/50 p-4 space-y-4">
+    <div><h2 class="text-lg font-bold">🎥 Analisis Alur Cerita dari Video</h2><p class="text-xs text-neutral-400 mt-1">Unggah film hingga 2 jam. Video dianalisis bertahap per segmen maksimal 10 menit, lalu catatan segmen digabung menjadi kronologi dan naskah recap. Membutuhkan layanan AI yang sudah dikonfigurasi; hasil tetap perlu diuji.</p></div>
+    <label class="block text-xs font-semibold" for="videoFileInput">Pilih video (MP4, WebM, MOV)</label>
+    <input id="videoFileInput" type="file" accept="video/mp4,video/webm,video/quicktime" class="block w-full text-xs text-neutral-300 file:mr-3 file:rounded-lg file:border-0 file:bg-amber-500 file:px-3 file:py-2 file:font-bold file:text-black" />
+    <label class="block text-xs font-semibold" for="storyMode">Fokus analisis</label>
+    <select id="storyMode" class="w-full p-3 rounded-xl bg-neutral-950 border border-neutral-800 text-sm"><option value="recap">Alur cerita & film recap</option><option value="survival">Survival / Sci-Fi</option><option value="misteri">Misteri</option><option value="fakta">Fakta & dokumenter</option></select>
+    <textarea id="videoExtraNotes" rows="2" placeholder="Catatan tambahan (opsional)" class="w-full p-3 rounded-xl bg-neutral-950 border border-neutral-800 text-sm"></textarea>
+    <div class="h-2 rounded-full bg-neutral-800 overflow-hidden"><div id="videoProgressBar" class="h-full bg-emerald-500 transition-all" style="width:0%"></div></div>
+    <p id="videoProgressText" class="text-xs text-neutral-400" aria-live="polite">Belum ada video dipilih.</p>
+    <button id="btnAnalyzeVideo" type="button" onclick="handleAnalyzeVideo()" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs disabled:opacity-50">Analisis Alur Cerita</button>
+    <div id="storyStatusBadge" class="text-xs text-neutral-400">Belum dianalisis</div><div id="storyOutput" class="space-y-3"></div>
+    <div class="rounded-lg border border-amber-800/60 bg-amber-950/20 p-3 text-[11px] text-neutral-300">💳 Biaya kredit belum aktif. Jangan unggah video sensitif. Penghapusan file hanya meminta penghapusan dari API provider dan tidak menjamin penghapusan dari seluruh log pihak ketiga.</div>
+  </section>
+</main>
+<div id="toast" role="status" class="fixed top-4 left-1/2 -translate-x-1/2 z-[60] hidden max-w-[90%] bg-neutral-800 border border-amber-500/40 px-4 py-2 rounded-full text-xs font-semibold"></div>
+<nav class="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-800 bg-neutral-950" style="padding-bottom:env(safe-area-inset-bottom)" aria-label="Menu utama"><div class="max-w-xl mx-auto grid grid-cols-5 h-14 text-[10px] font-semibold">
+<a href="/" class="flex flex-col items-center justify-center gap-0.5 text-neutral-400"><span class="text-base">🏠</span>Beranda</a>
+<a href="/video-generator" class="flex flex-col items-center justify-center gap-0.5 text-neutral-400"><span class="text-base">🎬</span>Video AI</a>
+<a href="/story" aria-current="page" class="flex flex-col items-center justify-center gap-0.5 text-amber-400"><span class="text-base">📝</span>Story AI</a>
+<a href="/chat" class="flex flex-col items-center justify-center gap-0.5 text-neutral-400"><span class="text-base">💬</span>Chat</a>
+<a href="/video-generator#/akun" class="flex flex-col items-center justify-center gap-0.5 text-neutral-400"><span class="text-base">👤</span>Akun</a></div></nav>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="auth.js"></script>
+<script>
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let B=[];
+function toast(t){const e=$('toast');e.textContent=t;e.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.add('hidden'),2500)}
+$('go').onclick=async()=>{
+  const input=$('inp').value.trim();if(!input){toast('Tulis topik dulu.');return}
+  $('go').disabled=true;$('st').textContent='AI sedang menyusun naskah…';$('out').innerHTML='';
+  try{
+    const r=await fetch('/.netlify/functions/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:$('mode').value,input})});
+    const d=await r.json().catch(()=>({}));if(!r.ok||!d.text)throw Error(d.error||'AI tidak mengembalikan naskah.');
+    B=d.text.split(/\n{2,}/).map(x=>x.trim()).filter(Boolean);
+    $('out').innerHTML=B.map((b,i)=>'<div class="rounded-2xl bg-neutral-900 p-4"><div class="text-xs leading-relaxed whitespace-pre-wrap">'+esc(b)+'</div><div class="flex gap-2 mt-3"><button type="button" data-c="'+i+'" class="flex-1 py-2.5 rounded-xl bg-neutral-800 text-[11px] font-semibold">Salin</button><button type="button" data-v="'+i+'" class="flex-1 py-2.5 rounded-xl bg-amber-500 text-black text-[11px] font-bold">Pakai di Video AI</button></div></div>').join('');
+    $('st').textContent='Selesai. Pilih bagian prompt visual lalu kirim ke Video AI.';
+  }catch(e){$('st').textContent='Belum bisa: '+e.message}
+  finally{$('go').disabled=false}
+};
+$('out').onclick=async e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.c!==undefined){try{await navigator.clipboard.writeText(B[+b.dataset.c]);toast('Tersalin.')}catch{toast('Gagal menyalin. Tahan dan salin manual.')}}
+  if(b.dataset.v!==undefined){try{localStorage.setItem('kh_vprompt',B[+b.dataset.v].slice(0,2000))}catch{}location.href='/video-generator'}};
+
+function formatStoryTime(seconds){const n=Math.max(0,Math.floor(seconds));const h=Math.floor(n/3600),m=Math.floor((n%3600)/60),s=n%60;return h?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${m}:${String(s).padStart(2,'0')}`;}
+function renderStoryResult(text){ const out=document.getElementById('storyOutput'); out.textContent=String(text||''); out.className='rounded-xl bg-neutral-950 border border-neutral-800 p-3 text-xs leading-relaxed whitespace-pre-wrap'; }
+    // --- 5. VIDEO UPLOAD + AI VIDEO ANALYSIS ---
+    const MAX_VIDEO_BYTES = 2 * 1024 * 1024 * 1024;
+    const MAX_VIDEO_SECONDS = 2 * 60 * 60;
+    const VIDEO_CHUNK_BYTES = 2 * 1024 * 1024;
+    let activeVideoFileName = null;
+    let activeVideoObjectUrl = null;
+
+    function setVideoProgress(percent, message) {
+      document.getElementById('videoProgressBar').style.width = `${Math.max(0, Math.min(100, percent))}%`;
+      document.getElementById('videoProgressText').textContent = message;
+    }
+
+    function bytesToBase64(bytes) {
+      let binary = '';
+      const step = 0x8000;
+      for (let i = 0; i < bytes.length; i += step) binary += String.fromCharCode(...bytes.subarray(i, i + step));
+      return btoa(binary);
+    }
+
+    async function callVideoApi(payload) {
+      const response = await fetch('/.netlify/functions/video', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || `Permintaan video gagal (${response.status}).`);
+      return data;
+    }
+
+    async function waitForVideoReady(fileName) {
+      for (let attempt = 0; attempt < 120; attempt++) {
+        const file = await callVideoApi({ action: 'verify', fileName });
+        if (file.state === 'ACTIVE') return file;
+        if (file.state === 'FAILED') throw new Error('Google gagal memproses file video.');
+        setVideoProgress(94, `Menunggu pemrosesan video Google (${attempt + 1}/120)...`);
+        await new Promise(resolve => setTimeout(resolve, 5000));
+      }
+      throw new Error('Pemrosesan video terlalu lama. Coba lagi nanti.');
+    }
+
+    async function handleAnalyzeVideo() {
+      const input = document.getElementById('videoFileInput');
+      const file = input.files && input.files[0];
+      const button = document.getElementById('btnAnalyzeVideo');
+      if (!file) { notify('Pilih video dulu, Bro.', '⚠️'); return; }
+      if (file.size > MAX_VIDEO_BYTES) { notify('Ukuran video maksimal 2 GiB.', '⚠️'); return; }
+      if (!['video/mp4', 'video/webm', 'video/quicktime'].includes(file.type)) { notify('Gunakan MP4, WebM, atau MOV.', '⚠️'); return; }
+      const metadata = document.createElement('video');
+      metadata.preload = 'metadata';
+      const duration = await new Promise(resolve => {
+        const timer = setTimeout(() => resolve(NaN), 10000);
+        metadata.onloadedmetadata = () => { clearTimeout(timer); resolve(metadata.duration); };
+        metadata.onerror = () => { clearTimeout(timer); resolve(NaN); };
+        metadata.src = URL.createObjectURL(file);
+      });
+      URL.revokeObjectURL(metadata.src);
+      if (!Number.isFinite(duration) || duration <= 0 || duration > MAX_VIDEO_SECONDS) { notify('Durasi video maksimal 2 jam.', '⚠️'); return; }
+
+      button.disabled = true;
+      let fileName = null;
+      let analysisSucceeded = false;
+      try {
+        setVideoProgress(1, 'Memulai upload aman...');
+        const session = await callVideoApi({ action: 'create-session', size: file.size, mimeType: file.type, displayName: file.name });
+        let offset = 0;
+        while (offset < file.size) {
+          const end = Math.min(offset + VIDEO_CHUNK_BYTES, file.size);
+          const bytes = new Uint8Array(await file.slice(offset, end).arrayBuffer());
+          const chunk = bytesToBase64(bytes);
+          const finalChunk = end === file.size;
+          const result = await callVideoApi({ action: 'upload-chunk', sessionUrl: session.sessionUrl, offset, chunkBase64: chunk, isFinal: finalChunk });
+          offset = end;
+          if (result.fileName) fileName = result.fileName;
+          setVideoProgress(Math.round(offset / file.size * 80), `Upload video: ${Math.round(offset / file.size * 100)}%`);
+        }
+        if (!fileName) throw new Error('Upload selesai tetapi Google belum memberikan ID file. Pilih ulang video lalu coba lagi.');
+        activeVideoFileName = fileName;
+        setVideoProgress(83, 'Memeriksa kesiapan video...');
+        await waitForVideoReady(fileName);
+        const mode = document.getElementById('storyMode').value;
+        const extra = document.getElementById('videoExtraNotes').value;
+        const segmentSeconds = 600;
+        const segmentCount = Math.ceil(duration / segmentSeconds);
+        const summaries = [];
+        for (let i = 0; i < segmentCount; i++) {
+          const startSeconds = i * segmentSeconds;
+          const endSeconds = Math.min(duration, startSeconds + segmentSeconds);
+          const startLabel = formatStoryTime(startSeconds);
+          const endLabel = formatStoryTime(endSeconds);
+          setVideoProgress(84 + Math.round((i / (segmentCount + 1)) * 12), `Menganalisis segmen ${i + 1}/${segmentCount} (${startLabel}–${endLabel})...`);
+          const segment = await callVideoApi({ action: 'analyze-segment', fileName, startSeconds, endSeconds, mode, extra });
+          summaries.push(`SEGMENT ${i + 1} (${startLabel}–${endLabel})\n${segment.text}`);
+        }
+        setVideoProgress(97, 'Menggabungkan catatan segmen menjadi alur cerita utuh...');
+        const result = await callVideoApi({ action: 'synthesize', summaries, mode, extra });
+        renderStoryResult(result.text);
+        document.getElementById('storyStatusBadge').textContent = `Analisis bertahap: ${result.segments} segmen · ${'AI'}`;
+        analysisSucceeded = true;
+        setVideoProgress(100, 'Analisis selesai. Mencoba meminta penghapusan file sementara...');
+        notify('Analisis segmen selesai!', '🎬');
+      } catch (error) {
+        setVideoProgress(0, error.message || 'Analisis gagal.');
+        notify(error.message || 'Analisis video gagal.', '⚠️');
+      } finally {
+        if (fileName) {
+          try {
+            await callVideoApi({ action: 'delete', fileName });
+            activeVideoFileName = null;
+            setVideoProgress(100, analysisSucceeded ? 'Analisis selesai; permintaan penghapusan file diterima oleh API Google.' : 'Permintaan penghapusan file diterima oleh API Google setelah proses gagal.');
+          } catch (_) {
+            activeVideoFileName = fileName;
+            try { localStorage.setItem('kreatorhub_pending_video_delete', fileName); } catch (_) {}
+            setVideoProgress(100, 'PENTING: penghapusan belum terkonfirmasi. Tekan tombol coba hapus lagi di bawah.');
+            const retry = document.createElement('button');
+            retry.type = 'button'; retry.className = 'w-full p-2 rounded-lg bg-red-700 text-white text-xs font-bold mt-2';
+            retry.textContent = 'Coba Hapus File Video Sementara';
+            retry.onclick = retryDeleteVideo;
+            document.getElementById('videoProgressText').appendChild(document.createElement('br'));
+            document.getElementById('videoProgressText').appendChild(retry);
+          }
+        }
+        button.disabled = false;
+      }
+    }
+
+    async function retryDeleteVideo() {
+      const name = activeVideoFileName || localStorage.getItem('kreatorhub_pending_video_delete');
+      if (!name) { notify('Tidak ada file tertunda untuk dihapus.', 'ℹ️'); return; }
+      try {
+        await callVideoApi({ action: 'delete', fileName: name });
+        activeVideoFileName = null;
+        localStorage.removeItem('kreatorhub_pending_video_delete');
+        setVideoProgress(100, 'Permintaan penghapusan file diterima oleh API Google.');
+        notify('Permintaan penghapusan dikirim.', '✅');
+      } catch (e) { notify(e.message || 'Penghapusan gagal, coba lagi.', '⚠️'); }
+    }
+
+
+</script>
+</body>
+</html>

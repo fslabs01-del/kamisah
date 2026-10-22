@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Chat AI — Kamisah</title>
+<meta name="google-site-verification" content="KCP7oIVcMGBj-562M0-17TOQTb08VqAHyn9xyszXQQ0" />
+<meta name="description" content="Teman ngobrol dan curhat berbahasa Indonesia. 1 kredit per pesan.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Plus Jakarta Sans','sans-serif']}}}}</script>
+<style>@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}</style>
+</head>
+<body class="bg-black text-neutral-100 font-sans">
+<div class="h-[100dvh] flex flex-col max-w-xl mx-auto" style="padding-bottom:calc(3.5rem + env(safe-area-inset-bottom))">
+  <header class="flex items-center justify-between px-4 h-14 shrink-0"><h1 class="font-bold">Chat AI</h1><button id="clr" type="button" class="text-xs text-neutral-400 underline">Hapus percakapan</button></header>
+  <div id="msgs" class="flex-1 overflow-y-auto px-4 space-y-2" aria-live="polite"></div>
+  <p class="px-4 py-1 text-[10px] text-neutral-500 text-center">1 kredit per pesan. AI bukan psikolog. Jika kamu ingin menyakiti diri, hubungi orang terdekat atau layanan darurat setempat. Percakapan disimpan hanya di perangkat ini.</p>
+  <div class="flex items-end gap-2 px-3 pb-2 pt-1 border-t border-neutral-800">
+    <textarea id="inp" rows="1" maxlength="2000" placeholder="Tulis pesan…" aria-label="Pesan" class="flex-1 max-h-32 px-4 py-3 rounded-2xl bg-neutral-900 text-sm outline-none resize-none placeholder-neutral-500"></textarea>
+    <button id="send" type="button" aria-label="Kirim" class="w-12 h-12 rounded-full bg-gradient-to-r from-amber-500 to-amber-700 text-black text-lg font-bold disabled:opacity-50">➤</button>
+  </div>
+</div>
+<div id="toast" role="status" class="fixed top-4 left-1/2 -translate-x-1/2 z-[60] hidden max-w-[90%] bg-neutral-800 border border-amber-500/40 px-4 py-2 rounded-full text-xs font-semibold"></div>
+<nav class="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-800 bg-neutral-950" style="padding-bottom:env(safe-area-inset-bottom)" aria-label="Menu utama"><div class="max-w-xl mx-auto grid grid-cols-5 h-14 text-[10px] font-semibold">
+<a href="/" class="flex flex-col items-center justify-center gap-0.5 text-neutral-400"><span class="text-base">🏠</span>Beranda</a>
+<a href="/video-generator" class="flex flex-col items-center justify-center gap-0.5 text-neutral-400"><span class="text-base">🎬</span>Video AI</a>
+<a href="/story" class="flex flex-col items-center justify-center gap-0.5 text-neutral-400"><span class="text-base">📝</span>Story AI</a>
+<a href="/chat" aria-current="page" class="flex flex-col items-center justify-center gap-0.5 text-amber-400"><span class="text-base">💬</span>Chat</a>
+<a href="/video-generator#/akun" class="flex flex-col items-center justify-center gap-0.5 text-neutral-400"><span class="text-base">👤</span>Akun</a></div></nav>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="auth.js"></script>
+<script>
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const K='kh_chat';let H=[],busy=false;try{H=JSON.parse(localStorage.getItem(K)||'[]')}catch{}
+const keep=()=>{try{localStorage.setItem(K,JSON.stringify(H.slice(-60)))}catch{}};
+function toast(t){const e=$('toast');e.textContent=t;e.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.add('hidden'),3000)}
+function render(){
+  $('msgs').innerHTML=H.length?H.map(m=>`<div class="flex ${m.r==='user'?'justify-end':'justify-start'}"><div class="max-w-[85%] px-3.5 py-2.5 rounded-2xl text-sm whitespace-pre-wrap ${m.r==='user'?'bg-amber-500 text-black':m.r==='err'?'bg-red-950 text-red-300 text-xs':'bg-neutral-900'}">${esc(m.c)}</div></div>`).join(''):'<p class="text-center text-xs text-neutral-500 mt-10">Halo! Ceritakan apa saja. Aku di sini untuk mendengarkan.</p>';
+  $('msgs').scrollTop=1e9}
+async function send(){
+  const t=$('inp').value.trim();if(!t||busy)return;
+  busy=true;$('send').disabled=true;H=H.filter(m=>m.r!=='err');H.push({r:'user',c:t});$('inp').value='';render();keep();
+  try{
+    const r=await fetch('/.netlify/functions/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({msg_id:crypto.randomUUID(),messages:H.slice(-20).map(m=>({role:m.r,content:m.c}))})});
+    const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||'Gagal mengirim pesan.');
+    H.push({r:'assistant',c:d.text});
+  }catch(e){H.push({r:'err',c:e.message})}
+  finally{busy=false;$('send').disabled=false;render();keep()}}
+$('send').onclick=send;
+$('inp').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey&&!/Mobi|Android/i.test(navigator.userAgent)){e.preventDefault();send()}};
+$('clr').onclick=()=>{if(confirm('Hapus semua percakapan di perangkat ini?')){H=[];keep();render()}};
+render();
+</script>
+</body>
+</html>
