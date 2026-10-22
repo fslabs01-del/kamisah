@@ -726,16 +726,18 @@ Cinematic documentary screengrab, hyper-realistic, dramatic rim lighting, myster
 
     // Theme Toggle
     const themeToggle = document.getElementById('themeToggle');
-    themeToggle.addEventListener('click', () => {
-      const isDark = document.documentElement.classList.toggle('dark');
-      if (isDark) {
-        document.body.classList.remove('bg-neutral-100', 'text-neutral-900');
-        document.body.classList.add('bg-neutral-950', 'text-neutral-100');
-      } else {
-        document.body.classList.remove('bg-neutral-950', 'text-neutral-100');
-        document.body.classList.add('bg-neutral-100', 'text-neutral-900');
-      }
-    });
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark');
+        if (isDark) {
+          document.body.classList.remove('bg-neutral-100', 'text-neutral-900');
+          document.body.classList.add('bg-neutral-950', 'text-neutral-100');
+        } else {
+          document.body.classList.remove('bg-neutral-950', 'text-neutral-100');
+          document.body.classList.add('bg-neutral-100', 'text-neutral-900');
+        }
+      });
+    }
 
     // Modal Add Tool
     const submitModal = document.getElementById('submitModal');
