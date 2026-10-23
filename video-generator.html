@@ -52,6 +52,14 @@
 @media(max-width:640px){#khProject{padding-bottom:190px!important}#khProject .aspect-\[9\/11\]{aspect-ratio:9/10;max-height:43dvh}#view .fixed.inset-x-0.bottom-0{padding-left:14px;padding-right:14px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}#view #chip[data-big]{min-height:66px}#sheet .kh-sheet{max-height:92dvh;border-radius:26px 26px 0 0;padding:18px 16px calc(12px + env(safe-area-inset-bottom))}#sheet .kh-model{padding:12px;border-radius:16px;margin-bottom:8px}#sheet .kh-option{border-radius:13px}}
 </style>
 
+<style id="kh-reference-selection-fix">
+#khProject [data-toggle-ref]{position:relative;padding:0;background:#080c17}
+#khProject [data-toggle-ref][aria-pressed="true"]{outline:2px solid #8b5cff;outline-offset:-2px}
+#khProject [data-toggle-ref] img,#khProject [data-toggle-ref] video{display:block}
+#khProject [data-toggle-ref] span{box-shadow:0 2px 8px #0008}
+#khProject #plusMedia{min-height:104px;border:1px dashed #8b5cff;background:linear-gradient(145deg,#21134c,#101827);color:#d8c8ff}
+#khProject .kh-media-strip{padding:4px 2px 8px}
+</style>
 </head>
 <body class="bg-black text-neutral-100 font-sans">
 <div id="view"></div><div id="sheet"></div>
@@ -100,20 +108,19 @@ async function run(it,payload){
 }
 function fin(it){save();refreshBal();if(it.gone)return;const[,k,,b]=location.hash.split('/');if(k!=='v'||b===it.id){const y=scrollY;route();scrollTo(0,y)}}
 async function generate(p,src,prompt){
- const m=cur(),mode=src?src.type:'text',pr=prompt.trim();
+ const pr=prompt.trim();
+ const selectedRefs=p.items.filter(x=>x.kind==='upload'&&x.type==='image'&&x.blob&&x.status==='ready'&&x.selected!==false);
+ const mode=selectedRefs.length?'image':'text';
+ const m=cur();
  if(!ok(m,mode))return toast('Model ini belum mendukung mode itu. Pilih model lain.');
  if(!pr)return toast('Tulis prompt dulu.');
  if(SB&&!SES)return openAuth('Masuk dulu untuk generate video.');
  if(BAL!==null&&price()>BAL)return toast('Saldo kredit kurang.');
- if(mode==='video'&&!src.url)return toast('Video unggahan butuh penyimpanan online (segera hadir). Pakai gambar atau video hasil generate.');
  let reference_image_urls=[];
  if(mode==='image'){
   try{
    const cap=m.id==='seedance-2.5'?30:9;
-   const candidates=p.items.filter(x=>x.type==='image'&&x.blob&&x.status==='ready').slice(0,cap);
-   if(!candidates.some(x=>x.id===src.id))candidates.unshift(src);
-   const unique=[...new Map(candidates.map(x=>[x.id,x])).values()].slice(0,cap);
-   for(const item of unique){
+   for(const item of selectedRefs.slice(0,cap)){
     const data_url=await imgData(item.blob);
     const uploaded=await api({action:'upload_reference',data_url});
     reference_image_urls.push(uploaded.url);
@@ -121,10 +128,11 @@ async function generate(p,src,prompt){
   }catch(e){return toast(e.message||'Gambar referensi gagal diunggah.')}
  }
  for(let k=0;k<S.set.n;k++){
-  const it={id:uid(),kind:'result',type:'video',status:'processing',prompt:pr,model:m.id,srcId:src?.id};p.items.unshift(it);
+  const it={id:uid(),kind:'result',type:'video',status:'processing',prompt:pr,model:m.id,srcId:selectedRefs[0]?.id,referenceCount:reference_image_urls.length};p.items.unshift(it);
   run(it,{action:'create',model:m.id,prompt:pr,ratio:S.set.ratio,resolution:S.set.res,duration:S.set.dur,reference_image_urls})}
- save();toast(`${S.set.n} video diproses. Boleh geser ke item lain.`);
- if(!src){p.draft='';route()}
+ save();toast(`${S.set.n} video diproses dengan ${reference_image_urls.length} referensi terpilih.`);
+ p.draft='';
+ route();
 }
 
 // ===== Tampilan =====
@@ -189,10 +197,10 @@ function viewProject(p){
      </div>
    </section>
    <section class="px-4 pt-4">
-     <div class="flex items-center justify-between mb-2"><h2 class="font-bold">Referensi (${p.items.filter(i=>i.kind==='upload').length})</h2><a href="#/hasil" class="text-xs text-indigo-300">Lihat semua ›</a></div><p class="text-[11px] text-neutral-500 mb-2">Tambahkan gambar untuk mengarahkan hasil video AI.</p>
+     <div class="flex items-center justify-between mb-2"><h2 class="font-bold">Referensi (${p.items.filter(i=>i.kind==='upload').length})</h2><span class="text-xs text-violet-300">${p.items.filter(i=>i.kind==='upload'&&i.type==='image'&&i.selected!==false).length} dipilih</span></div><p class="text-[11px] text-neutral-400 mb-2">Ketuk gambar untuk memilih atau membatalkan. Hanya gambar bertanda ✓ Dipakai yang dikirim ke AI.</p>
      <div class="flex gap-2 overflow-x-auto pb-2 kh-media-strip">
        <button id="plusMedia" type="button" class="w-[76px] h-[96px] shrink-0 rounded-xl border border-dashed border-violet-400/70 bg-violet-950/20 flex flex-col items-center justify-center gap-1 text-violet-200"><span class="text-2xl">＋</span><span class="text-[11px]">Tambah</span></button>
-       ${p.items.filter(it=>it.kind==='upload').slice(0,30).map(it=>`<div class="relative w-[76px] h-[96px] shrink-0 rounded-xl overflow-hidden border border-white/10"><a href="#/v/${p.id}/${it.id}" class="block w-full h-full">${thumb(it,'w-full h-full')}</a><button type="button" data-rm="${it.id}" aria-label="Hapus referensi" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/75 text-[10px]">×</button></div>`).join('')}
+       ${p.items.filter(it=>it.kind==='upload').slice(0,30).map(it=>`<div class="relative w-[82px] h-[104px] shrink-0 rounded-xl overflow-hidden border ${it.selected===false?'border-white/10':'border-violet-400 ring-2 ring-violet-500/80'}"><button type="button" data-toggle-ref="${it.id}" aria-pressed="${it.selected!==false}" aria-label="${it.selected===false?'Pilih':'Batalkan pilihan'} referensi" class="block w-full h-full">${thumb(it,'w-full h-full')}<span class="absolute bottom-1 left-1 rounded-full ${it.selected===false?'bg-black/75':'bg-violet-600'} px-2 py-1 text-[10px] font-bold">${it.selected===false?'Pilih':'✓ Dipakai'}</span></button><button type="button" data-rm="${it.id}" aria-label="Hapus referensi" class="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/80 text-xs">×</button></div>`).join('')}
      </div>
      ${p.items.length>30?`<a href="#/antrean" class="inline-block mt-2 text-xs text-violet-300">Lihat antrean dan item lainnya →</a>`:''}
    </section>
@@ -206,7 +214,8 @@ function viewProject(p){
  </div>
  ${panel('Contoh: Buat adegan sinematik saat Kong berjalan di kota yang hancur…',p.draft)}`;
  $('ren').onclick=()=>{const n=prompt('Nama project',p.name);if(n&&n.trim()){p.name=n.trim().slice(0,40);save();route()}};
- $('plusMedia').onclick=()=>$('file').click();
+ $('plusMedia').onclick=()=>{$('file').accept='image/*,video/*';$('file').click()};
+ document.querySelectorAll('[data-toggle-ref]').forEach(b=>b.onclick=()=>{const it=p.items.find(i=>i.id===b.dataset.toggleRef);if(!it)return;it.selected=it.selected===false;save();route()});
  document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{const ix=p.items.findIndex(i=>i.id===b.dataset.rm);if(ix>=0){p.items.splice(ix,1);save();route()}});
  $('ideaPrompt').onclick=()=>{const pr=$('pr');pr.value=(pr.value?pr.value+' ':'')+'Buat video sinematik dengan pencahayaan dramatis, gerakan kamera halus, detail realistis, dan komposisi film.';pr.dispatchEvent(new Event('input'));pr.focus()};
  $('ideaSurprise').onclick=()=>{const ideas=['Seekor naga raksasa terbang di atas kota futuristik saat matahari terbenam, gaya sinematik.','Kong berjalan keluar dari hutan berkabut menuju kota yang ditinggalkan, kamera mengikuti dari belakang.','Sebuah kapal luar angkasa mendarat di padang pasir luas, debu berputar diterpa angin, film sci-fi realistis.','Seorang ksatria berzirah berjalan melewati reruntuhan kastil di tengah hujan, pencahayaan dramatis.'];const pr=$('pr');pr.value=ideas[Math.floor(Math.random()*ideas.length)];pr.dispatchEvent(new Event('input'));pr.focus()};
@@ -311,7 +320,7 @@ function openPhone(){
 
 // ===== Unggah & mulai =====
 $('file').onchange=e=>{const p=S.projects.find(x=>x.id===location.hash.split('/')[2]);if(!p)return;
- [...e.target.files].forEach(f=>{const t=f.type.startsWith('video')?'video':f.type.startsWith('image')?'image':null;if(t)p.items.unshift({id:uid(),kind:'upload',type:t,blob:f,status:'ready'})});
+ [...e.target.files].forEach(f=>{const t=f.type.startsWith('video')?'video':f.type.startsWith('image')?'image':null;if(t)p.items.unshift({id:uid(),kind:'upload',type:t,blob:f,status:'ready',selected:t==='image'})});
  e.target.value='';save();route()};
 (async()=>{await initAuth();refreshBal();const d=await load();if(d&&d.projects)S={...S,...d,set:{...S.set,...d.set}};if(!M(S.set.model)||!M(S.set.model).on)S.set.model='seedance-2.0-fast';
  S.projects.forEach(p=>p.items.forEach(it=>{if(it.status==='processing'){if(it.jobId)run(it);else{it.status='failed';it.error='Terputus saat halaman dimuat ulang.'}}}));
