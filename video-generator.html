@@ -31,6 +31,27 @@
 }
 </style>
 
+
+<style id="kamisah-reference-ui-v4">
+:root{color-scheme:dark}body{background:#030711!important;background-image:radial-gradient(ellipse at 50% -12%,#171849 0,transparent 48%)!important}
+#view{min-height:100dvh}#khProject{background:radial-gradient(110% 38% at 50% 0,#17183c 0,#050711 70%)}
+#khProject header{border-color:rgba(255,255,255,.08)!important}
+#khProject section h2{letter-spacing:-.025em}
+#khProject .kh-media-strip a,#khProject .kh-media-strip button{border-radius:15px}
+#khProject .kh-media-strip button{box-shadow:0 0 18px #632eff22}
+#khProject textarea#pr{font-size:15px;min-height:110px}
+#view .fixed.inset-x-0.bottom-0{background:linear-gradient(180deg,rgba(3,5,13,.90),#03050c 35%)!important;border-top:1px solid rgba(255,255,255,.09);backdrop-filter:blur(18px)}
+#view #chip[data-big]{background:linear-gradient(110deg,#28105b,#101d53)!important;border:1px solid #7753ff!important;box-shadow:0 0 22px #643dff35}
+#view #go{background:linear-gradient(105deg,#743bff,#0758f5)!important;color:white!important;box-shadow:0 5px 22px #4b30ff42}
+#sheet .kh-sheet{background:#080c17;border-color:rgba(255,255,255,.1);box-shadow:0 -20px 70px #0009}
+#sheet .kh-option{background:linear-gradient(135deg,#101827,#090e18);border:1px solid rgba(255,255,255,.09);transition:border-color .15s,background .15s}
+#sheet .kh-option[aria-pressed="true"],#sheet .kh-model[aria-pressed="true"]{border-color:#8b5cff;background:linear-gradient(120deg,#29145a,#111b43);box-shadow:0 0 18px #713dff38}
+#sheet .kh-model{background:linear-gradient(135deg,#101827,#090e18);border:1px solid rgba(255,255,255,.09)}
+#sheet .kh-model:disabled{opacity:.48}#sheet .kh-model .kh-art{background:linear-gradient(135deg,#3b245c,#182d49 55%,#10131f);}
+#sheet button:focus-visible,#view button:focus-visible,#view a:focus-visible{outline:2px solid #a78bfa;outline-offset:2px}
+@media(max-width:640px){#khProject{padding-bottom:190px!important}#khProject .aspect-\[9\/11\]{aspect-ratio:9/10;max-height:43dvh}#view .fixed.inset-x-0.bottom-0{padding-left:14px;padding-right:14px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}#view #chip[data-big]{min-height:66px}#sheet .kh-sheet{max-height:92dvh;border-radius:26px 26px 0 0;padding:18px 16px calc(12px + env(safe-area-inset-bottom))}#sheet .kh-model{padding:12px;border-radius:16px;margin-bottom:8px}#sheet .kh-option{border-radius:13px}}
+</style>
+
 </head>
 <body class="bg-black text-neutral-100 font-sans">
 <div id="view"></div><div id="sheet"></div>
@@ -157,8 +178,8 @@ function viewProject(p){
  $('view').innerHTML=`<div class="max-w-xl mx-auto min-h-screen pb-64" id="khProject">
    <header class="sticky top-0 z-20 flex items-center gap-3 px-4 h-14 bg-black/90 backdrop-blur border-b border-white/5">
      <a href="#/" aria-label="Kembali ke proyek" class="w-10 h-10 grid place-items-center rounded-xl bg-neutral-900">←</a>
-     <div class="flex-1 min-w-0"><h1 class="font-bold truncate">${esc(p.name)}</h1><p class="text-[11px] text-neutral-500">${p.items.length} media · ${ready.length} selesai</p></div>
-     <button id="ren" type="button" aria-label="Ganti nama proyek" class="w-10 h-10 rounded-xl bg-neutral-900">✎</button>
+     <div class="flex-1 min-w-0"><h1 class="font-extrabold truncate text-lg"><span class="text-violet-400">Ⓚ</span> Kamisah</h1><p class="text-[10px] text-neutral-500 truncate">${esc(p.name)} · ${ready.length} selesai</p></div>
+     <a href="#/akun" class="flex items-center gap-1 rounded-full bg-white/5 px-3 py-2 text-xs font-bold">🪙 <span id="bal">${balTxt()}</span> <span class="text-violet-300">＋</span></a><button id="ren" type="button" aria-label="Ganti nama project" class="w-9 h-9 rounded-full bg-neutral-900 border border-white/10">👤</button>
    </header>
    <section class="px-3 pt-3">
      <div class="relative overflow-hidden rounded-2xl bg-neutral-950 border border-white/10 aspect-[9/11] max-h-[54dvh]">
@@ -168,10 +189,10 @@ function viewProject(p){
      </div>
    </section>
    <section class="px-4 pt-4">
-     <div class="flex items-center justify-between mb-3"><div><h2 class="font-bold">Media proyek</h2><p class="text-xs text-neutral-500 mt-1">Gambar dan video yang sudah kamu buat</p></div><span class="text-xs text-neutral-400">${p.items.length} item</span></div>
+     <div class="flex items-center justify-between mb-2"><h2 class="font-bold">Referensi (${p.items.filter(i=>i.kind==='upload').length})</h2><a href="#/hasil" class="text-xs text-indigo-300">Lihat semua ›</a></div><p class="text-[11px] text-neutral-500 mb-2">Tambahkan gambar untuk mengarahkan hasil video AI.</p>
      <div class="flex gap-2 overflow-x-auto pb-2 kh-media-strip">
        <button id="plusMedia" type="button" class="w-[76px] h-[96px] shrink-0 rounded-xl border border-dashed border-violet-400/70 bg-violet-950/20 flex flex-col items-center justify-center gap-1 text-violet-200"><span class="text-2xl">＋</span><span class="text-[11px]">Tambah</span></button>
-       ${p.items.slice(0,30).map(it=>`<a href="#/v/${p.id}/${it.id}" class="relative w-[76px] h-[96px] shrink-0 rounded-xl overflow-hidden border ${it.id===hero?.id?'border-violet-400 ring-1 ring-violet-400/50':'border-white/10'}">${thumb(it,'w-full h-full')}<span class="absolute bottom-1 left-1 right-1 text-[9px] text-center bg-black/70 rounded py-0.5">${it.status==='processing'?'Diproses':it.status==='failed'?'Gagal':it.type==='image'?'Gambar':'Video'}</span></a>`).join('')}
+       ${p.items.filter(it=>it.kind==='upload').slice(0,30).map(it=>`<div class="relative w-[76px] h-[96px] shrink-0 rounded-xl overflow-hidden border border-white/10"><a href="#/v/${p.id}/${it.id}" class="block w-full h-full">${thumb(it,'w-full h-full')}</a><button type="button" data-rm="${it.id}" aria-label="Hapus referensi" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/75 text-[10px]">×</button></div>`).join('')}
      </div>
      ${p.items.length>30?`<a href="#/antrean" class="inline-block mt-2 text-xs text-violet-300">Lihat antrean dan item lainnya →</a>`:''}
    </section>
@@ -186,6 +207,7 @@ function viewProject(p){
  ${panel('Contoh: Buat adegan sinematik saat Kong berjalan di kota yang hancur…',p.draft)}`;
  $('ren').onclick=()=>{const n=prompt('Nama project',p.name);if(n&&n.trim()){p.name=n.trim().slice(0,40);save();route()}};
  $('plusMedia').onclick=()=>$('file').click();
+ document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{const ix=p.items.findIndex(i=>i.id===b.dataset.rm);if(ix>=0){p.items.splice(ix,1);save();route()}});
  $('ideaPrompt').onclick=()=>{const pr=$('pr');pr.value=(pr.value?pr.value+' ':'')+'Buat video sinematik dengan pencahayaan dramatis, gerakan kamera halus, detail realistis, dan komposisi film.';pr.dispatchEvent(new Event('input'));pr.focus()};
  $('ideaSurprise').onclick=()=>{const ideas=['Seekor naga raksasa terbang di atas kota futuristik saat matahari terbenam, gaya sinematik.','Kong berjalan keluar dari hutan berkabut menuju kota yang ditinggalkan, kamera mengikuti dari belakang.','Sebuah kapal luar angkasa mendarat di padang pasir luas, debu berputar diterpa angin, film sci-fi realistis.','Seorang ksatria berzirah berjalan melewati reruntuhan kastil di tengah hujan, pencahayaan dramatis.'];const pr=$('pr');pr.value=ideas[Math.floor(Math.random()*ideas.length)];pr.dispatchEvent(new Event('input'));pr.focus()};
  bindPanel(p,null);
@@ -230,14 +252,21 @@ ${all.some(x=>x.i.status==='failed')?'<button id="clr" type="button" class="mt-3
 // ===== Sheet pengaturan & model =====
 function closeSheet(){$('sheet').innerHTML=''}
 function openSheet(v){SV=v;renderSheet()}
-function renderSheet(){const m=cur(),seg=(k,a,val,l=x=>x)=>`<div class="flex bg-neutral-800 rounded-2xl p-1 mb-2">${a.map(o=>`<button type="button" data-k="${k}" data-v="${o}" aria-pressed="${o===val}" class="flex-1 py-3 rounded-xl text-sm ${o===val?'bg-neutral-700 text-white font-semibold':'text-neutral-400'}">${l(o)}</button>`).join('')}</div>`;let h;
- if(SV==='model')h=MODELS.map(x=>{const a=ok(x,CTX),sub=!x.on?x.note:!a?'Tidak tersedia untuk setelan saat ini':x.cost!=null?x.cost+' kredit/video':x.costSec+' kredit/detik';return`<button type="button" data-m="${x.id}" ${a?'':'disabled'} class="w-full text-left p-4 rounded-2xl mb-1 ${x.id===m.id?'bg-neutral-800':''} disabled:opacity-40"><div class="font-semibold">${x.name}</div><div class="text-xs text-neutral-400 ${a?'':'italic'}">${sub}</div></button>`}).join('');
- else h=`<p class="text-center text-sm text-neutral-300 mb-3">Pembuatan akan menggunakan <b class="underline"><span id="sc">${price()}</span> kredit</b></p>${seg('ratio',['16:9','9:16','1:1','4:3','3:4','21:9'],S.set.ratio)}${seg('res',m.res,S.set.res)}${seg('n',[1,2,3,4],S.set.n,x=>'x'+x)}${m.dur?`<div class="bg-neutral-800 rounded-2xl p-4 mb-2"><div class="flex justify-between text-sm mb-2"><label for="dur">Durasi</label><b id="dl">${S.set.dur} detik</b></div><input id="dur" type="range" min="${m.dur[0]}" max="${m.dur[1]}" value="${S.set.dur}" class="w-full accent-amber-500"></div>`:''}<button type="button" id="pickM" class="w-full flex justify-between p-4 rounded-2xl bg-neutral-800 text-sm"><span>${m.name}</span><span>▾</span></button>`;
- $('sheet').innerHTML=`<div data-close class="fixed inset-0 z-40 bg-black/50"></div><div class="fixed inset-x-0 bottom-0 z-50 max-h-[75dvh] overflow-auto rounded-t-3xl bg-neutral-900 p-3" style="padding-bottom:calc(.75rem + env(safe-area-inset-bottom))">${h}</div>`}
+function renderSheet(){
+ const m=cur(),sec=(n,t,b)=>`<h3 class="flex items-center gap-2 text-sm font-bold mt-4 mb-2"><span class="w-6 h-6 grid place-items-center rounded-full bg-indigo-600 text-[11px]">${n}</span>${t}</h3>${b}`;
+ const grid=(k,a,val,cols,label)=>`<div class="grid ${cols} gap-2">${a.map(o=>`<button type="button" data-k="${k}" data-v="${o}" aria-pressed="${o===val}" class="kh-option py-3 px-1 text-xs ${o===val?'text-white':'text-neutral-300'}"><b class="block">${label(o).split('|')[0]}</b><span class="block text-[10px] text-neutral-400 mt-1">${label(o).split('|')[1]||''}</span></button>`).join('')}</div>`;
+ const badge={'seedance-2.0-fast':'HOT','seedance-2.0':'POPULAR','seedance-2.5':'BEST','omni-flash':'BARU'};
+ const art={'seedance-2.0-fast':'assets/seedance-fast.jpg','seedance-2.0':'assets/seedance-fast.jpg','seedance-2.5':'assets/seedance-25.jpg','omni-flash':'assets/omni-flash.jpg'};
+ const card=x=>{const active=ok(x,CTX),selected=x.id===m.id,desc=!x.on?(x.note||'Segera hadir'):!active?'Tidak tersedia untuk mode ini':`${x.dur?x.dur[0]+'–'+x.dur[1]+' detik':''} · ${x.res[0]}–${x.res[x.res.length-1]}`;return `<button type="button" data-m="${x.id}" aria-pressed="${selected}" ${active?'':'disabled'} class="kh-model w-full flex gap-3 text-left p-3 rounded-2xl mb-2 ${selected?'border-violet-400':''}"><span class="kh-art w-[76px] h-[76px] shrink-0 rounded-xl overflow-hidden grid place-items-center text-3xl">${String(art[x.id]||'').includes('.jpg')?`<img src="${art[x.id]}" alt="" class="w-full h-full object-cover">`:art[x.id]||'🎞'}</span><span class="min-w-0 flex-1"><span class="flex items-center gap-2"><b class="text-sm">${esc(x.name)}</b>${badge[x.id]?`<i class="not-italic text-[9px] px-1.5 py-1 rounded-md bg-rose-500 text-white font-extrabold">${badge[x.id]}</i>`:''}</span><span class="block text-[11px] text-neutral-400 mt-1">${esc(desc)}</span><span class="block text-[10px] text-neutral-500 mt-2">${x.modes.map(t=>({text:'Teks',image:'Gambar',video:'Video'}[t])).join(' / ')||'Segera hadir'}</span></span>${selected?'<span class="text-violet-300 font-bold">✓</span>':''}</button>`};
+ let h;
+ if(SV==='model')h=`<div class="flex items-center gap-3 mb-4"><button type="button" id="backS" class="w-10 h-10 rounded-full bg-white/5">←</button><div class="flex-1 text-center font-bold">Pilih Model AI</div><span class="w-10"></span></div><div class="grid grid-cols-4 gap-1 rounded-xl bg-white/5 p-1 mb-3"><button type="button" class="py-2 rounded-lg bg-indigo-600 text-xs">Semua</button><button type="button" class="py-2 rounded-lg text-xs text-neutral-400">Video</button><button type="button" class="py-2 rounded-lg text-xs text-neutral-400">Gambar</button><button type="button" class="py-2 rounded-lg text-xs text-neutral-400">Favorit</button></div>${MODELS.map(card).join('')}`;
+ else h=`<div class="flex items-start justify-between mb-2"><div><h2 class="text-xl font-extrabold">Pengaturan Video</h2><p class="text-xs text-neutral-400 mt-1">Atur hasil sebelum membuat video</p></div><button type="button" data-close aria-label="Tutup" class="w-10 h-10 rounded-full bg-white/5">✕</button></div>${sec(1,'Pilih Model AI',card(m)+`<button type="button" id="pickM" class="text-xs text-indigo-300 py-2">Lihat semua ›</button>`)}${sec(2,'Rasio Video',grid('ratio',['16:9','9:16','1:1','4:3','3:4','21:9'],S.set.ratio,'grid-cols-3',o=>`${o}|${({'16:9':'YouTube','9:16':'TikTok','1:1':'Instagram','4:3':'Umum','3:4':'Potret','21:9':'Cinematic'})[o]}`))}${sec(3,'Kualitas Video',grid('res',m.res,S.set.res,'grid-cols-3',o=>`${o}|${({'480p':'hemat','720p':'standar','1080p':'jernih'})[o]||''}`))}${sec(4,'Jumlah Video',grid('n',[1,2,3,4],S.set.n,'grid-cols-4',o=>`x${o}|`))}${m.dur?sec(5,'Durasi Video',`<div class="flex items-center gap-3 rounded-xl bg-white/5 p-3"><input id="dur" type="range" min="${m.dur[0]}" max="${m.dur[1]}" value="${S.set.dur}" class="flex-1 accent-violet-500" aria-label="Durasi video"><b id="dl" class="text-sm w-20 text-right">${S.set.dur} detik</b></div>`):''}<div class="sticky bottom-0 -mx-4 mt-4 px-4 pt-3 pb-1 bg-[#080c17] flex items-center gap-3 border-t border-white/10"><div class="text-[11px] text-neutral-400 shrink-0">Estimasi biaya<div class="text-lg font-extrabold text-amber-400"><span id="sc">${price()}</span> kredit</div></div><button type="button" data-close class="flex-1 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 text-sm font-extrabold">Simpan Pengaturan</button></div>`;
+ $('sheet').innerHTML=`<div data-close class="fixed inset-0 z-40 bg-black/65"></div><div class="kh-sheet fixed inset-x-0 bottom-0 z-50 max-h-[92dvh] overflow-auto rounded-t-3xl border-t px-4 pt-4">${h}</div>`
+}
 $('sheet').onclick=e=>{const t=e.target;if(t.dataset.close!==undefined)return closeSheet();const b=t.closest('button');if(!b)return;
  if(b.dataset.k)S.set[b.dataset.k]=b.dataset.k==='n'?+b.dataset.v:b.dataset.v;
  else if(b.dataset.m){S.set.model=b.dataset.m;fit(CTX);SV='set'}
- else if(b.id==='pickM')SV='model';else return;
+ else if(b.id==='pickM')SV='model';else if(b.id==='backS')SV='set';else return;
  save();renderSheet();upd()};
 $('sheet').oninput=e=>{if(e.target.id!=='dur')return;S.set.dur=+e.target.value;$('dl').textContent=S.set.dur+' detik';$('sc').textContent=price();upd();save()};
 
