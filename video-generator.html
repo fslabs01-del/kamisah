@@ -188,7 +188,7 @@ $('sheet').oninput=e=>{if(e.target.id!=='dur')return;S.set.dur=+e.target.value;$
 // ===== Login & saldo (Supabase). Kosong di config.js = mode tanpa login =====
 let SB=null,SES=null,BAL=null,CT=null;const balTxt=()=>BAL===null?'—':BAL;
 async function initAuth(){const c=window.KH||{};if(!c.SUPABASE_URL||!c.SUPABASE_PUBLISHABLE_KEY||!window.supabase)return;SB=supabase.createClient(c.SUPABASE_URL,c.SUPABASE_PUBLISHABLE_KEY);const{data}=await SB.auth.getSession();SES=data.session;SB.auth.onAuthStateChange((_e,s)=>{SES=s;refreshBal()})}
-async function refreshBal(){if(!SB||!SES)BAL=null;else{const{data}=await SB.from('wallets').select('balance').maybeSingle();BAL=data?data.balance:null}const e=$('bal');if(e)e.textContent=balTxt();upd()}
+async function refreshBal(){if(!SB||!SES){BAL=null}else{const{data,error}=await SB.from('wallets').select('balance').eq('user_id',SES.user.id).maybeSingle();if(error){console.error('Kamisah: gagal membaca saldo',error.message);BAL=null}else{BAL=data?data.balance:0}}const e=$('bal');if(e)e.textContent=balTxt();upd()}
 function openAuth(msg){
  if(!SB)return toast('Login belum dikonfigurasi (isi config.js).');
  const box=SES?`<p class="text-sm mb-1">${esc(SES.user.email)}</p><p class="text-xs text-neutral-400 mb-4">Saldo: <b>${balTxt()}</b> kredit</p><button type="button" id="out" class="w-full py-3 rounded-2xl bg-neutral-800 text-sm font-semibold">Keluar</button>`
