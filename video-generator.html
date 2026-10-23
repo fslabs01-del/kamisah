@@ -16,40 +16,18 @@
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
-<style id="kamisah-videoai-mobile-polish">
-:root { color-scheme: dark; }
-html { -webkit-text-size-adjust: 100%; }
-body { overscroll-behavior-y: contain; }
-button, a, input, textarea, select { touch-action: manipulation; }
-button, a { -webkit-tap-highlight-color: transparent; }
-button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visible {
-  outline: 2px solid #fbbf24; outline-offset: 2px;
-}
-@media (max-width: 640px) {
-  body { font-size: 15px; }
-  #view { min-height: 100dvh; }
-  #view button, #sheet button { min-height: 44px; }
-  #view a[aria-label], #view button[aria-label] { min-width: 44px; }
-  #view textarea#pr { font-size: 16px; line-height: 1.45; min-height: 64px; max-height: 150px; padding: 8px 2px; }
-  #view .fixed.inset-x-0.bottom-0 {
-    padding-left: 16px; padding-right: 16px;
-    padding-bottom: calc(12px + env(safe-area-inset-bottom));
-    box-shadow: 0 -12px 32px rgba(0,0,0,.35);
-    border: 1px solid rgba(255,255,255,.07); border-bottom: 0;
-  }
-  #view .fixed.inset-x-0.bottom-0 > .max-w-xl { width: 100%; }
-  #view #plus { width: 48px; height: 48px; flex: 0 0 48px; border-radius: 15px; background: #27272a; }
-  #view #go { width: 52px; height: 52px; flex: 0 0 52px; }
-  #view #chip { max-width: 43vw; min-height: 44px; padding: 11px 12px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-  #view #cost { min-width: 0; font-size: 11px; line-height: 1.4; }
-  #sheet .fixed.inset-x-0.bottom-0.z-50 {
-    max-height: min(78dvh, 720px);
-    padding: 18px 16px calc(14px + env(safe-area-inset-bottom));
-    border: 1px solid rgba(255,255,255,.08); border-bottom: 0;
-    box-shadow: 0 -16px 40px rgba(0,0,0,.4);
-  }
-  #sheet button { font-size: 14px; }
-  #view .grid.grid-cols-2 { gap: 10px; }
+<style id="kh-project-mobile-redesign">
+@media(max-width:640px){
+  #khProject .kh-media-strip{scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  #khProject .kh-media-strip::-webkit-scrollbar{display:none}
+  #khProject section{scroll-margin-top:60px}
+  #khProject h2{letter-spacing:-.02em}
+  #view .fixed.inset-x-0.bottom-0{padding-left:14px;padding-right:14px;padding-bottom:calc(12px + env(safe-area-inset-bottom));box-shadow:0 -14px 36px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.08);border-bottom:0}
+  #view .fixed.inset-x-0.bottom-0 textarea#pr{font-size:16px;line-height:1.45;min-height:68px;max-height:132px;padding:8px 2px}
+  #view #plus{width:46px;height:46px;flex:0 0 46px;border-radius:15px;background:#27272a}
+  #view #go{width:50px;height:50px;flex:0 0 50px}
+  #view #chip{max-width:42vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:44px;padding:10px 12px}
+  #view #cost{font-size:11px;line-height:1.35}
 }
 </style>
 
@@ -143,7 +121,7 @@ const nav=(a)=>`<nav class="fixed inset-x-0 bottom-0 z-30 border-t border-neutra
 <button type="button" onclick="location.hash='#/akun'" class="flex flex-col items-center justify-center gap-0.5 ${a==='akun'?'text-amber-400':'text-neutral-400'}"><span class="text-base">👤</span>Akun</button></div></nav>`;
 const panel=(ph,d='')=>`<div class="fixed inset-x-0 bottom-0 z-30 bg-neutral-900 rounded-t-3xl px-5 pt-5" style="padding-bottom:calc(1rem + env(safe-area-inset-bottom))"><div class="max-w-xl mx-auto">
 <textarea id="pr" rows="2" maxlength="2000" placeholder="${ph}" aria-label="Ceritakan video yang ingin dibuat" class="w-full bg-transparent text-lg placeholder-neutral-500 outline-none resize-none">${esc(d)}</textarea>
-<div class="flex items-center gap-2 mt-3"><button id="plus" type="button" aria-label="Tambah referensi gambar atau video" title="Tambah gambar atau video referensi" class="w-11 h-11 text-2xl">＋</button><span id="cost" class="flex-1 text-[11px] text-neutral-400"></span>
+<div class="flex items-center gap-2 mt-3"><button id="plus" type="button" aria-label="Tambah gambar atau video referensi" title="Tambah gambar atau video referensi" class="w-11 h-11 text-2xl">＋</button><span id="cost" class="flex-1 text-[11px] text-neutral-400"></span>
 <button id="chip" type="button" class="px-4 py-3 rounded-full bg-neutral-800 border border-neutral-700 text-xs"></button>
 <button id="go" type="button" aria-label="Mulai membuat video" title="Mulai membuat video" class="w-12 h-12 rounded-full bg-gradient-to-r from-amber-500 to-amber-700 text-black text-xl font-bold">→</button></div></div></div>`;
 function upd(){const c=$('chip');if(!c)return;c.textContent=`${cur().name} · ${S.set.ratio} · x${S.set.n}`;$('cost').textContent=`Biaya ${price()} kredit · Saldo ${balTxt()}`}
@@ -166,12 +144,52 @@ ${S.projects.map(p=>`<div class="flex items-center gap-2 mb-3"><a href="#/p/${p.
  $('newF').onsubmit=e=>{e.preventDefault();const n=$('newN').value.trim();if(!n)return;const p={id:uid(),name:n,items:[]};S.projects.unshift(p);save();location.hash='#/p/'+p.id};
  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{const p=S.projects.find(x=>x.id===b.dataset.del);if(confirm(`Hapus project "${p.name}" beserta isinya?`)){p.items.forEach(i=>i.gone=true);S.projects=S.projects.filter(x=>x!==p);save();route()}})}
 
-function viewProject(p){fit('text');if(PEND&&!p.draft){p.draft=PEND;PEND=null;try{localStorage.removeItem('kh_vprompt')}catch{}}
- $('view').innerHTML=`<div class="max-w-xl mx-auto"><div class="flex items-center gap-3 px-4 h-14"><a href="#/" aria-label="Kembali" class="w-11 h-11 grid place-items-center rounded-2xl bg-neutral-900">←</a><h1 class="font-bold truncate flex-1">${esc(p.name)}</h1><button id="ren" type="button" aria-label="Ganti nama project" class="w-11 h-11 text-neutral-400">✎</button></div>
-<div class="grid grid-cols-2 gap-2 px-1 pb-56">${p.items.map(it=>`<a href="#/v/${p.id}/${it.id}" class="relative block">${thumb(it,'w-full aspect-[3/4] rounded-2xl')}${it.type==='video'&&it.status==='ready'?'<span class="absolute top-2 left-2 w-7 h-7 grid place-items-center rounded-full bg-white text-black text-[10px]">▶</span>':''}</a>`).join('')||'<p class="col-span-2 px-3 text-sm text-neutral-400">Tekan ＋ untuk unggah banyak gambar atau video, atau tulis prompt di bawah untuk membuat video dari teks.</p>'}</div></div>${panel('Apa yang ingin Anda buat?',p.draft)}`;
+function viewProject(p){
+ fit('text');
+ if(PEND&&!p.draft){p.draft=PEND;PEND=null;try{localStorage.removeItem('kh_vprompt')}catch{}}
+ const ready=p.items.filter(it=>it.status==='ready');
+ const hero=ready[0]||null;
+ const heroMedia=hero
+   ? (hero.type==='image'
+      ? `<img src="${src(hero)}" alt="Pratinjau proyek" class="w-full h-full object-contain">`
+      : `<video src="${src(hero)}#t=0.1" muted playsinline controls class="w-full h-full object-contain"></video>`)
+   : `<div class="h-full min-h-[250px] flex flex-col items-center justify-center text-center px-7 bg-gradient-to-br from-neutral-900 via-neutral-950 to-indigo-950"><div class="text-4xl mb-3">✦</div><div class="text-lg font-bold">Mulai buat video</div><p class="text-sm text-neutral-400 mt-2">Tulis ide di bawah. Kamu bisa menambahkan gambar atau video sebagai referensi.</p></div>`;
+ $('view').innerHTML=`<div class="max-w-xl mx-auto min-h-screen pb-64" id="khProject">
+   <header class="sticky top-0 z-20 flex items-center gap-3 px-4 h-14 bg-black/90 backdrop-blur border-b border-white/5">
+     <a href="#/" aria-label="Kembali ke proyek" class="w-10 h-10 grid place-items-center rounded-xl bg-neutral-900">←</a>
+     <div class="flex-1 min-w-0"><h1 class="font-bold truncate">${esc(p.name)}</h1><p class="text-[11px] text-neutral-500">${p.items.length} media · ${ready.length} selesai</p></div>
+     <button id="ren" type="button" aria-label="Ganti nama proyek" class="w-10 h-10 rounded-xl bg-neutral-900">✎</button>
+   </header>
+   <section class="px-3 pt-3">
+     <div class="relative overflow-hidden rounded-2xl bg-neutral-950 border border-white/10 aspect-[9/11] max-h-[54dvh]">
+       ${heroMedia}
+       ${hero?`<a href="#/v/${p.id}/${hero.id}" class="absolute bottom-3 right-3 rounded-full bg-black/70 border border-white/20 px-3 py-2 text-xs font-semibold">Buka pratinjau ↗</a>`:''}
+       ${!hero&&p.items.some(i=>i.status==='processing')?`<div class="absolute bottom-3 left-3 rounded-full bg-black/70 px-3 py-2 text-xs">⏳ ${p.items.filter(i=>i.status==='processing').length} sedang diproses</div>`:''}
+     </div>
+   </section>
+   <section class="px-4 pt-4">
+     <div class="flex items-center justify-between mb-3"><div><h2 class="font-bold">Media proyek</h2><p class="text-xs text-neutral-500 mt-1">Gambar dan video yang sudah kamu buat</p></div><span class="text-xs text-neutral-400">${p.items.length} item</span></div>
+     <div class="flex gap-2 overflow-x-auto pb-2 kh-media-strip">
+       <button id="plusMedia" type="button" class="w-[76px] h-[96px] shrink-0 rounded-xl border border-dashed border-violet-400/70 bg-violet-950/20 flex flex-col items-center justify-center gap-1 text-violet-200"><span class="text-2xl">＋</span><span class="text-[11px]">Tambah</span></button>
+       ${p.items.slice(0,30).map(it=>`<a href="#/v/${p.id}/${it.id}" class="relative w-[76px] h-[96px] shrink-0 rounded-xl overflow-hidden border ${it.id===hero?.id?'border-violet-400 ring-1 ring-violet-400/50':'border-white/10'}">${thumb(it,'w-full h-full')}<span class="absolute bottom-1 left-1 right-1 text-[9px] text-center bg-black/70 rounded py-0.5">${it.status==='processing'?'Diproses':it.status==='failed'?'Gagal':it.type==='image'?'Gambar':'Video'}</span></a>`).join('')}
+     </div>
+     ${p.items.length>30?`<a href="#/antrean" class="inline-block mt-2 text-xs text-violet-300">Lihat antrean dan item lainnya →</a>`:''}
+   </section>
+   <section class="px-4 pt-4">
+     <div class="flex items-center justify-between mb-2"><h2 class="font-bold">Apa yang ingin kamu buat?</h2><span class="text-[11px] text-neutral-500">Bahasa sehari-hari boleh</span></div>
+     <div class="flex flex-wrap gap-2 mb-3">
+       <button type="button" id="ideaPrompt" class="rounded-full border border-violet-400/30 bg-violet-950/30 px-3 py-2 text-xs text-violet-200">✦ Bantu buat prompt</button>
+       <button type="button" id="ideaSurprise" class="rounded-full border border-white/10 bg-neutral-900 px-3 py-2 text-xs text-neutral-300">🎲 Ide acak</button>
+     </div>
+   </section>
+ </div>
+ ${panel('Contoh: Buat adegan sinematik saat Kong berjalan di kota yang hancur…',p.draft)}`;
  $('ren').onclick=()=>{const n=prompt('Nama project',p.name);if(n&&n.trim()){p.name=n.trim().slice(0,40);save();route()}};
- bindPanel(p,null)}
-
+ $('plusMedia').onclick=()=>$('file').click();
+ $('ideaPrompt').onclick=()=>{const pr=$('pr');pr.value=(pr.value?pr.value+' ':'')+'Buat video sinematik dengan pencahayaan dramatis, gerakan kamera halus, detail realistis, dan komposisi film.';pr.dispatchEvent(new Event('input'));pr.focus()};
+ $('ideaSurprise').onclick=()=>{const ideas=['Seekor naga raksasa terbang di atas kota futuristik saat matahari terbenam, gaya sinematik.','Kong berjalan keluar dari hutan berkabut menuju kota yang ditinggalkan, kamera mengikuti dari belakang.','Sebuah kapal luar angkasa mendarat di padang pasir luas, debu berputar diterpa angin, film sci-fi realistis.','Seorang ksatria berzirah berjalan melewati reruntuhan kastil di tengah hujan, pencahayaan dramatis.'];const pr=$('pr');pr.value=ideas[Math.floor(Math.random()*ideas.length)];pr.dispatchEvent(new Event('input'));pr.focus()};
+ bindPanel(p,null);
+}
 function viewItem(p,it){const i=p.items.indexOf(it),rdy=it.status==='ready';if(rdy)fit(it.type);const c=DIR?(DIR>0?'sl':'sr'):'';DIR=0;
  const media=!rdy?(it.status==='failed'?`<p class="text-sm text-red-400 text-center px-6">${esc(it.error||'Pembuatan video gagal.')}</p>`:`<div class="text-center text-sm text-neutral-300 px-6"><div class="w-9 h-9 mx-auto mb-3 rounded-full border-2 border-amber-500 border-t-transparent animate-spin"></div>Sedang dibuat. Geser ke item lain, proses tetap berjalan.<p class="mt-3 text-xs text-neutral-500">${esc(it.prompt)}</p></div>`):it.type==='image'?`<img src="${src(it)}" alt="" class="max-h-full max-w-full rounded-2xl">`:`<video src="${src(it)}" controls playsinline loop class="max-h-full max-w-full rounded-2xl"></video>`;
  $('view').innerHTML=`<div class="fixed inset-0 bg-black"><div class="absolute top-0 inset-x-0 z-20 flex items-center justify-between p-4"><a href="#/p/${p.id}" aria-label="Tutup" class="w-11 h-11 grid place-items-center rounded-2xl bg-neutral-900">⌄</a><span class="text-xs text-neutral-400">${i+1}/${p.items.length}</span>
@@ -214,7 +232,7 @@ function closeSheet(){$('sheet').innerHTML=''}
 function openSheet(v){SV=v;renderSheet()}
 function renderSheet(){const m=cur(),seg=(k,a,val,l=x=>x)=>`<div class="flex bg-neutral-800 rounded-2xl p-1 mb-2">${a.map(o=>`<button type="button" data-k="${k}" data-v="${o}" aria-pressed="${o===val}" class="flex-1 py-3 rounded-xl text-sm ${o===val?'bg-neutral-700 text-white font-semibold':'text-neutral-400'}">${l(o)}</button>`).join('')}</div>`;let h;
  if(SV==='model')h=MODELS.map(x=>{const a=ok(x,CTX),sub=!x.on?x.note:!a?'Tidak tersedia untuk setelan saat ini':x.cost!=null?x.cost+' kredit/video':x.costSec+' kredit/detik';return`<button type="button" data-m="${x.id}" ${a?'':'disabled'} class="w-full text-left p-4 rounded-2xl mb-1 ${x.id===m.id?'bg-neutral-800':''} disabled:opacity-40"><div class="font-semibold">${x.name}</div><div class="text-xs text-neutral-400 ${a?'':'italic'}">${sub}</div></button>`}).join('');
- else h=`<div class="flex items-center justify-between mb-3"><div><div class="text-base font-bold">Pengaturan Video</div><div class="text-xs text-neutral-400 mt-1">Atur hasil sebelum membuat video</div></div><button type="button" data-close aria-label="Tutup pengaturan" class="w-10 h-10 rounded-full bg-neutral-800">✕</button></div><p class="text-center text-sm text-neutral-300 mb-3">Estimasi biaya: <b class="text-amber-400"><span id="sc">${price()}</span> kredit</b></p><div class="text-xs text-neutral-400 mb-2">RASIO VIDEO</div>${seg('ratio',['16:9','9:16','1:1','4:3','3:4','21:9'],S.set.ratio)}<div class="text-xs text-neutral-400 mt-4 mb-2">KUALITAS VIDEO</div>${seg('res',m.res,S.set.res)}<div class="text-xs text-neutral-400 mt-4 mb-2">JUMLAH VIDEO SEKALIGUS</div>${seg('n',[1,2,3,4],S.set.n,x=>'x'+x)}${m.dur?`<div class="bg-neutral-800 rounded-2xl p-4 mb-2"><div class="flex justify-between text-sm mb-2"><label for="dur">Durasi</label><b id="dl">${S.set.dur} detik</b></div><input id="dur" type="range" min="${m.dur[0]}" max="${m.dur[1]}" value="${S.set.dur}" class="w-full accent-amber-500"></div>`:''}<div class="text-xs text-neutral-400 mt-4 mb-2">MODEL AI</div><button type="button" id="pickM" class="w-full flex justify-between p-4 rounded-2xl bg-neutral-800 text-sm"><span>${m.name}</span><span>▾</span></button>`;
+ else h=`<p class="text-center text-sm text-neutral-300 mb-3">Pembuatan akan menggunakan <b class="underline"><span id="sc">${price()}</span> kredit</b></p>${seg('ratio',['16:9','9:16','1:1','4:3','3:4','21:9'],S.set.ratio)}${seg('res',m.res,S.set.res)}${seg('n',[1,2,3,4],S.set.n,x=>'x'+x)}${m.dur?`<div class="bg-neutral-800 rounded-2xl p-4 mb-2"><div class="flex justify-between text-sm mb-2"><label for="dur">Durasi</label><b id="dl">${S.set.dur} detik</b></div><input id="dur" type="range" min="${m.dur[0]}" max="${m.dur[1]}" value="${S.set.dur}" class="w-full accent-amber-500"></div>`:''}<button type="button" id="pickM" class="w-full flex justify-between p-4 rounded-2xl bg-neutral-800 text-sm"><span>${m.name}</span><span>▾</span></button>`;
  $('sheet').innerHTML=`<div data-close class="fixed inset-0 z-40 bg-black/50"></div><div class="fixed inset-x-0 bottom-0 z-50 max-h-[75dvh] overflow-auto rounded-t-3xl bg-neutral-900 p-3" style="padding-bottom:calc(.75rem + env(safe-area-inset-bottom))">${h}</div>`}
 $('sheet').onclick=e=>{const t=e.target;if(t.dataset.close!==undefined)return closeSheet();const b=t.closest('button');if(!b)return;
  if(b.dataset.k)S.set[b.dataset.k]=b.dataset.k==='n'?+b.dataset.v:b.dataset.v;
