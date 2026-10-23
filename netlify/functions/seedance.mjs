@@ -1,5 +1,5 @@
 // KreatorHub — generate video: verifikasi login -> potong kredit di server -> panggil penyedia -> refund bila gagal.
-// Loopling adapter: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SEEDANCE_API_KEY, SEEDANCE_API_BASE=https://loopling.ai/v1, VIDEO_GEN_ENABLED=true
+// Loopling adapter: credentials and provider endpoint are read from Netlify environment variables.
 // Loopling endpoints: POST /video/generations, GET /video/generations/{id}.
 const H = { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' };
 const reply = (d, s = 200) => new Response(JSON.stringify(d), { status: s, headers: H });
