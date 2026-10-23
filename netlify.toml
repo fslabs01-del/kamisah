@@ -2,10 +2,6 @@
   publish = "."
   functions = "netlify/functions"
 
-[build.environment]
-  # Supabase publishable key is intentionally public; all other secret scanning remains enabled.
-  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_PUBLISHABLE_KEY"
-
 [functions]
   node_bundler = "esbuild"
 
