@@ -29,6 +29,19 @@ create policy "ledger sendiri" on public.ledger  for select using (auth.uid() = 
 drop policy if exists "job sendiri" on public.jobs;
 create policy "job sendiri"    on public.jobs    for select using (auth.uid() = user_id);
 
+
+-- Perbaikan akses baca saldo: pengguna hanya dapat membaca dompet miliknya sendiri.
+grant usage on schema public to authenticated;
+grant select on public.wallets to authenticated;
+grant select on public.ledger to authenticated;
+grant select on public.jobs to authenticated;
+drop policy if exists "wallet sendiri" on public.wallets;
+create policy "wallet sendiri" on public.wallets for select to authenticated using (auth.uid() = user_id);
+drop policy if exists "ledger sendiri" on public.ledger;
+create policy "ledger sendiri" on public.ledger for select to authenticated using (auth.uid() = user_id);
+drop policy if exists "job sendiri" on public.jobs;
+create policy "job sendiri" on public.jobs for select to authenticated using (auth.uid() = user_id);
+
 -- Dompet otomatis (saldo 0) untuk setiap pengguna baru
 create or replace function public.new_wallet() returns trigger language plpgsql security definer set search_path = public as $$
 begin insert into public.wallets(user_id) values (new.id) on conflict do nothing; return new; end $$;
