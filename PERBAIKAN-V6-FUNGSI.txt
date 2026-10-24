@@ -1,0 +1,22 @@
+KAMISAH V6 — PERBAIKAN PEMUTAR DAN REFERENSI VIDEO
+
+Basis: Kamisah-v5-Desain-Baru.zip. Desain utama v5 dan backend Seedance dipertahankan.
+
+Perubahan kode:
+1. Pratinjau video sekarang memakai kontrol video bawaan browser (controls) agar kontrol putar/jeda, timeline, volume, dan fullscreen mengikuti dukungan browser Android. Pemutar sebelumnya memakai kontrol khusus buatan halaman dan tidak menyertakan controls bawaan.
+2. Pesan codec HEVC/AV1/VP9 tidak lagi menyuruh pengguna mengonversi manual seolah-olah itu satu-satunya solusi. File asli tetap tersimpan dan pesan menjelaskan bahwa pemutar/konversi otomatis diperlukan.
+3. Galeri dapat menampilkan kotak centang referensi pada video hasil generate yang mempunyai URL HTTPS publik. Payload frontend mengirim reference_video_urls ke backend; backend v5 memang menerima field ini.
+4. Pemakaian referensi video pada UI dibatasi ke Seedance 2.0 karena kemampuan model/provider harus diverifikasi. Video unggahan lokal (Blob) belum bisa dijadikan referensi karena endpoint unggah yang tersedia hanya untuk gambar. UI menyatakan batasan ini, tidak menampilkan kemampuan palsu.
+5. Seedance 2.0 Fast dan Seedance 2.5 tetap tersedia sesuai konfigurasi v5. Tidak ada perubahan pada fungsi backend seedance.mjs, config.js, auth.js, netlify.toml, index.html, atau skema database.
+
+Pemeriksaan yang dilakukan:
+- node --check untuk JavaScript inline video-generator.html: LULUS.
+- ZIP berisi seluruh file v5 dan penggantian video-generator.html serta catatan ini.
+
+Belum diuji dan tidak diklaim selesai:
+- Pemutaran aktual di perangkat Android pengguna.
+- Generate asli dan dukungan referensi video oleh penyedia API.
+- Omni 1.1 Flash: tetap nonaktif di UI karena backend v5 yang aktif terhubung ke adapter Loopling/Seedance dan menolak omni-flash. Untuk memulihkannya dengan benar dibutuhkan endpoint/kredensial/dokumentasi API Omni yang sah; hanya mengaktifkan tombol akan membuat generate gagal.
+- Konversi otomatis video HEVC belum dibuat.
+
+Saran: deploy ke Netlify Preview terlebih dahulu. Uji video yang sama, 130813.mp4, dan uji generate Seedance dengan saldo kecil sebelum production.
