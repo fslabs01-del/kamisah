@@ -152,6 +152,7 @@ a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;cursor:po
 .canvas-ref-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
 .canvas-player-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:12px}
 .canvas-player-actions button{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 3px;border-radius:13px;background:var(--s1);font-size:10px}
+.preview-gen-dock{position:fixed;z-index:25;left:14px;right:14px;bottom:calc(12px + env(safe-area-inset-bottom));display:flex;gap:8px;align-items:stretch;padding:8px;border:1px solid #ffffff20;border-radius:20px;background:#111629f2;backdrop-filter:blur(14px);box-shadow:0 10px 35px #0008}.preview-gen-dock #previewDockToggle{width:34px;min-width:34px;border-radius:12px;background:#ffffff10;font-size:20px}.preview-gen-dock #previewGoGenerate{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;padding:10px 8px;border-radius:14px;background:linear-gradient(110deg,#7c3aed,#4f46e5);font-weight:800}.preview-gen-dock small{width:100%;font-size:10px;font-weight:500;opacity:.8}.preview-gen-dock.minimized{left:auto;right:12px;padding:5px;border-radius:50%}.preview-gen-dock.minimized #previewGoGenerate{display:none}.preview-gen-dock.minimized #previewDockToggle{height:40px;width:40px;font-size:18px}.pg:has(.preview-gen-dock){padding-bottom:110px}
 @media(min-width:700px){.canvas-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.canvas-composer{left:24px;right:24px}.canvas-page{padding-left:24px!important;padding-right:24px!important}}
 </style>
 
@@ -347,7 +348,7 @@ const projMenu=p=>sh(p.name,[['Ganti nama',()=>ren(p)],['Hapus proyek',()=>delPr
 const sceneMenu=(p,s)=>sh(s.name,[['Buka media',()=>location.hash=`#/s/${p.id}/${s.id}`],['Generate di adegan ini',()=>location.hash=`#/g/${p.id}/${s.id}`],['Ganti nama',()=>ren(s)],['Hapus adegan',()=>delScene(p,s),'red']]);
 const upd=()=>{const e=$('sal');if(e)e.textContent=balTxt()};
 function route(){const[,k,a,b]=location.hash.split('/'),p=PRJ(a);closeSheet();DIRTY=false;scrollTo(0,0);
- if(k==='p'&&p)return viewProject(p,b==='adegan'||!b?'media':b);
+ if(k==='p'&&p){const sc=scn(p,p.cur);location.replace('#/s/'+p.id+'/'+sc.id);return;}
  if(k==='s'&&p){const s=p.scenes.find(x=>x.id===b);if(!s)return location.replace('#/p/'+p.id);CURS=p.cur=s.id;return viewScene(p,s)}
  if(k==='g'&&p){const s=scn(p,b);CURS=p.cur=s.id;return viewGen(p,s)}
  if(k==='v'&&p){const it=p.items.find(x=>x.id===b);if(it)return viewItem(p,it);return location.replace('#/p/'+p.id)}
@@ -369,7 +370,7 @@ function viewList(){
  <button type="button" id="newP" class="cta">${ic('plus')} Buat Proyek Baru</button></div>`;
  $('tV').onclick=()=>{let p=S.projects[0];if(!p){p=newProject('Proyek Baru');S.projects.unshift(p);save()}location.hash=`#/g/${p.id}/${scn(p,p.cur).id}`};
  if($('all'))$('all').onclick=()=>{SHOWALL=!SHOWALL;route()};
- $('newP').onclick=()=>{$('sheet').innerHTML=`<div data-close class="ov"></div><form class="sh" id="npf"><h3>Proyek baru</h3><input id="npn" class="inp" maxlength="40" placeholder="Nama proyek" aria-label="Nama proyek" autocomplete="off"><button class="cta">Buat proyek</button></form>`;$('npn').focus();$('npf').onsubmit=e=>{e.preventDefault();const n=$('npn').value.trim();if(!n)return;const p=newProject(n);S.projects.unshift(p);save();location.hash='#/p/'+p.id+'/media'}};
+ $('newP').onclick=()=>{$('sheet').innerHTML=`<div data-close class="ov"></div><form class="sh" id="npf"><h3>Proyek baru</h3><input id="npn" class="inp" maxlength="40" placeholder="Nama proyek" aria-label="Nama proyek" autocomplete="off"><button class="cta">Buat proyek</button></form>`;$('npn').focus();$('npf').onsubmit=e=>{e.preventDefault();const n=$('npn').value.trim();if(!n)return;const p=newProject(n);S.projects.unshift(p);save();location.hash='#/s/'+p.id+'/'+p.cur}};
  document.querySelectorAll('[data-pm]').forEach(b=>b.onclick=()=>projMenu(PRJ(b.dataset.pm)))}
 const FL=[['all','Semua'],['image','Gambar'],['video','Video'],['ref','Referensi']];
 const flt=(p,L,f)=>L.filter(i=>f==='all'||(f==='ref'?(scn(p,i.sceneId).refs||[]).includes(i.id):i.type===f));
@@ -439,9 +440,9 @@ function canvasSettings(){
  <div class="canvas-setting-row"><strong>Jumlah hasil</strong><div class="canvas-segment">${[1,2,3,4].map(v=>`<button type="button" data-count="${v}" class="${S.set.n===v?'on':''}">x${v}</button>`).join('')}</div></div>
  <div class="canvas-setting-row"><strong>Audio</strong><div class="canvas-segment"><button type="button" data-audio="1" class="${S.set.audio!==false?'on':''}">Aktif</button><button type="button" data-audio="0" class="${S.set.audio===false?'on':''}">Nonaktif</button></div></div>
  <div class="canvas-ref-footer"><span class="note">Estimasi: <b>${price()} kredit</b></span><button type="button" id="cApply" class="cta" style="width:auto;margin:0;padding:0 20px;min-height:44px">Terapkan</button></div></div>`;
- const redraw=()=>{const mm=cur();$('cDur').min=mm.dur[0];$('cDur').max=mm.dur[1];S.set.dur=Math.max(mm.dur[0],Math.min(mm.dur[1],S.set.dur));$('cDur').value=S.set.dur;$('cDurVal').textContent=S.set.dur+' detik';document.querySelectorAll('[data-ratio]').forEach(b=>b.classList.toggle('on',b.dataset.ratio===S.set.ratio));document.querySelectorAll('[data-res]').forEach(b=>{b.disabled=!mm.res.includes(b.dataset.res);b.classList.toggle('on',b.dataset.res===S.set.res)});document.querySelectorAll('[data-count]').forEach(b=>b.classList.toggle('on',+b.dataset.count===S.set.n));document.querySelectorAll('[data-audio]').forEach(b=>{b.classList.toggle('on',(b.dataset.audio==='1')===(S.set.audio!==false));});};
+ const redraw=()=>{const mm=cur();$('cDur').min=mm.dur[0];$('cDur').max=mm.dur[1];S.set.dur=Math.max(mm.dur[0],Math.min(mm.dur[1],S.set.dur));$('cDur').value=S.set.dur;$('cDurVal').textContent=S.set.dur+' detik';const est=$('sheet')?.querySelector('.canvas-ref-footer .note b');if(est)est.textContent=price()+' kredit';document.querySelectorAll('[data-ratio]').forEach(b=>b.classList.toggle('on',b.dataset.ratio===S.set.ratio));document.querySelectorAll('[data-res]').forEach(b=>{b.disabled=!mm.res.includes(b.dataset.res);b.classList.toggle('on',b.dataset.res===S.set.res)});document.querySelectorAll('[data-count]').forEach(b=>b.classList.toggle('on',+b.dataset.count===S.set.n));document.querySelectorAll('[data-audio]').forEach(b=>{b.classList.toggle('on',(b.dataset.audio==='1')===(S.set.audio!==false));});};
  $('cModel').onchange=e=>{S.set.model=e.target.value;fit(CTX);redraw()};
- $('cDur').oninput=e=>{S.set.dur=+e.target.value;$('cDurVal').textContent=S.set.dur+' detik'};
+ $('cDur').oninput=e=>{S.set.dur=+e.target.value;$('cDurVal').textContent=S.set.dur+' detik';const est=$('sheet')?.querySelector('.canvas-ref-footer .note b');if(est)est.textContent=price()+' kredit';const meta=document.querySelector('.composer-meta span:last-child');if(meta)meta.textContent=`${cur().name} · ${S.set.res} · ${S.set.dur}s · ~${price()} kredit`;};
  document.querySelectorAll('[data-ctx]').forEach(b=>b.onclick=()=>{CTX=b.dataset.ctx;fit(CTX);canvasSettings()});
  document.querySelectorAll('[data-ratio]').forEach(b=>b.onclick=()=>{S.set.ratio=b.dataset.ratio;redraw()});
  document.querySelectorAll('[data-res]').forEach(b=>b.onclick=()=>{if(cur().res.includes(b.dataset.res)){S.set.res=b.dataset.res;redraw()}});
@@ -540,17 +541,17 @@ function viewItem(p,it){
   :it.type==='image'?`<img src="${src(it)}" alt="Gambar ${i+1}" class="pv">`
   :unplayable(it)?`<div style="text-align:center;padding:24px"><div style="font-size:34px">▶✕</div><p class="warn">${esc(uploadMsg(it))}</p><p class="note">${esc(vidDetail(it))}</p><button type="button" id="forcePlay" class="chip" style="margin-top:12px">Coba putar juga</button></div>`
   :`<video id="vid" src="${src(it)}" controls playsinline webkit-playsinline preload="metadata" class="pv" aria-label="Video"></video>`;
- const A=[];if(rdy&&it.type==='image')A.push(['ref',isR?'Hapus Referensi':'Jadikan Referensi','spark']);if(rdy)A.push(['dl','Download','dl']);if(it.kind==='result'&&it.prompt)A.push(['ed','Edit','edit']);A.push(['rm','Hapus','trash','del']);
- $('view').innerHTML=`<div class="pg">${hdr(`${i+1} / ${L.length}`,`<button type="button" id="fav" class="ib" aria-label="${it.fav?'Hapus dari favorit':'Tandai favorit'}" aria-pressed="${!!it.fav}" style="${it.fav?'color:#ffc46b':''}">${ic('star')}</button>`,'#/s/'+p.id+'/'+s.id)}
+ const A=[];if(rdy)A.push(['dl','Download','dl']);A.push(['rm','Hapus','trash','del']);
+ $('view').innerHTML=`<div class="pg">${hdr(`${i+1} / ${L.length}`,``, '#/s/'+p.id+'/'+s.id)}
  <div id="stage" class="stage ${c}">${media}${i>0?`<button type="button" class="nv l" id="pv" aria-label="Sebelumnya">${ic('back',18)}</button>`:''}${i<L.length-1?`<button type="button" class="nv r" id="nx" aria-label="Berikutnya">${ic('right',18)}</button>`:''}</div>
 
  <div class="strip">${L.map(x=>`<a href="#/v/${p.id}/${x.id}" data-st class="st${x===it?' on':''}" aria-label="Buka media">${thumb(x,'fill')}</a>`).join('')}</div>
- <div class="acts">${A.map(([k,t,n,c2])=>`<button type="button" class="act ${c2||''}" data-a="${k}">${ic(n,22)}${t}</button>`).join('')}</div></div>`;
+ <div class="acts">${A.map(([k,t,n,c2])=>`<button type="button" class="act ${c2||''}" data-a="${k}">${ic(n,22)}${t}</button>`).join('')}</div><div class="preview-gen-dock" id="previewGenDock"><button type="button" id="previewDockToggle" aria-label="Perkecil navigasi generate">⌄</button><button type="button" id="previewGoGenerate">${ic('spark',18)} <span>Generate video</span> <small>Model ${esc(cur().name)} · ${S.set.dur}s · ${price()} kredit</small></button></div></div>`;
  document.querySelectorAll('[data-st]').forEach(a=>a.onclick=e=>{e.preventDefault();location.replace(a.href)});
  if($('pv'))$('pv').onclick=()=>go(p,it,-1);if($('nx'))$('nx').onclick=()=>go(p,it,1);
- $('fav').onclick=()=>{it.fav=!it.fav;save();route()};
- const act={ref:()=>{s.refs=isR?s.refs.filter(x=>x!==it.id):[...s.refs,it.id];save();toast(isR?'Referensi dibatalkan.':'Jadi referensi '+s.name+'.');route()},dl:()=>dl(it),ed:()=>editFrom(p,s,it),rm:()=>{if(confirm('Hapus item ini?')){it.gone=true;s.refs=s.refs.filter(x=>x!==it.id);p.items.splice(p.items.indexOf(it),1);save();location.replace(`#/s/${p.id}/${s.id}`)}}};
+ const act={dl:()=>dl(it),rm:()=>{if(confirm('Hapus item ini?')){it.gone=true;s.refs=s.refs.filter(x=>x!==it.id);p.items.splice(p.items.indexOf(it),1);save();location.replace(`#/s/${p.id}/${s.id}`)}}};
  document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>act[b.dataset.a]());
+ const dock=$('previewGenDock');try{if(localStorage.getItem('kamisah_preview_dock_hidden')==='1')dock?.classList.add('minimized')}catch{};if($('previewDockToggle'))$('previewDockToggle').onclick=()=>{dock.classList.toggle('minimized');try{localStorage.setItem('kamisah_preview_dock_hidden',dock.classList.contains('minimized')?'1':'0')}catch{}};if($('previewGoGenerate'))$('previewGoGenerate').onclick=()=>location.hash=`#/s/${p.id}/${s.id}`;
  const v=$('vid');if(v){
   // Gunakan kontrol asli browser Android agar play/pause, scrubber, volume, dan fullscreen mengikuti dukungan perangkat.
   v.controls=true;
