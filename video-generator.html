@@ -204,6 +204,26 @@ async function sniffVideo(f){
   r.container='webm';const x=L1.decode(head);r.codec=x.includes('V_VP9')?'vp9':x.includes('V_VP8')?'vp8':x.includes('V_AV1')?'av1':null;
  }
  return r}
+// Konversi lokal opsional untuk HEVC: berjalan di browser, tanpa mengirim video ke server.
+// FFmpeg WebAssembly diunduh hanya jika video HEVC memang gagal diputar.
+let ffmpegPromise=null;
+async function convertHevcToH264(file){
+ if(!ffmpegPromise)ffmpegPromise=(async()=>{
+  const {FFmpeg}=await import('https://unpkg.com/@ffmpeg/ffmpeg@0.12.15/dist/esm/index.js');
+  const ff=new FFmpeg();
+  const base='https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd';
+  await ff.load({coreURL:base+'/ffmpeg-core.js',wasmURL:base+'/ffmpeg-core.wasm'});
+  return ff;
+ })().catch(e=>{ffmpegPromise=null;throw e});
+ const ff=await ffmpegPromise;
+ const input='input_video.'+((file.name||'video.mp4').split('.').pop().replace(/[^a-z0-9]/ig,'').slice(0,8)||'mp4');
+ const output='kamish-preview.mp4';
+ await ff.writeFile(input,new Uint8Array(await file.arrayBuffer()));
+ await ff.exec(['-i',input,'-map','0:v:0','-map','0:a?','-c:v','libx264','-preset','ultrafast','-crf','26','-pix_fmt','yuv420p','-c:a','aac','-b:a','128k','-movflags','+faststart',output]);
+ const data=await ff.readFile(output);
+ try{await ff.deleteFile(input);await ff.deleteFile(output)}catch{}
+ return new Blob([data],{type:'video/mp4'});
+}
 function probePlay(blob,ms=8000){return new Promise(res=>{const v=document.createElement('video'),u=URL.createObjectURL(blob);let done=false;
  const end=o=>{if(done)return;done=true;clearTimeout(t);v.removeAttribute('src');try{v.load()}catch{}URL.revokeObjectURL(u);res(o)};
  const t=setTimeout(()=>end({ok:false,code:'timeout'}),ms);
@@ -219,14 +239,23 @@ async function checkVideo(p,it){
  const tries=[f];if((info.container==='mp4'||info.container==='mov')&&f.type!=='video/mp4')tries.push(new File([f],f.name||'video.mp4',{type:'video/mp4'}));
  let pr={ok:false,code:'?'},relabeled=false;
  for(const b of tries){pr=await probePlay(b);if(pr.ok){if(b!==f){it.blob=b;delete U[it.id];relabeled=true}break}}
- it.play={ok:!!pr.ok,code:pr.code??null,codec:info.codec||null,container:info.container||null,brand:info.brand||null};
+ // Bila HEVC gagal, coba transkode lokal ke H.264. File asli disimpan terpisah di memori.
+ if(!pr.ok&&pr.code!=='timeout'&&info.codec==='hevc'){
+  toast('Video HEVC tidak didukung. Menyiapkan konversi otomatis ke H.264…');
+  try{
+   const converted=await convertHevcToH264(f);const convertedProbe=await probePlay(converted,12000);
+   if(convertedProbe.ok){it.originalBlob=f;it.blob=converted;delete U[it.id];pr=convertedProbe;it.converted=true;toast('Video berhasil dikonversi untuk pratinjau. File asli tidak diubah.');}
+   else throw new Error('Hasil konversi belum dapat diputar');
+  }catch(err){console.warn('Konversi HEVC gagal:',err);it.conversionFailed=true;toast('Konversi otomatis gagal di perangkat ini. File asli tetap tersimpan.');}
+ }
+ it.play={ok:!!pr.ok,code:pr.code??null,codec:it.converted?'h264':(info.codec||null),container:info.container||null,brand:info.brand||null,converted:!!it.converted};
  save();
- if(!pr.ok&&pr.code!=='timeout')toast(`Video ini tidak bisa diputar di browser ini (${vidDetail(it)}). Tetap tersimpan; baca keterangan di pratinjau.`);
+ if(!pr.ok&&pr.code!=='timeout'&&!it.conversionFailed)toast(`Video ini tidak bisa diputar di browser ini (${vidDetail(it)}). File asli tetap tersimpan.`);
  const h=location.hash;if((!pr.ok||relabeled)&&(h.startsWith('#/p/'+p.id)||h.startsWith('#/v/'+p.id)))route()}
 function vidDetail(it){const pl=it.play||{},b=it.blob;return[pl.container&&pl.container.toUpperCase(),pl.codec&&pl.codec.toUpperCase(),b&&(b.type||'tipe tidak diketahui'),b&&(b.size/1048576).toFixed(1)+' MB'].filter(Boolean).join(' · ')}
 function uploadMsg(it,code){const pl=it.play||{};
  if(pl.container==='unknown')return'File ini tidak dikenali sebagai MP4/MOV/WebM, atau rusak.';
- if(pl.codec==='hevc')return'Video memakai HEVC/H.265 yang tidak didukung pemutar pada perangkat ini. File asli tetap tersimpan; perlu dukungan pemutar atau konversi otomatis ke H.264.';
+ if(pl.codec==='hevc')return it.conversionFailed?'Video HEVC tidak dapat dikonversi di perangkat ini. File asli tetap tersimpan. Coba video MP4/H.264.':'Video memakai HEVC/H.265 yang tidak didukung pemutar pada perangkat ini.';
  if(pl.codec==='av1'||pl.codec==='vp9'||pl.codec==='vp8')return`Codec ${pl.codec.toUpperCase()} tidak didukung pemutar pada perangkat ini. File asli tetap tersimpan; perlu dukungan pemutar atau konversi otomatis.`;
  if(code===2)return'File tidak bisa dibaca (mungkin sudah dipindah/dihapus dari galeri HP). Unggah ulang.';
  return'Browser tidak bisa memutar file ini (format atau codec tidak didukung).'}
