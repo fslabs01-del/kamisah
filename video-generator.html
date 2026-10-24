@@ -529,11 +529,33 @@ function openPhone(){
 
 // Media actions: press and hold for 1 second. Uploads stay in preview until explicitly referenced.
 function openUploadChoice(){sh('Tambah media',[[ic('img')+' Unggah gambar',()=>{$('file').accept='image/*';$('file').click()}],[ic('play')+' Unggah video',()=>{$('file').accept='video/*';$('file').click()}]])}
-// ===== Unggah & mulai =====
-$('file').onchange=e=>{const p=S.projects.find(x=>x.id===location.hash.split('/')[2]);if(!p)return;
- let rej=0;[...e.target.files].forEach(f=>{const nm=(f.name||'').toLowerCase(),t=f.type.startsWith('video')||/\.(mp4|m4v|mov|webm|3gp|mkv)$/.test(nm)?'video':f.type.startsWith('image')?'image':null;if(!t){rej++;return}const sc=p.scenes.find(s=>s.id===CURS)||scn(p,p.cur),it={id:uid(),kind:'upload',type:t,blob:f,status:'ready',sceneId:sc.id,ts:NOW()};p.items.unshift(it);p.updatedAt=NOW();if(ADDREF&&t==='image')sc.refs.push(it.id);if(t==='video')checkVideo(p,it)});
+// ===== Unggah/import media: gambar dan video diproses dulu, lalu langsung dibuka di pratinjau =====
+$('file').onchange=async e=>{
+ const p=S.projects.find(x=>x.id===location.hash.split('/')[2]);
+ const files=[...(e.target.files||[])]; if(!p||!files.length){e.target.value='';return}
+ const sc=p.scenes.find(s=>s.id===CURS)||scn(p,p.cur);let rej=0,first=null;
+ // Buat item dengan status importing agar UI tidak menganggap file siap sebelum diproses.
+ for(const f of files){
+  const nm=(f.name||'').toLowerCase();
+  const t=f.type.startsWith('video')||/\.(mp4|m4v|mov|webm|3gp|mkv)$/.test(nm)?'video':f.type.startsWith('image')?'image':null;
+  if(!t){rej++;continue}
+  const it={id:uid(),kind:'upload',type:t,blob:f,status:'uploading',sceneId:sc.id,ts:NOW(),uploadProgress:0};
+  p.items.unshift(it);p.updatedAt=NOW();if(!first)first=it;
+  save();toast(`Menyiapkan ${t==='video'?'video':'gambar'}: ${f.name||'file'}…`);
+  try{
+   // File terpilih sudah berada di browser; baca seluruh berkas sebelum menandai siap.
+   await f.arrayBuffer();
+   it.uploadProgress=100;it.status='ready';
+   if(ADDREF&&t==='image')sc.refs.push(it.id);
+   if(t==='video')await checkVideo(p,it);
+  }catch(err){it.status='error';it.error=String(err&&err.message||err);toast(`Gagal menyiapkan ${f.name||'file'}.`)}
+  save();
+ }
  if(rej)toast(`${rej} file dilewati: bukan gambar atau video yang dikenali.`);
- ADDREF=false;e.target.value='';save();route()};
+ ADDREF=false;e.target.value='';save();
+ // Setelah file siap, buka layar pratinjau media—bukan sekadar kembali ke daftar media.
+ if(first){location.hash=`#/v/${p.id}/${first.id}`;route()}
+};
 (async()=>{await initAuth();refreshBal();const d=await load();if(d&&d.projects)S={...S,...d,set:{...S.set,...d.set}};migrate();if(!M(S.set.model)||!M(S.set.model).on)S.set.model='seedance-2.0-fast';
  S.projects.forEach(p=>p.items.forEach(it=>{if(it.status==='processing'){if(it.jobId||it.req)run(it);else{it.status='failed';it.error='Terputus saat halaman dimuat ulang.'}}else if(it.status==='failed'&&it.resume&&!it.jobId&&it.req){it.status='processing';it.error='';it.resume=false;run(it)}}));
  addEventListener('hashchange',route);route();if(PEND)toast('Prompt dari Story AI siap. Tekan Buat Video untuk memakainya.')})();
