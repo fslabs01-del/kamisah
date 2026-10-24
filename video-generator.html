@@ -126,10 +126,15 @@ const price=()=>{const m=cur();return (m.rates?Math.ceil(m.rates[S.set.res]*S.se
 function fit(mode){CTX=mode;let m=cur();if(!ok(m,mode)){const f=MODELS.find(x=>ok(x,mode));if(f)S.set.model=f.id}m=cur();if(!m.res.includes(S.set.res))S.set.res=m.res[0];if(m.dur)S.set.dur=Math.min(Math.max(S.set.dur,m.dur[0]),m.dur[1])}
 function toast(t){const e=$('toast');e.textContent=t;e.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.add('hidden'),3200)}
 
-// ===== Penyimpanan di browser (IndexedDB). Sementara, sampai login + Supabase siap =====
+// Penyimpanan lokal sebagai cache + sinkronisasi cloud ke Supabase untuk akun yang login.
 const idb=new Promise(r=>{try{const q=indexedDB.open('kreatorhub',1);q.onupgradeneeded=()=>q.result.createObjectStore('s');q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)}catch{r(null)}});
-async function load(){const d=await idb;if(!d)return;return new Promise(r=>{const q=d.transaction('s').objectStore('s').get('db');q.onsuccess=()=>r(q.result);q.onerror=()=>r()})}
-let st;function save(){clearTimeout(st);st=setTimeout(async()=>{const d=await idb;try{d&&d.transaction('s','readwrite').objectStore('s').put(S,'db')}catch{}},300)}
+async function localLoad(){const d=await idb;if(!d)return;return new Promise(r=>{const q=d.transaction('s').objectStore('s').get('db');q.onsuccess=()=>r(q.result);q.onerror=()=>r()})}
+let cloudTimer=null,cloudBusy=false,cloudAgain=false;
+async function cloudLoad(){if(!SB||!SES)return null;const{data,error}=await SB.from('user_projects').select('data,updated_at').eq('user_id',SES.user.id).maybeSingle();if(error){console.warn('Kamisah cloud load:',error.message);return null}return data?.data||null}
+async function load(){const local=await localLoad();if(!SB||!SES)return local;const cloud=await cloudLoad();if(!cloud)return local;if(!local||!Array.isArray(local.projects)||!local.projects.length)return cloud;const localTime=Number(local._savedAt||0),cloudTime=Number(cloud._savedAt||0);return cloudTime>localTime?cloud:local}
+async function persistLocal(snapshot){const d=await idb;try{if(d)await new Promise((resolve,reject)=>{const tx=d.transaction('s','readwrite');tx.objectStore('s').put(snapshot,'db');tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}catch(e){console.warn('Kamisah local save:',e)}}
+async function persistCloud(snapshot){if(!SB||!SES)return;const safe=JSON.parse(JSON.stringify(snapshot));safe.projects=(safe.projects||[]).map(p=>({...p,items:(p.items||[]).map(it=>{const x={...it};delete x.blob;delete x.objectUrl;return x})}));const{error}=await SB.from('user_projects').upsert({user_id:SES.user.id,data:safe,updated_at:new Date().toISOString()},{onConflict:'user_id'});if(error){console.warn('Kamisah cloud save:',error.message);toast('Perubahan tersimpan di perangkat, tetapi sinkronisasi cloud gagal.');}}
+let st;function save(){S._savedAt=Date.now();const snap=JSON.parse(JSON.stringify(S,(k,v)=>k==='blob'?undefined:v));clearTimeout(st);st=setTimeout(()=>persistLocal(snap),80);clearTimeout(cloudTimer);if(SB&&SES)cloudTimer=setTimeout(()=>persistCloud(snap),500)}
 
 // ===== API & antrean generate (paralel, tidak saling menunggu) =====
 const uuid=()=>crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)});
@@ -288,7 +293,7 @@ function delScene(p,s){if(p.scenes.length<2)return toast('Proyek harus punya min
 const projMenu=p=>sh(p.name,[['Ganti nama',()=>ren(p)],['Hapus proyek',()=>delProject(p),'red']]);
 const sceneMenu=(p,s)=>sh(s.name,[['Buka media',()=>location.hash=`#/s/${p.id}/${s.id}`],['Generate di adegan ini',()=>location.hash=`#/g/${p.id}/${s.id}`],['Ganti nama',()=>ren(s)],['Hapus adegan',()=>delScene(p,s),'red']]);
 const upd=()=>{const e=$('sal');if(e)e.textContent=balTxt()};
-function route(){const[,k,a,b]=location.hash.split('/'),p=PRJ(a);closeSheet();DIRTY=false;scrollTo(0,0);
+function route(){const[,k,a,b]=location.hash.split('/'),p=PRJ(a);closeSheet();DIRTY=false;scrollTo(0,0);document.getElementById('kamHomeNav')?.remove();
  if(k==='p'&&p)return viewProject(p,b);
  if(k==='s'&&p){const s=p.scenes.find(x=>x.id===b);if(!s)return location.replace('#/p/'+p.id);CURS=p.cur=s.id;return viewScene(p,s)}
  if(k==='g'&&p){const s=scn(p,b);CURS=p.cur=s.id;return viewGen(p,s)}
@@ -297,6 +302,7 @@ function route(){const[,k,a,b]=location.hash.split('/'),p=PRJ(a);closeSheet();DI
  if(k==='hasil'||k==='antrean')return viewHasil();
  if(k==='ide')return viewIde(p,b);if(k==='lanjut')return viewLanjut();if(k==='gambar')return viewGambar();
  viewList()}
+function addKamHomeNav(){if(document.getElementById('kamHomeNav'))return;const a=document.createElement('a');a.id='kamHomeNav';a.href='#/';a.setAttribute('aria-label','Kembali ke Beranda');a.textContent='⌂ Beranda';a.style.cssText='position:fixed;left:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:35;padding:11px 16px;border-radius:999px;background:#262247;border:1px solid #7163c9;color:#fff;font-weight:800;font-size:13px;box-shadow:0 5px 20px #0008;text-decoration:none';document.body.appendChild(a)}
 let SHOWALL=false;
 function viewList(){
  const ps=S.projects,busy=ps.some(p=>p.items.some(i=>i.status==='processing')),all=SHOWALL?ps:ps.slice(0,4);
@@ -490,7 +496,7 @@ $('sheet').oninput=e=>{if(e.target.id!=='dur')return;S.set.dur=+e.target.value;$
 
 // ===== Login & saldo (Supabase). Kosong di config.js = mode tanpa login =====
 let SB=null,SES=null,BAL=null,CT=null;const balTxt=()=>BAL===null?'—':BAL;
-async function initAuth(){const c=window.KH||{};if(!c.SUPABASE_URL||!c.SUPABASE_PUBLISHABLE_KEY||!window.supabase)return;SB=supabase.createClient(c.SUPABASE_URL,c.SUPABASE_PUBLISHABLE_KEY);const{data}=await SB.auth.getSession();SES=data.session;await refreshBal();SB.auth.onAuthStateChange((_e,s)=>{SES=s;refreshBal()})}
+async function initAuth(){const c=window.KH||{};if(!c.SUPABASE_URL||!c.SUPABASE_PUBLISHABLE_KEY||!window.supabase)return;SB=supabase.createClient(c.SUPABASE_URL,c.SUPABASE_PUBLISHABLE_KEY);const{data}=await SB.auth.getSession();SES=data.session;await refreshBal();SB.auth.onAuthStateChange(async(_e,s)=>{const was=!!SES;SES=s;refreshBal();if(s&&!was){const remote=await cloudLoad();if(remote&&Array.isArray(remote.projects)&&remote._savedAt>Number(S._savedAt||0)){S={...S,...remote,set:{...S.set,...remote.set}};migrate();save();route()}}})}
 async function refreshBal(){if(!SB||!SES){BAL=null}else{const{data,error}=await SB.from('wallets').select('balance').eq('user_id',SES.user.id).maybeSingle();if(error){console.error('Kamisah: gagal membaca saldo',error.message);BAL=null}else{BAL=data?data.balance:0}}const e=$('bal');if(e)e.textContent=balTxt();upd()}
 function openAuth(msg){
  if(!SB)return toast('Login belum dikonfigurasi (isi config.js).');
@@ -572,7 +578,7 @@ $('file').onchange=async e=>{
 };
 (async()=>{await initAuth();refreshBal();const d=await load();if(d&&d.projects)S={...S,...d,set:{...S.set,...d.set}};migrate();if(!M(S.set.model)||!M(S.set.model).on)S.set.model='seedance-2.0-fast';
  S.projects.forEach(p=>p.items.forEach(it=>{if(it.status==='processing'){if(it.jobId||it.req)run(it);else{it.status='failed';it.error='Terputus saat halaman dimuat ulang.'}}else if(it.status==='failed'&&it.resume&&!it.jobId&&it.req){it.status='processing';it.error='';it.resume=false;run(it)}}));
- addEventListener('hashchange',route);route();if(PEND)toast('Prompt dari Story AI siap. Tekan Buat Video untuk memakainya.')})();
+ addEventListener('hashchange',()=>{route();if(location.hash&&location.hash!=='#/'&&location.hash!=='')addKamHomeNav()});route();if(location.hash&&location.hash!=='#/'&&location.hash!=='')addKamHomeNav();if(PEND)toast('Prompt dari Story AI siap. Tekan Buat Video untuk memakainya.')})();
 </script>
 </body>
 </html>
