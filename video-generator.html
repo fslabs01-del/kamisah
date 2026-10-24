@@ -314,7 +314,7 @@ function uploadMsg(it,code){const pl=it.play||{};
 const src=it=>{
  if(it.storagePath && typeof it.url==='string' && it.url) return it.url;
  if(typeof Blob!=='undefined' && it.blob instanceof Blob){
-  try { return U[it.id] ??= URL.createObjectURL(it.blob); } catch(e){ console.warn('Blob media tidak valid:',e); }
+  try { return U[it.id] ??= URL.createObjectURL(it.blob); } catch(e){ console.warn('Blob video tidak valid:',e); }
  }
  return typeof it.url==='string' ? it.url : '';
 };
@@ -347,7 +347,7 @@ const projMenu=p=>sh(p.name,[['Ganti nama',()=>ren(p)],['Hapus proyek',()=>delPr
 const sceneMenu=(p,s)=>sh(s.name,[['Buka media',()=>location.hash=`#/s/${p.id}/${s.id}`],['Generate di adegan ini',()=>location.hash=`#/g/${p.id}/${s.id}`],['Ganti nama',()=>ren(s)],['Hapus adegan',()=>delScene(p,s),'red']]);
 const upd=()=>{const e=$('sal');if(e)e.textContent=balTxt()};
 function route(){const[,k,a,b]=location.hash.split('/'),p=PRJ(a);closeSheet();DIRTY=false;scrollTo(0,0);
- if(k==='p'&&p)return viewProject(p,b);
+ if(k==='p'&&p)return viewProject(p,b==='adegan'||!b?'media':b);
  if(k==='s'&&p){const s=p.scenes.find(x=>x.id===b);if(!s)return location.replace('#/p/'+p.id);CURS=p.cur=s.id;return viewScene(p,s)}
  if(k==='g'&&p){const s=scn(p,b);CURS=p.cur=s.id;return viewGen(p,s)}
  if(k==='v'&&p){const it=p.items.find(x=>x.id===b);if(it)return viewItem(p,it);return location.replace('#/p/'+p.id)}
@@ -369,7 +369,7 @@ function viewList(){
  <button type="button" id="newP" class="cta">${ic('plus')} Buat Proyek Baru</button></div>`;
  $('tV').onclick=()=>{let p=S.projects[0];if(!p){p=newProject('Proyek Baru');S.projects.unshift(p);save()}location.hash=`#/g/${p.id}/${scn(p,p.cur).id}`};
  if($('all'))$('all').onclick=()=>{SHOWALL=!SHOWALL;route()};
- $('newP').onclick=()=>{$('sheet').innerHTML=`<div data-close class="ov"></div><form class="sh" id="npf"><h3>Proyek baru</h3><input id="npn" class="inp" maxlength="40" placeholder="Nama proyek" aria-label="Nama proyek" autocomplete="off"><button class="cta">Buat proyek</button></form>`;$('npn').focus();$('npf').onsubmit=e=>{e.preventDefault();const n=$('npn').value.trim();if(!n)return;const p=newProject(n);S.projects.unshift(p);save();location.hash='#/p/'+p.id}};
+ $('newP').onclick=()=>{$('sheet').innerHTML=`<div data-close class="ov"></div><form class="sh" id="npf"><h3>Proyek baru</h3><input id="npn" class="inp" maxlength="40" placeholder="Nama proyek" aria-label="Nama proyek" autocomplete="off"><button class="cta">Buat proyek</button></form>`;$('npn').focus();$('npf').onsubmit=e=>{e.preventDefault();const n=$('npn').value.trim();if(!n)return;const p=newProject(n);S.projects.unshift(p);save();location.hash='#/p/'+p.id+'/media'}};
  document.querySelectorAll('[data-pm]').forEach(b=>b.onclick=()=>projMenu(PRJ(b.dataset.pm)))}
 const FL=[['all','Semua'],['image','Gambar'],['video','Video'],['ref','Referensi']];
 const flt=(p,L,f)=>L.filter(i=>f==='all'||(f==='ref'?(scn(p,i.sceneId).refs||[]).includes(i.id):i.type===f));
@@ -381,8 +381,8 @@ function bindMedia(p){
  document.querySelectorAll('[data-fk]').forEach(b=>b.onclick=()=>{MF=b.dataset.f;const y=scrollY;route();scrollTo(0,y)})}
 const addMedia=()=>openUploadChoice();
 function viewProject(p,tab){
- tab=['adegan','media','referensi','pengaturan'].includes(tab)?tab:'adegan';
- const hero=best(p.items.filter(i=>i.kind==='result'))||best(p.items),T=[['adegan','Adegan'],['media','Media'],['referensi','Referensi'],['pengaturan','Pengaturan']];let body='';
+ tab=['media','referensi','pengaturan'].includes(tab)?tab:'media';
+ const hero=best(p.items.filter(i=>i.kind==='result'))||best(p.items),T=[['media','Media'],['referensi','Referensi'],['pengaturan','Pengaturan']];let body='';
  if(tab==='adegan')body=`<button type="button" id="addS" class="cta">${ic('plus')} Tambah Adegan</button><div class="list">${p.scenes.map((s,k)=>{const its=sItems(p,s),r=its.filter(i=>i.kind==='result'),h=best(r)||best(its),d=(r.find(i=>i.req)||{}).req;return`<div class="card srow${s.id===p.cur?' on':''}"><a href="#/s/${p.id}/${s.id}" class="no">${String(k+1).padStart(2,'0')}</a><a href="#/s/${p.id}/${s.id}" class="thumb sm">${h?thumb(h,'fill'):ph('img')}</a><a href="#/s/${p.id}/${s.id}" class="grow"><b>${esc(s.name)}</b><small>${d?fmtT(d.duration)+' · ':''}${r.filter(i=>i.status==='ready').length} hasil</small></a><button type="button" data-sm="${s.id}" class="ib" aria-label="Menu ${esc(s.name)}">${ic('more')}</button></div>`}).join('')}</div>`;
  else if(tab==='media'){const L=flt(p,p.items,MF);body=`${fbar(MF,'m')}<div class="gal">${tiles(p,L)}</div>${L.length?'':'<div class="empty">Belum ada media di filter ini.</div>'}<div class="bar"><button type="button" id="addM" class="cta ghost">${ic('plus')} Tambah Media</button></div>`}
  else if(tab==='referensi'){const R=p.scenes.flatMap(s=>refs(p,s).map(i=>({s,i})));body=R.length?`<div class="gal">${R.map(({s,i})=>`<div class="tile"><button type="button" class="tbtn" data-open="${i.id}" aria-label="Buka pratinjau">${thumb(i,'fill')}</button><span class="bdg">${esc(s.name)}</span><button type="button" class="chk on" data-ref="${i.id}" aria-pressed="true" aria-label="Batalkan referensi">${ic('chk',14)}</button></div>`).join('')}</div><p class="note">Referensi dipakai oleh adegannya saat generate. Gambar dapat diunggah sebagai referensi; video hanya dapat dipakai jika sudah memiliki URL HTTPS publik dan model Seedance 2.0 mendukungnya. Video unggahan lokal belum bisa dikirim sebagai referensi.</p>`:'<div class="empty">Belum ada referensi.<br>Pilih gambar lewat kotak centang di Kelola Media.</div>'}
@@ -690,7 +690,8 @@ $('file').onchange=async e=>{
  // Buat item dengan status importing agar UI tidak menganggap file siap sebelum diproses.
  for(const f of files){
   const nm=(f.name||'').toLowerCase();
-  const t=f.type.startsWith('video')||/\.(mp4|m4v|mov|webm|3gp|mkv|avi|mpeg|mpg)$/.test(nm)?'video':f.type.startsWith('image')||/\.(jpg|jpeg|png|gif|webp|bmp|heic|heif|avif)$/.test(nm)?'image':null;
+  const mime=(f.type||'').toLowerCase();
+  const t=mime.startsWith('video')||/\.(mp4|m4v|mov|webm|3gp|mkv)$/.test(nm)?'video':mime.startsWith('image')||/\.(jpg|jpeg|png|webp|gif|heic|heif|avif|bmp)$/.test(nm)?'image':null;
   if(!t){rej++;continue}
   const it={id:uid(),kind:'upload',type:t,blob:f,status:'uploading',sceneId:sc.id,ts:NOW(),uploadProgress:0};
   p.items.unshift(it);p.updatedAt=NOW();if(!first)first=it;
@@ -705,9 +706,11 @@ $('file').onchange=async e=>{
    const up=await uploadToSupabaseWithProgress('video-references',path,f,pct=>{it.uploadProgress=pct;setUploadPct(pct);save()});
    const {data:pub}=SB.storage.from('video-references').getPublicUrl(path);
    if(!pub?.publicUrl)throw Error('File terunggah tetapi URL pratinjau tidak tersedia.');
-   it.url=pub.publicUrl;it.storagePath=path;it.uploadProgress=100;it.status='ready';delete it.blob;const persisted=await saveNow();if(!persisted)throw Error('File terunggah, tetapi data media gagal disimpan di perangkat. Periksa ruang penyimpanan browser.');showUploadProgress(f,100,'Unggahan berhasil');
-   if(ADDREF&&t==='image')sc.refs.push(it.id);
+   it.url=pub.publicUrl;it.storagePath=path;it.uploadProgress=100;it.status='ready';
+   // Jangan hapus Blob sebelum pemeriksaan codec. checkVideo() membuat Object URL dari Blob; jika dihapus lebih dulu, browser melempar Overload resolution failed.
    if(t==='video')await checkVideo(p,it);
+   const persisted=await saveNow();if(!persisted)throw Error('File terunggah, tetapi data media gagal disimpan di perangkat. Periksa ruang penyimpanan browser.');showUploadProgress(f,100,'Unggahan berhasil');
+   if(ADDREF&&t==='image')sc.refs.push(it.id);
   }catch(err){it.status='error';it.error=String(err&&err.message||err);if($('uploadProgressTitle'))$('uploadProgressTitle').textContent='Unggahan gagal';toast(`Gagal mengunggah ${f.name||'file'}: ${it.error}`);hideUploadProgress(3500)}
   save();
  }
