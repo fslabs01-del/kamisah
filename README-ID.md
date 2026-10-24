@@ -22,3 +22,11 @@ Jangan meletakkan secret API di frontend atau file yang dipublikasikan. Hubungka
 ## Jalankan lokal
 `npm install`
 `npm run dev`
+
+
+## Perbaikan debugging
+- Navigasi beranda dan Studio tetap memakai `activeProjectId`: tombol kembali membawa pengguna ke daftar proyek.
+- Ikon notifikasi dan profil tetap terlihat di header Studio; bagian profil masih berupa placeholder.
+- Referensi terpilih sekarang ditampilkan di kanvas.
+- Thumbnail gambar unggahan disimpan sebagai data URL agar tetap muncul setelah halaman dimuat ulang. Video memakai URL sementara agar tidak memenuhi localStorage.
+- Generate masih antrean demo dan belum terhubung ke API video.
