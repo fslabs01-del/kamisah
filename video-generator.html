@@ -63,6 +63,38 @@
 <style id="kamisah-flow-mobile-v5">
 body{background:#030611!important;color:#f5f6ff}#view .max-w-xl{max-width:560px}#view header{border-color:rgba(255,255,255,.08)}#khProject section{margin-bottom:2px}#khProject h2{font-size:15px}#khProject [data-media]{background:#0b1020;box-shadow:0 5px 18px #0005;touch-action:pan-y}#khProject [data-media]:active{transform:scale(.985)}#khProject #plusMedia{background:linear-gradient(145deg,#21134c,#101827)!important;border-color:#8b5cff!important;border-radius:16px}#view #newP{box-shadow:0 6px 24px #6d28d933}#view a[href^="#/p/"]{border-radius:16px}#view a[href^="#/p/"] img,#view a[href^="#/p/"] video{border:1px solid #ffffff18;object-fit:cover}#khProject .aspect-\[9\/11\]{background:#070a13}
 </style>
+
+<style id="kamisah-flow-android-v6">
+:root{color-scheme:dark} body{background:#000!important;background-image:none!important;color:#f5f5f5}
+#view>header{height:72px!important;padding-top:env(safe-area-inset-top);background:#000}
+.kh-home{max-width:680px;margin:0 auto;padding:8px 18px calc(30px + env(safe-area-inset-bottom))}
+.kh-tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0 30px}
+.kh-tool{min-height:132px;display:flex;flex-direction:column;justify-content:flex-end;gap:5px;padding:12px;border-radius:20px;border:1px solid #252525;background:linear-gradient(160deg,#171717,#080808);text-align:left}
+.kh-tool .kh-tool-icon{font-size:26px;line-height:1.1}.kh-tool b{font-size:13px}.kh-tool small{font-size:10px;line-height:1.35;color:#a3a3a3}
+.kh-project-row{display:flex;align-items:center;gap:13px;padding:10px 0;border-bottom:1px solid #202020}
+.kh-project-row .kh-project-thumb{width:92px;height:78px;flex:0 0 92px;border-radius:14px;overflow:hidden;background:#151515}
+.kh-project-row .kh-project-thumb img,.kh-project-row .kh-project-thumb video{width:100%;height:100%;object-fit:cover}
+#khProject{background:#000!important;padding-bottom:240px!important;max-width:680px;margin:0 auto}
+#khProject header{background:rgba(0,0,0,.96)!important;border-color:#202020!important}
+#khProject .kh-media-strip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#khProject .kh-media-strip [data-media]{aspect-ratio:16/10!important;border:0!important;border-radius:12px!important;overflow:hidden;background:#111;position:relative}
+#khProject .kh-media-strip [data-media] img,#khProject .kh-media-strip [data-media] video{width:100%;height:100%;object-fit:cover}
+#khProject .kh-media-strip [data-media] .kh-check{position:absolute;top:7px;right:7px;width:25px;height:25px;border-radius:7px;border:2px solid #ddd;background:#080808b8;display:grid;place-items:center;font-size:13px;z-index:2}
+#khProject .kh-media-strip [data-media] .kh-check[aria-pressed=true]{background:#7c3aed;border-color:#fff}
+#khProject .kh-media-strip [data-media] .kh-kind{display:none!important}
+#khProject #plusMedia{aspect-ratio:16/10!important;min-height:0!important;border:1px dashed #454545!important;background:#0c0c0c!important;color:#ddd;border-radius:12px!important}
+#khProject section h2{font-size:18px;letter-spacing:-.02em}
+#khProject section .kh-hint{display:none!important}
+#view #generatePanel{background:#171717!important;border:1px solid #303030!important;border-radius:28px 28px 0 0!important;box-shadow:0 -10px 35px #000b;max-width:720px;margin:0 auto}
+#view #generatePanel [data-panel-toggle]{border:0!important;background:transparent!important;color:#a3a3a3!important;margin-bottom:4px}
+#view #generatePanel textarea#pr{font-size:18px;min-height:56px;max-height:120px}
+#view #plus{border-radius:50%;background:#242424;width:44px;height:44px;flex:0 0 44px}
+#view #chip{border-radius:999px;background:#303030!important;border:1px solid #555!important;min-height:48px}
+#view #go{background:#f5f5f5!important;color:#111!important;box-shadow:none!important;border-radius:50%;width:48px;height:48px;flex:0 0 48px}
+#khProject .kh-reference-empty{display:none}
+@media(max-width:420px){.kh-tools{gap:7px}.kh-tool{min-height:120px;padding:9px}.kh-tool b{font-size:12px}.kh-tool small{font-size:9px}.kh-project-row .kh-project-thumb{width:84px;height:72px;flex-basis:84px}#khProject .kh-media-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+
 </head>
 <body class="bg-black text-neutral-100 font-sans">
 <div id="view"></div><div id="sheet"></div>
@@ -144,7 +176,7 @@ const spin='<div class="w-7 h-7 rounded-full border-2 border-amber-500 border-t-
 function thumb(it,c=''){
  if(it.status==='processing')return`<div class="${c} grid place-items-center bg-neutral-900">${spin}</div>`;
  if(it.status==='failed')return`<div class="${c} grid place-items-center bg-neutral-900 text-[11px] text-red-400">Gagal</div>`;
- return it.type==='image'?`<img src="${src(it)}" alt="" class="${c} object-cover">`:`<video src="${src(it)}#t=0.1" muted playsinline preload="metadata" class="${c} object-cover"></video>`}
+ return it.type==='image'?`<img src="${src(it)}" alt="" class="${c} object-cover">`:`<video src="${src(it)}" muted playsinline webkit-playsinline preload="metadata" class="${c} object-cover"></video>`}
 const nav=(a)=>`<nav class="fixed inset-x-0 bottom-0 z-30 border-t border-neutral-800 bg-neutral-950" style="padding-bottom:env(safe-area-inset-bottom)" aria-label="Menu utama"><div class="max-w-xl mx-auto grid grid-cols-4 h-14 text-[10px] font-semibold">
 <a href="/" class="flex flex-col items-center justify-center gap-0.5 text-neutral-400"><span class="text-base">🏠</span>Beranda</a>
 <a href="#/" class="flex flex-col items-center justify-center gap-0.5 ${a==='akun'?'text-neutral-400':'text-amber-400'}"><span class="text-base">🎬</span>Video AI</a>
@@ -167,14 +199,27 @@ function route(){const[,k,a,b]=location.hash.split('/'),p=S.projects.find(x=>x.i
  viewList()}
 
 function viewList(){
- $('view').innerHTML=`<header class="flex items-center justify-between px-4 h-14"><a href="/" class="font-extrabold text-lg">Kamisah</a><span class="text-[11px] text-neutral-400">Saldo: <b id="bal">${balTxt()}</b></span></header>
-<div class="px-4 pb-28 max-w-xl mx-auto"><div class="flex items-center justify-between mt-3 mb-4"><h1 class="text-2xl font-extrabold tracking-tight">Beranda Proyek</h1><button id="newP" type="button" class="px-5 py-3 rounded-2xl bg-gradient-to-r from-violet-600 to-blue-600 text-sm font-bold shadow-lg shadow-violet-900/30">＋ Proyek Baru</button></div>
-<a href="#/antrean" class="block mb-4 text-xs text-amber-400 underline">Antrean generate${(n=>n?` · ${n} memproses`:'')(S.projects.flatMap(p=>p.items).filter(i=>i.status==='processing').length)}</a>
-<form id="newF" class="hidden mb-4 flex gap-2"><input id="newN" maxlength="40" placeholder="Nama project" aria-label="Nama project" class="flex-1 px-4 py-3 rounded-2xl bg-neutral-900 text-sm outline-none border border-neutral-800 focus:border-amber-500"><button class="px-4 rounded-2xl bg-amber-500 text-black text-sm font-bold">Buat</button></form>
-${S.projects.map(p=>`<div class="flex items-center gap-2 mb-3 rounded-2xl border border-white/10 bg-gradient-to-br from-[#10172a] to-[#080b14] p-2 shadow-lg shadow-black/20"><a href="#/p/${p.id}" class="flex items-center gap-4 flex-1 min-w-0">${p.items[0]?thumb(p.items[0],'w-28 h-20 rounded-2xl shrink-0'):'<div class="w-28 h-20 rounded-2xl bg-neutral-900 shrink-0"></div>'}<div class="min-w-0"><div class="font-semibold truncate">${esc(p.name)}</div><div class="text-xs text-neutral-400 mt-1">${p.items.length} item</div></div></a><button type="button" data-del="${p.id}" aria-label="Hapus project ${esc(p.name)}" class="w-11 h-11 text-neutral-400">⋮</button></div>`).join('')||'<p class="text-sm text-neutral-400">Belum ada project. Tekan Baru untuk mulai.</p>'}</div>${nav()}`;
- $('newP').onclick=()=>{$('newF').classList.toggle('hidden');$('newN').focus()};
+ const count=S.projects.length;
+ $('view').innerHTML=`<header class="flex items-center justify-between px-5"><a href="/" class="font-semibold text-[28px] tracking-tight">Kamisah</a><div class="flex items-center gap-3"><button type="button" id="openQueue" aria-label="Antrean" class="w-10 h-10 rounded-full bg-neutral-900 text-lg">◷</button><a href="#/akun" class="w-10 h-10 rounded-full bg-neutral-900 grid place-items-center">●</a></div></header>
+ <main class="kh-home">
+ <div class="kh-tools">
+ <button type="button" id="toolVideo" class="kh-tool"><span class="kh-tool-icon">▶</span><b>Buat Video</b><small>Seedance 2.0 / 2.5 · hingga 30 dtk</small></button>
+ <button type="button" id="toolImage" class="kh-tool"><span class="kh-tool-icon">▧</span><b>Buat Gambar</b><small>Prompt visual dan referensi</small></button>
+ <button type="button" id="toolEdit" class="kh-tool"><span class="kh-tool-icon">✦</span><b>Edit dengan AI</b><small>Ubah video lewat prompt</small></button>
+ </div>
+ <div class="flex items-center justify-between mb-3"><div><h1 class="text-[25px] font-medium tracking-tight">Project</h1><p class="text-xs text-neutral-500 mt-1">${count} proyek</p></div><button id="newP" type="button" class="px-5 py-3 rounded-full bg-neutral-900 border border-neutral-800 text-sm font-semibold">＋ Baru</button></div>
+ <a href="#/antrean" id="queueLink" class="hidden"></a>
+ <form id="newF" class="hidden mb-4 flex gap-2"><input id="newN" maxlength="40" placeholder="Nama proyek" aria-label="Nama proyek" class="flex-1 px-4 py-3 rounded-2xl bg-neutral-900 text-sm outline-none border border-neutral-800 focus:border-violet-500"><button class="px-4 rounded-full bg-white text-black text-sm font-bold">Buat</button></form>
+ <div class="space-y-0">${S.projects.map(p=>`<div class="kh-project-row"><a href="#/p/${p.id}" class="kh-project-thumb block">${p.items[0]?thumb(p.items[0],'w-full h-full'):'<div class="w-full h-full grid place-items-center text-2xl text-neutral-600">＋</div>'}</a><a href="#/p/${p.id}" class="flex-1 min-w-0 py-2"><div class="text-[15px] font-medium truncate">${esc(p.name)}</div><div class="text-xs text-neutral-500 mt-2">${p.items.length} item · ${p.items.filter(i=>i.status==='processing').length?`${p.items.filter(i=>i.status==='processing').length} memproses`:'Kamisah Studio'}</div></a><button type="button" data-del="${p.id}" aria-label="Opsi proyek ${esc(p.name)}" class="w-10 h-10 text-neutral-400 text-xl">⋮</button></div>`).join('')||'<div class="py-16 text-center text-neutral-500"><div class="text-4xl mb-3">▱</div><p>Belum ada proyek.</p><p class="text-xs mt-2">Tekan Baru untuk mulai membuat video.</p></div>'}</div>
+ </main>`;
+ $('newP').onclick=()=>{$('newF').classList.toggle('hidden');if(!$('newF').classList.contains('hidden'))$('newN').focus()};
  $('newF').onsubmit=e=>{e.preventDefault();const n=$('newN').value.trim();if(!n)return;const p={id:uid(),name:n,items:[]};S.projects.unshift(p);save();location.hash='#/p/'+p.id};
- document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{const p=S.projects.find(x=>x.id===b.dataset.del);if(confirm(`Hapus project "${p.name}" beserta isinya?`)){p.items.forEach(i=>i.gone=true);S.projects=S.projects.filter(x=>x!==p);save();route()}})}
+ $('openQueue').onclick=()=>$('queueLink').click();
+ $('toolVideo').onclick=()=>{let p=S.projects[0];if(!p){p={id:uid(),name:'Proyek Baru',items:[]};S.projects.unshift(p);save()}location.hash='#/p/'+p.id};
+ $('toolImage').onclick=()=>toast('Generator gambar dari prompt perlu endpoint gambar khusus. Tombol ini belum terhubung ke API gambar.');
+ $('toolEdit').onclick=()=>{const p=S.projects.find(x=>x.items.some(i=>i.kind==='result'&&i.status==='ready'));if(p){const it=p.items.find(i=>i.kind==='result'&&i.status==='ready');location.hash=`#/v/${p.id}/${it.id}`}else toast('Buat video dulu, lalu pilih hasil untuk mengedit prompt.')};
+ document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{const p=S.projects.find(x=>x.id===b.dataset.del);if(confirm(`Hapus proyek "${p.name}" beserta isinya?`)){p.items.forEach(i=>i.gone=true);S.projects=S.projects.filter(x=>x!==p);save();route()}})
+}
 
 function viewProject(p){
  fit('text');
@@ -184,7 +229,7 @@ function viewProject(p){
  const heroMedia=hero
    ? (hero.type==='image'
       ? `<img src="${src(hero)}" alt="Pratinjau proyek" class="w-full h-full object-contain">`
-      : `<video src="${src(hero)}#t=0.1" muted playsinline controls class="w-full h-full object-contain"></video>`)
+      : `<video src="${src(hero)}" controls playsinline webkit-playsinline preload="metadata" class="w-full h-full object-contain" aria-label="Putar video pratinjau"></video>`)
    : `<div class="h-full min-h-[250px] flex flex-col items-center justify-center text-center px-7 bg-gradient-to-br from-neutral-900 via-neutral-950 to-indigo-950"><div class="text-4xl mb-3">✦</div><div class="text-lg font-bold">Mulai buat video</div><p class="text-sm text-neutral-400 mt-2">Tulis ide di bawah. Kamu bisa menambahkan gambar atau video sebagai referensi.</p></div>`;
  $('view').innerHTML=`<div class="max-w-xl mx-auto min-h-screen pb-64" id="khProject">
    <header class="sticky top-0 z-20 flex items-center gap-3 px-4 h-14 bg-black/90 backdrop-blur border-b border-white/5">
@@ -200,39 +245,32 @@ function viewProject(p){
      </div>
    </section>
    <section class="px-4 pt-4">
-     <div class="flex items-center justify-between mb-2"><h2 class="font-bold">Pratinjau (${p.items.filter(i=>i.kind==='upload').length})</h2><span class="text-[11px] text-neutral-500">Centang gambar untuk referensi · tekan lama untuk opsi</span></div>
+     <div class="flex items-center justify-between mb-2"><h2 class="font-bold">Media</h2><span class="text-[11px] text-neutral-500">${p.items.filter(i=>i.kind==='upload').length} item</span></div>
      <div class="grid grid-cols-3 gap-2 kh-media-strip">
-       ${p.items.filter(it=>it.kind==='upload').slice(0,30).map(it=>`<button type="button" data-media="${it.id}" aria-label="Buka pratinjau media" class="relative aspect-[3/4] min-w-0 overflow-hidden rounded-xl border ${it.selected?'border-violet-400 ring-2 ring-violet-500/70':'border-white/10'}">${thumb(it,'w-full h-full object-cover')}<span class="absolute bottom-1 left-1 rounded-full bg-black/75 px-1.5 py-1 text-[9px]">${it.type==='video'?'▶ Video':'▧ Gambar'}</span>${it.selected?'<span class="absolute top-1 right-1 rounded-full bg-violet-600 px-1.5 py-1 text-[10px]">✓</span>':''}</button>`).join('')}
+       ${p.items.filter(it=>it.kind==='upload').slice(0,30).map(it=>`<div class="relative min-w-0 overflow-hidden rounded-xl bg-neutral-900"><button type="button" data-media="${it.id}" aria-label="Buka media ${it.type==='video'?'video':'gambar'}" class="block w-full h-full">${thumb(it,'w-full h-full object-cover')}</button>${it.type==='image'?`<button type="button" data-toggle-ref="${it.id}" aria-label="${it.selected?'Batalkan':'Pilih'} referensi" aria-pressed="${!!it.selected}" class="kh-check">${it.selected?'✓':''}</button>`:''}</div>`).join('')}
        <button id="plusMedia" type="button" class="aspect-[3/4] rounded-xl border border-dashed border-violet-400/70 bg-violet-950/30 flex flex-col items-center justify-center gap-1 text-violet-200"><span class="text-3xl">＋</span><span class="text-[11px]">Tambah</span></button>
      </div>
      ${p.items.filter(i=>i.kind==='upload').length>30?`<a href="#/antrean" class="inline-block mt-2 text-xs text-violet-300">Lihat item lainnya →</a>`:''}
    </section>
    ${p.items.some(i=>i.kind==='upload'&&i.selected)?`<section class="px-4 pt-4"><div class="flex items-center justify-between mb-2"><h2 class="font-bold">Referensi (${p.items.filter(i=>i.kind==='upload'&&i.selected).length})</h2><span class="text-xs text-violet-300">${p.items.filter(i=>i.kind==='upload'&&i.selected).length} dipilih</span></div><div class="grid grid-cols-4 gap-2">${p.items.filter(i=>i.kind==='upload'&&i.selected).map(it=>`<div class="relative aspect-square overflow-hidden rounded-xl border border-violet-400">${thumb(it,'w-full h-full object-cover')}<button type="button" data-unref="${it.id}" aria-label="Hapus dari referensi" class="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/80">×</button></div>`).join('')}</div><p class="text-[10px] text-neutral-500 mt-2">Catatan: Seedance saat ini menerima gambar sebagai referensi; video tetap tersimpan di Pratinjau.</p></section>`:''}
-   <section class="px-4 pt-4">
-     <div class="flex items-center justify-between mb-2"><h2 class="font-bold">Apa yang ingin kamu buat?</h2><span class="text-[11px] text-neutral-500">Bahasa sehari-hari boleh</span></div>
-     <div class="flex flex-wrap gap-2 mb-3">
-       <button type="button" id="ideaPrompt" class="rounded-full border border-violet-400/30 bg-violet-950/30 px-3 py-2 text-xs text-violet-200">✦ Bantu buat prompt</button>
-       <button type="button" id="ideaSurprise" class="rounded-full border border-white/10 bg-neutral-900 px-3 py-2 text-xs text-neutral-300">🎲 Ide acak</button>
-     </div>
-   </section>
+   <section class="px-4 pt-4"><h2 class="font-medium mb-2">Apa yang ingin kamu buat?</h2></section>
  </div>
  ${panel('Ceritakan kejadian yang ingin kamu buat…',p.draft)}`;
- const heroVideo=document.querySelector('#khProject section video');if(heroVideo)heroVideo.addEventListener('error',()=>toast('Video gagal diputar di browser ini. Coba MP4 dengan codec H.264 atau unduh file asli.'));
+ const heroVideo=document.querySelector('#khProject section video');if(heroVideo){heroVideo.addEventListener('error',()=>toast('Video gagal dimuat. Periksa koneksi/tautan video; format atau codec sumber mungkin tidak didukung.'));heroVideo.addEventListener('loadedmetadata',()=>{heroVideo.currentTime=0;});}
  $('ren').onclick=()=>{const n=prompt('Nama project',p.name);if(n&&n.trim()){p.name=n.trim().slice(0,40);save();route()}};
  $('plusMedia').onclick=()=>openUploadChoice();
- document.querySelectorAll('[data-media]').forEach(b=>{let timer=null,held=false;const id=b.dataset.media;const start=()=>{held=false;timer=setTimeout(()=>{held=true;openMediaActions(p,id)},1000)};const stop=()=>clearTimeout(timer);b.addEventListener('pointerdown',start);['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,stop));b.onclick=()=>{if(held)return;const it=p.items.find(i=>i.id===id);if(!it)return;if(it.type==='image'){it.selected=!it.selected;save();route()}else location.hash=`#/v/${p.id}/${it.id}`}});
+ document.querySelectorAll('[data-media]').forEach(b=>{let timer=null,held=false;const id=b.dataset.media;const start=()=>{held=false;timer=setTimeout(()=>{held=true;openMediaActions(p,id)},850)};const stop=()=>clearTimeout(timer);b.addEventListener('pointerdown',start);['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,stop));b.onclick=()=>{if(held)return;const it=p.items.find(i=>i.id===id);if(it)location.hash=`#/v/${p.id}/${it.id}`}});
+ document.querySelectorAll('[data-toggle-ref]').forEach(b=>b.onclick=e=>{e.stopPropagation();const it=p.items.find(i=>i.id===b.dataset.toggleRef);if(it){it.selected=!it.selected;save();route()}});
  document.querySelectorAll('[data-unref]').forEach(b=>b.onclick=()=>{const it=p.items.find(i=>i.id===b.dataset.unref);if(it){it.selected=false;save();route()}});
- $('ideaPrompt').onclick=()=>{const pr=$('pr');pr.value=(pr.value?pr.value+' ':'')+'Buat video sinematik dengan pencahayaan dramatis, gerakan kamera halus, detail realistis, dan komposisi film.';pr.dispatchEvent(new Event('input'));pr.focus()};
- $('ideaSurprise').onclick=()=>{const ideas=['Seekor naga raksasa terbang di atas kota futuristik saat matahari terbenam, gaya sinematik.','Kong berjalan keluar dari hutan berkabut menuju kota yang ditinggalkan, kamera mengikuti dari belakang.','Sebuah kapal luar angkasa mendarat di padang pasir luas, debu berputar diterpa angin, film sci-fi realistis.','Seorang ksatria berzirah berjalan melewati reruntuhan kastil di tengah hujan, pencahayaan dramatis.'];const pr=$('pr');pr.value=ideas[Math.floor(Math.random()*ideas.length)];pr.dispatchEvent(new Event('input'));pr.focus()};
  bindPanel(p,null);
 }
 function viewItem(p,it){const i=p.items.indexOf(it),rdy=it.status==='ready';if(rdy)fit(it.type);const c=DIR?(DIR>0?'sl':'sr'):'';DIR=0;
- const media=!rdy?(it.status==='failed'?`<p class="text-sm text-red-400 text-center px-6">${esc(it.error||'Pembuatan video gagal.')}</p>`:`<div class="text-center text-sm text-neutral-300 px-6"><div class="w-9 h-9 mx-auto mb-3 rounded-full border-2 border-amber-500 border-t-transparent animate-spin"></div>Sedang dibuat. Geser ke item lain, proses tetap berjalan.<p class="mt-3 text-xs text-neutral-500">${esc(it.prompt)}</p></div>`):it.type==='image'?`<img src="${src(it)}" alt="" class="max-h-full max-w-full rounded-2xl">`:`<video src="${src(it)}" controls playsinline loop class="max-h-full max-w-full rounded-2xl"></video>`;
+ const media=!rdy?(it.status==='failed'?`<p class="text-sm text-red-400 text-center px-6">${esc(it.error||'Pembuatan video gagal.')}</p>`:`<div class="text-center text-sm text-neutral-300 px-6"><div class="w-9 h-9 mx-auto mb-3 rounded-full border-2 border-amber-500 border-t-transparent animate-spin"></div>Sedang dibuat. Geser ke item lain, proses tetap berjalan.<p class="mt-3 text-xs text-neutral-500">${esc(it.prompt)}</p></div>`):it.type==='image'?`<img src="${src(it)}" alt="" class="max-h-full max-w-full rounded-2xl">`:`<video src="${src(it)}" controls playsinline webkit-playsinline preload="auto" loop class="max-h-full max-w-full rounded-2xl" aria-label="Putar video"></video>`;
  $('view').innerHTML=`<div class="fixed inset-0 bg-black"><div class="absolute top-0 inset-x-0 z-20 flex items-center justify-between p-4"><a href="#/p/${p.id}" aria-label="Tutup" class="w-11 h-11 grid place-items-center rounded-2xl bg-neutral-900">⌄</a><span class="text-xs text-neutral-400">${i+1}/${p.items.length}</span>
-<div class="flex gap-2">${it.kind==='result'&&it.url?`<a href="${esc(it.url)}" target="_blank" rel="noopener" download aria-label="Unduh" class="w-11 h-11 grid place-items-center rounded-2xl bg-neutral-900">⬇</a>`:''}<button id="del" type="button" aria-label="Hapus item" class="w-11 h-11 rounded-2xl bg-neutral-900">🗑</button></div></div>
+<div class="flex gap-2">${it.kind==='result'&&it.url?`<a href="${esc(it.url)}" target="_blank" rel="noopener" aria-label="Buka atau unduh video asli" title="Buka video asli untuk disimpan" class="w-11 h-11 grid place-items-center rounded-2xl bg-neutral-900">⬇</a>`:''}<button id="del" type="button" aria-label="Hapus item" class="w-11 h-11 rounded-2xl bg-neutral-900">🗑</button></div></div>
 <div id="stage" class="absolute inset-x-0 top-20 ${rdy?'bottom-56':'bottom-4'} grid place-items-center px-4 ${c}">${media}</div>${rdy?panel('Apa yang ingin Anda ubah?',it.draft):''}</div>`;
  if(rdy)bindPanel(p,it);
- const previewVideo=$('stage')?.querySelector('video');if(previewVideo)previewVideo.addEventListener('error',()=>toast('Video tidak dapat diputar. Coba MP4 H.264 atau unduh file asli.'));
+ const previewVideo=$('stage')?.querySelector('video');if(previewVideo){previewVideo.addEventListener('error',()=>toast('Video gagal dimuat. Periksa koneksi/tautan video; format atau codec sumber mungkin tidak didukung.'));previewVideo.addEventListener('loadedmetadata',()=>{if(!Number.isFinite(previewVideo.duration))toast('Durasi video tidak terbaca oleh browser.');});}
  $('del').onclick=()=>{if(confirm('Hapus item ini?')){it.gone=true;p.items.splice(i,1);save();location.replace('#/p/'+p.id)}};
  const sg=$('stage');let x0,y0,skip;
  sg.ontouchstart=e=>{const t=e.touches[0],v=e.target.closest('video');x0=t.clientX;y0=t.clientY;skip=v&&t.clientY>v.getBoundingClientRect().bottom-56};
@@ -332,7 +370,7 @@ function openUploadChoice(){
 function openMediaActions(p,id){const it=p.items.find(i=>i.id===id);if(!it)return;const isRef=!!it.selected;
  $('sheet').innerHTML=`<div data-close class="fixed inset-0 z-40 bg-black/65"></div><div class="fixed inset-x-0 bottom-0 z-50 rounded-t-3xl border-t border-white/10 bg-[#080c17] p-5" style="padding-bottom:calc(1rem + env(safe-area-inset-bottom))"><h3 class="font-bold mb-3">Tindakan media</h3><button type="button" id="mediaRef" class="w-full rounded-xl bg-violet-950/60 border border-violet-400/30 p-4 text-left mb-2"><b>${isRef?'✓ Batalkan Referensi':'✦ Jadikan Referensi'}</b><p class="text-xs text-neutral-400 mt-1">${it.type==='video'?'Video disimpan di Pratinjau; Seedance saat ini hanya menerima referensi gambar.': 'Masukkan atau keluarkan gambar dari kotak Referensi'}</p></button><button type="button" id="mediaDownload" class="w-full rounded-xl bg-neutral-900 p-4 text-left mb-2"><b>⬇ Download</b><p class="text-xs text-neutral-400 mt-1">Simpan file ke perangkat</p></button><button type="button" id="mediaDelete" class="w-full rounded-xl bg-red-950/50 border border-red-500/20 p-4 text-left"><b>🗑 Hapus</b><p class="text-xs text-neutral-400 mt-1">Hapus media dari Pratinjau</p></button><button type="button" data-close class="w-full py-3 text-sm text-neutral-400">Batal</button></div>`;
  $('mediaRef').onclick=()=>{if(it.type==='image'){it.selected=!it.selected;save();closeSheet();route()}else toast('Seedance saat ini hanya menerima gambar sebagai referensi.')};
- $('mediaDownload').onclick=()=>{const a=document.createElement('a');a.href=src(it);a.download=it.blob?.name||`kamisah-${it.type}-${id}`;a.click();closeSheet()};
+ $('mediaDownload').onclick=async()=>{const url=src(it),name=it.blob?.name||`kamisah-${it.type}-${id}.${it.type==='video'?'mp4':'jpg'}`;try{if(it.blob){const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();}else{const r=await fetch(url);if(!r.ok)throw Error('download');const blob=await r.blob(),obj=URL.createObjectURL(blob),a=document.createElement('a');a.href=obj;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(obj),60000);}}catch{const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.download=name;document.body.appendChild(a);a.click();a.remove();toast('Jika unduhan tidak dimulai, tautan video dibuka agar bisa disimpan dari browser.');}closeSheet()};
  $('mediaDelete').onclick=()=>{p.items=p.items.filter(x=>x.id!==id);it.gone=true;save();closeSheet();route()};
 }
 
