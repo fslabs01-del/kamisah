@@ -1,0 +1,18 @@
+KAMISAH v6 — VIDEO AI CANVAS (9 BAGIAN)
+
+Dasar: Kamisah-v6-Media-Persist-Reload-Fix.zip.
+Perubahan utama dibatasi pada video-generator.html dan file catatan ini.
+
+Yang ditambahkan pada halaman Video AI:
+- Canvas media berbentuk grid dan composer prompt yang menempel di bawah layar.
+- Popup tombol + untuk mengambil/memilih gambar atau video.
+- Overlay referensi multi-pilih, pencarian, dan unggah.
+- Pengaturan model, orientasi, resolusi, durasi, jumlah hasil, dan audio.
+- Menu media untuk pratinjau, referensi, gunakan prompt, unduh, dan hapus.
+- Tombol logo Kamisah pada halaman proyek menuju beranda website (/).
+- Menggunakan fungsi upload, Supabase, antrean generate, status, dan API Seedance yang sudah ada di v6.
+
+CATATAN PENTING:
+- API/provider tetap mengikuti konfigurasi v6; model yang tidak aktif tetap tidak dapat dipakai.
+- Referensi video bergantung dukungan model dan URL publik HTTPS yang valid.
+- Integrasi perlu diuji pada deploy preview sebelum produksi. Jangan menganggap API/provider sudah tervalidasi hanya dari tampilan.

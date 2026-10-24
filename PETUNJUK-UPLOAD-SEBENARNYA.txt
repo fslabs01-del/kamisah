@@ -1,0 +1,15 @@
+PERBAIKAN UNGGAH GAMBAR & VIDEO KE SUPABASE STORAGE
+
+PENTING: sebelum deploy, buka Supabase Dashboard > SQL Editor dan jalankan file:
+supabase/storage-video-references-policy.sql
+
+File ini membuat/menyetel bucket publik video-references dan kebijakan agar pengguna yang login hanya dapat mengunggah ke folder ID miliknya.
+
+Alur sekarang:
+1. Pengguna harus login.
+2. Pilih gambar/video.
+3. Browser benar-benar mengunggah file asli ke Supabase Storage (bukan hanya menyimpan Blob di IndexedDB).
+4. Setelah berhasil, Kamisah menyimpan URL publik dan membuka halaman pratinjau.
+5. Jika upload gagal, item ditandai error dan pesan penyebab ditampilkan.
+
+Catatan: upload Supabase JS tidak menyediakan progres byte yang akurat melalui metode ini; UI menunjukkan status mengunggah dan baru 100% setelah server mengonfirmasi sukses. Bucket publik diperlukan untuk URL referensi yang diakses penyedia generasi.
