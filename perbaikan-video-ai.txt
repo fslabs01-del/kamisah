@@ -1,0 +1,13 @@
+PERBAIKAN VIDEO AI KAMISAH
+
+Perubahan pada paket ini:
+1. Gambar yang baru diunggah tidak otomatis dipilih sebagai referensi. Pengguna harus mengetuk gambar untuk mengaktifkan tanda centang.
+2. Referensi terpilih tetap ditandai dan hanya gambar terpilih yang dikirim saat generasi.
+3. Tombol Chat AI ditambahkan terpisah dari pengaturan/model video agar fungsi chat tidak tertukar dengan pilihan Seedance.
+4. Tab Semua, Video, Gambar, dan Favorit pada pemilihan model sekarang memfilter daftar model.
+5. Model dapat ditandai sebagai favorit; pilihan disimpan di browser perangkat.
+
+Catatan penting:
+- Pemeriksaan sintaks JavaScript berhasil.
+- Ini belum membuktikan bahwa generasi sungguhan berhasil; itu bergantung pada konfigurasi environment variables, Supabase, storage bucket, dan endpoint penyedia video.
+- Jangan menaruh SUPABASE_SERVICE_ROLE_KEY atau SEEDANCE_API_KEY di file publik. Simpan hanya di Netlify Environment Variables.

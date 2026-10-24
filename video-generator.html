@@ -276,7 +276,7 @@ async function convertHevcToH264(file){
  try{await ff.deleteFile(input);await ff.deleteFile(output)}catch{}
  return new Blob([data],{type:'video/mp4'});
 }
-function probePlay(blob,ms=8000){return new Promise(res=>{if(!(blob instanceof Blob)){res({ok:false,code:'invalid-blob'});return}let u;try{u=URL.createObjectURL(blob)}catch(e){res({ok:false,code:'invalid-blob'});return}const v=document.createElement('video');let done=false;
+function probePlay(blob,ms=8000){return new Promise(res=>{const v=document.createElement('video'),u=URL.createObjectURL(blob);let done=false;
  const end=o=>{if(done)return;done=true;clearTimeout(t);v.removeAttribute('src');try{v.load()}catch{}URL.revokeObjectURL(u);res(o)};
  const t=setTimeout(()=>end({ok:false,code:'timeout'}),ms);
  v.muted=true;v.playsInline=true;v.preload='metadata';
@@ -312,10 +312,11 @@ function uploadMsg(it,code){const pl=it.play||{};
  if(code===2)return'File tidak bisa dibaca (mungkin sudah dipindah/dihapus dari galeri HP). Unggah ulang.';
  return'Browser tidak bisa memutar file ini (format atau codec tidak didukung).'}
 const src=it=>{
- if(it&&it.storagePath&&typeof it.url==='string'&&it.url.startsWith('https://'))return it.url;
- if(it&&it.blob instanceof Blob){try{return(U[it.id]??=URL.createObjectURL(it.blob))}catch(e){console.warn('[kamisah] Gagal membuat URL blob:',e);return ''}}
- if(it&&typeof it.url==='string'&&it.url.trim())return it.url;
- return '';
+ if(it.storagePath && typeof it.url==='string' && it.url) return it.url;
+ if(typeof Blob!=='undefined' && it.blob instanceof Blob){
+  try { return U[it.id] ??= URL.createObjectURL(it.blob); } catch(e){ console.warn('Blob video tidak valid:',e); }
+ }
+ return typeof it.url==='string' ? it.url : '';
 };
 const spin='<div class="w-7 h-7 rounded-full border-2 border-amber-500 border-t-transparent animate-spin"></div>';
 // ===== Desain v7: ikon, pembantu, rute, beranda, ruang proyek, media, panel generate =====

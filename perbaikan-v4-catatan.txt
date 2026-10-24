@@ -1,0 +1,63 @@
+KAMISAH v4 — PERBAIKAN PEMUTAR VIDEO & KREDIT ANTI-GANDA
+=========================================================
+
+FILE YANG DIUBAH / DITAMBAH
+- netlify/functions/seedance.mjs        (diubah)
+- video-generator.html                  (diubah)
+- supabase/schema-5-idempotency.sql     (BARU — WAJIB dijalankan sebelum deploy)
+- PERBAIKAN-V4-CATATAN.txt              (BARU, file ini)
+Tidak diubah: config.js, netlify.toml, auth.js, semua fungsi lain, schema lama, nama environment variable.
+
+URUTAN DEPLOY (penting)
+1. Backup Supabase. Jalankan supabase/schema-5-idempotency.sql SEKALI di SQL Editor.
+   (Menambah kolom jobs.client_key + fungsi charge_credits 4 argumen. Fungsi lama tidak dihapus.)
+2. Baru deploy kode ke preview Netlify. Jika kode dideploy sebelum SQL, generate akan gagal "Gagal memotong kredit".
+3. Uji di preview sebelum ke production.
+
+1) KREDIT — apa yang berubah
+- Klien membuat idempotency_key (UUID) per permintaan generate dan MENYIMPANNYA di item (IndexedDB).
+- Server memanggil charge_credits(user, biaya, model, key). Kunci yang sama = tidak memotong lagi; mengembalikan job yang sama.
+- Pemotongan memakai advisory lock per (user,key) + unique index (user_id, client_key), jadi dua permintaan bersamaan tidak sama-sama memotong.
+- Jika jaringan putus/timeout saat membuat job: klien mengirim ulang (maks 8x, backoff) dengan kunci yang SAMA. Jika tetap gagal, item ditandai gagal-dapat-dilanjutkan dan otomatis dikirim ulang saat halaman dibuka lagi (tanpa potong ganda).
+- Polling status tidak lagi menggagalkan item hanya karena jaringan putus sebentar (toleransi ±2 menit).
+- Klik Generate berulang saat proses kirim masih berjalan diabaikan (kunci 1,2 detik). Klik sengaja kedua kali setelah itu = generate baru (kunci baru, dipotong lagi) — itu perilaku yang benar.
+- Idempotency-Key ke penyedia kini deterministik (kamisah-<jobId>), bukan acak per permintaan.
+- Job yang sudah gagal+refund lalu dikirim ulang dengan kunci sama -> 409, tidak memotong.
+- Job tanpa provider_id: <45 dtk tidak dikirim ulang ke penyedia; >45 dtk dikirim ulang. KETERBATASAN: jika penyedia tidak menghormati header Idempotency-Key, kasus langka ini bisa membuat 2 generasi di sisi penyedia (kredit pengguna tetap hanya terpotong sekali).
+
+2a) PEMUTAR VIDEO HASIL SEEDANCE (URL dari penyedia) — apa yang berubah dan apa yang BELUM terbukti
+- Penyebab gagal-putar BELUM terbukti (tidak ada akses jaringan/API di lingkungan kerja ini). Yang ditambahkan adalah DIAGNOSIS agar penyebabnya terlihat:
+  * Saat status "done", server membaca ~4 KB awal URL hasil dan mengirim `diag`: HTTP status, redirect, Content-Type, Accept-Ranges/206, total byte, tanda tangan MP4/WebM (ftyp/brand).
+  * http:// dari penyedia dinaikkan ke https:// (mencegah mixed content).
+  * Pesan error di pratinjau kini spesifik (kedaluwarsa/ditolak, bukan MP4, codec, koneksi) + tombol "Coba muat lagi" dan "Buka tautan asli"; detail teknis ada di console (`[kamisah] video error`).
+  * <meta name="referrer" content="no-referrer"> ditambahkan di video-generator.html. Ini HIPOTESIS (sebagian CDN menolak hotlink dengan Referer); bukan perbaikan yang terbukti.
+- TIDAK dilakukan: menyalin video ke Supabase Storage. Alasan: batas ukuran file/total storage dan biaya belum diperiksa, dan fungsi Netlify punya batas waktu/respons. Putuskan SETELAH diag menunjukkan URL penyedia kedaluwarsa/ditolak (HTTP 403/410/404) — itu indikasi kuat perlu disimpan sendiri.
+
+CARA MEMBACA HASIL DI ANDROID (untuk Anda)
+1. Generate 1 video pendek. Saat selesai, buka Chrome Android > chrome://inspect (dari PC) atau cek pesan di pratinjau.
+2. Jika pesan "HTTP 403/410": URL penyedia kedaluwarsa/ditolak -> perlu simpan ke Storage.
+3. Jika "bukan MP4/WebM": penyedia mengembalikan halaman/format lain -> periksa SEEDANCE_API_BASE & struktur respons.
+4. Jika diag OK (video/mp4, ftyp, 206) tetapi tetap gagal di HP: kemungkinan referer/hotlink atau codec -> kirim saya isi console.
+
+2b) VIDEO YANG DIUNGGAH SENDIRI UNTUK REFERENSI (inilah kasus yang dilaporkan: video baru diunggah gagal diputar)
+Kasus ini TIDAK memakai URL penyedia; file diputar dari Blob lokal di browser. Penyebab sebenarnya belum terbukti (tidak ada perangkat Android di lingkungan kerja). Kandidat terkuat: codec/kontainer yang tidak didukung (mis. HEVC/H.265 dari kamera HP, atau MOV), atau file tidak terbaca.
+Yang ditambahkan di video-generator.html:
+- Saat video diunggah: dibaca kontainer (MP4/MOV/WebM) dan codec (H.264/HEVC/AV1/VP9) dari header file, lalu diuji langsung di browser perangkat (memuat metadata di elemen <video> tersembunyi). Hasil disimpan di item (`it.play`).
+- File MOV/MP4 yang berlabel tipe aneh/kosong dicoba ulang dengan label video/mp4 (tanpa menyalin data). Jika berhasil, label baru dipakai.
+- Jika tetap tidak bisa diputar: thumbnail diganti penanda "▶✕ + codec", pesan di pratinjau menyebut penyebab (mis. HEVC) beserta detail (kontainer · codec · tipe · ukuran), ada tombol Unduh dan "Coba putar juga". Video seperti itu tidak lagi jadi gambar utama project.
+- Tombol Unduh ditambahkan di pratinjau untuk unggahan (sebelumnya hanya ada untuk hasil Seedance).
+- File berekstensi video tetapi bertipe kosong kini diterima; file yang bukan gambar/video diberi tahu, tidak dilewati diam-diam.
+TIDAK ditambahkan: konversi otomatis HEVC -> H.264 di browser (berat, tidak bisa diuji di sini). Jika codec terbukti HEVC, solusinya konversi ke MP4 H.264 sebelum diunggah, atau tambahkan transcoder di tahap berikutnya.
+
+STATUS PENGUJIAN (jujur)
+LOLOS (otomatis, lingkungan kerja ini):
+- node --check semua .mjs dan JavaScript inline video-generator.html.
+- Tes handler seedance.mjs dengan Supabase+penyedia TIRUAN: tanpa kunci ditolak; kirim 2x kunci sama = potong 1x, job sama; kunci beda = potong lagi; job macet <45 dtk tidak dikirim ulang, >45 dtk dikirim ulang dengan Idempotency-Key sama; penyedia gagal = refund penuh dan kirim ulang = 409; diag membaca MP4 (206, brand isom), 403, dan halaman HTML dengan benar.
+- Tes logika klien (retry jaringan dengan kunci sama, polling tahan putus, resume, tidak retry error saldo/refund, klik berulang diabaikan).
+- Tes pendeteksi codec memakai file video SUNGGUHAN buatan ffmpeg: H.264 (moov di akhir & faststart), HEVC, MOV H.264 (brand qt), VP9 WebM, AV1, file palsu .mp4 berisi HTML, dan file besar dengan moov di ujung >4 MB.
+BELUM DIUJI:
+- Uji-putar sungguhan di browser (probePlay, thumbnail, pesan pratinjau): tidak ada browser/Android di lingkungan kerja ini.
+- SQL schema-5 (tidak ada Postgres di lingkungan ini) — jalankan di Supabase uji dulu.
+- Pemutaran video di perangkat Android sungguhan.
+- Seedance/Loopling asli, Supabase asli, Netlify asli.
+- Desain baru (belum disentuh; menunggu gambar acuan terlihat).
