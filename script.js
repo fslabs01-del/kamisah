@@ -117,7 +117,7 @@ async function convertHevcToH264(file){
  try{await ff.deleteFile(input);await ff.deleteFile(output)}catch{}
  return new Blob([data],{type:'video/mp4'});
 }
-function probePlay(blob,ms=8000){return new Promise(res=>{const v=document.createElement('video'),u=URL.createObjectURL(blob);let done=false;
+function probePlay(blob,ms=8000){return new Promise(res=>{if(!(blob instanceof Blob)){res({ok:false,code:'invalid-blob'});return}let u;try{u=URL.createObjectURL(blob)}catch(e){res({ok:false,code:'invalid-blob'});return}const v=document.createElement('video');let done=false;
  const end=o=>{if(done)return;done=true;clearTimeout(t);v.removeAttribute('src');try{v.load()}catch{}URL.revokeObjectURL(u);res(o)};
  const t=setTimeout(()=>end({ok:false,code:'timeout'}),ms);
  v.muted=true;v.playsInline=true;v.preload='metadata';
@@ -152,7 +152,12 @@ function uploadMsg(it,code){const pl=it.play||{};
  if(pl.codec==='av1'||pl.codec==='vp9'||pl.codec==='vp8')return`Codec ${pl.codec.toUpperCase()} tidak didukung pemutar pada perangkat ini. File asli tetap tersimpan; perlu dukungan pemutar atau konversi otomatis.`;
  if(code===2)return'File tidak bisa dibaca (mungkin sudah dipindah/dihapus dari galeri HP). Unggah ulang.';
  return'Browser tidak bisa memutar file ini (format atau codec tidak didukung).'}
-const src=it=>it.storagePath&&it.url?it.url:(it.blob?(U[it.id]??=URL.createObjectURL(it.blob)):it.url);
+const src=it=>{
+ if(it&&it.storagePath&&typeof it.url==='string'&&it.url.startsWith('https://'))return it.url;
+ if(it&&it.blob instanceof Blob){try{return(U[it.id]??=URL.createObjectURL(it.blob))}catch(e){console.warn('[kamisah] Gagal membuat URL blob:',e);return ''}}
+ if(it&&typeof it.url==='string'&&it.url.trim())return it.url;
+ return '';
+};
 const spin='<div class="w-7 h-7 rounded-full border-2 border-amber-500 border-t-transparent animate-spin"></div>';
 // ===== Desain v7: ikon, pembantu, rute, beranda, ruang proyek, media, panel generate =====
 const IC={back:'<path d="M15 5l-7 7 7 7"/>',more:'<path d="M12 5h.01M12 12h.01M12 19h.01"/>',plus:'<path d="M12 5v14M5 12h14"/>',play:'<path d="M7 4l13 8-13 8z" fill="currentColor"/>',pause:'<path d="M8 5v14M16 5v14"/>',vol:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 010 7"/>',mute:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l4 6M21 9l-4 6"/>',full:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',dl:'<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>',edit:'<path d="M4 20l1-4L16 5l3 3L8 19z"/>',trash:'<path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13"/>',chk:'<path d="M5 12l5 5 9-10"/>',bell:'<path d="M6 17v-6a6 6 0 0112 0v6l2 2H4zM10 21h4"/>',down:'<path d="M6 9l6 6 6-6"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',img:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M4 18l5-5 4 4 3-3 4 4"/>',spark:'<path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2"/>',right:'<path d="M9 5l7 7-7 7"/>'};
