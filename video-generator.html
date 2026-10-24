@@ -314,7 +314,7 @@ function uploadMsg(it,code){const pl=it.play||{};
 const src=it=>{
  if(it.storagePath && typeof it.url==='string' && it.url) return it.url;
  if(typeof Blob!=='undefined' && it.blob instanceof Blob){
-  try { return U[it.id] ??= URL.createObjectURL(it.blob); } catch(e){ console.warn('Blob video tidak valid:',e); }
+  try { return U[it.id] ??= URL.createObjectURL(it.blob); } catch(e){ console.warn('Blob media tidak valid:',e); }
  }
  return typeof it.url==='string' ? it.url : '';
 };
@@ -690,7 +690,7 @@ $('file').onchange=async e=>{
  // Buat item dengan status importing agar UI tidak menganggap file siap sebelum diproses.
  for(const f of files){
   const nm=(f.name||'').toLowerCase();
-  const t=f.type.startsWith('video')||/\.(mp4|m4v|mov|webm|3gp|mkv)$/.test(nm)?'video':f.type.startsWith('image')?'image':null;
+  const t=f.type.startsWith('video')||/\.(mp4|m4v|mov|webm|3gp|mkv|avi|mpeg|mpg)$/.test(nm)?'video':f.type.startsWith('image')||/\.(jpg|jpeg|png|gif|webp|bmp|heic|heif|avif)$/.test(nm)?'image':null;
   if(!t){rej++;continue}
   const it={id:uid(),kind:'upload',type:t,blob:f,status:'uploading',sceneId:sc.id,ts:NOW(),uploadProgress:0};
   p.items.unshift(it);p.updatedAt=NOW();if(!first)first=it;
