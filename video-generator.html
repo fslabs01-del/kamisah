@@ -100,7 +100,7 @@ a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;cursor:po
 
 </head>
 <body class="bg-black text-neutral-100 font-sans">
-<div id="view"></div><div id="sheet"></div>
+<div id="view"></div><div id="sheet"></div><div id="uploadProgressPanel" style="display:none;position:fixed;z-index:100;left:16px;right:16px;top:calc(12px + env(safe-area-inset-top));max-width:520px;margin:auto;background:#171923;border:1px solid #393b50;border-radius:18px;padding:16px;box-shadow:0 12px 40px #0009"><div style="display:flex;align-items:center;gap:10px"><div style="font-size:24px">⇧</div><div style="flex:1;min-width:0"><div id="uploadProgressTitle" style="font-weight:700">Mengunggah…</div><div id="uploadProgressMeta" style="font-size:12px;color:#a5a8bd;overflow-wrap:anywhere"></div></div><div id="uploadProgressPct" style="font-weight:800">0%</div></div><div style="height:7px;background:#33364b;border-radius:99px;overflow:hidden;margin-top:12px"><div id="uploadProgressBar" style="height:100%;width:0;background:linear-gradient(90deg,#8b5cf6,#60a5fa);transition:width .15s"></div></div></div>
 <div id="toast" role="status" class="fixed top-4 left-1/2 -translate-x-1/2 z-[60] hidden max-w-[90%] bg-neutral-800 border border-amber-500/40 px-4 py-2 rounded-full text-xs font-semibold shadow-xl"></div>
 <input id="file" type="file" accept="image/*,video/*" multiple class="hidden">
 <script src="config.js"></script>
@@ -259,7 +259,7 @@ function uploadMsg(it,code){const pl=it.play||{};
  if(pl.codec==='av1'||pl.codec==='vp9'||pl.codec==='vp8')return`Codec ${pl.codec.toUpperCase()} tidak didukung pemutar pada perangkat ini. File asli tetap tersimpan; perlu dukungan pemutar atau konversi otomatis.`;
  if(code===2)return'File tidak bisa dibaca (mungkin sudah dipindah/dihapus dari galeri HP). Unggah ulang.';
  return'Browser tidak bisa memutar file ini (format atau codec tidak didukung).'}
-const src=it=>it.blob?(U[it.id]??=URL.createObjectURL(it.blob)):it.url;
+const src=it=>it.storagePath&&it.url?it.url:(it.blob?(U[it.id]??=URL.createObjectURL(it.blob)):it.url);
 const spin='<div class="w-7 h-7 rounded-full border-2 border-amber-500 border-t-transparent animate-spin"></div>';
 // ===== Desain v7: ikon, pembantu, rute, beranda, ruang proyek, media, panel generate =====
 const IC={back:'<path d="M15 5l-7 7 7 7"/>',more:'<path d="M12 5h.01M12 12h.01M12 19h.01"/>',plus:'<path d="M12 5v14M5 12h14"/>',play:'<path d="M7 4l13 8-13 8z" fill="currentColor"/>',pause:'<path d="M8 5v14M16 5v14"/>',vol:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 010 7"/>',mute:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l4 6M21 9l-4 6"/>',full:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',dl:'<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>',edit:'<path d="M4 20l1-4L16 5l3 3L8 19z"/>',trash:'<path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13"/>',chk:'<path d="M5 12l5 5 9-10"/>',bell:'<path d="M6 17v-6a6 6 0 0112 0v6l2 2H4zM10 21h4"/>',down:'<path d="M6 9l6 6 6-6"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',img:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M4 18l5-5 4 4 3-3 4 4"/>',spark:'<path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2"/>',right:'<path d="M9 5l7 7-7 7"/>'};
@@ -527,6 +527,12 @@ function openPhone(){
   else{const{data,error}=await SB.auth.verifyOtp({phone,token:$('otp').value.trim(),type:'sms'});
    if(error)return toast('Kode salah atau kedaluwarsa.');if(data.session){closeSheet();toast('Berhasil masuk.')}}}}
 
+// Upload progress uses the real XMLHttpRequest upload events, not a simulated timer.
+function showUploadProgress(file,pct,title){const panel=$('uploadProgressPanel');if(!panel)return;panel.style.display='block';$('uploadProgressTitle').textContent=title||'Mengunggah…';$('uploadProgressMeta').textContent=`${file.name||'File'} · ${(file.size/1024/1024).toFixed(2)} MB`;setUploadPct(pct)}
+function setUploadPct(pct){const n=Math.max(0,Math.min(100,Math.round(pct||0)));if($('uploadProgressPct'))$('uploadProgressPct').textContent=n+'%';if($('uploadProgressBar'))$('uploadProgressBar').style.width=n+'%'}
+function hideUploadProgress(delay=0){setTimeout(()=>{if($('uploadProgressPanel'))$('uploadProgressPanel').style.display='none'},delay)}
+function uploadToSupabaseWithProgress(bucket,path,file,onProgress){return new Promise((resolve,reject)=>{const cfg=window.KH||{};if(!cfg.SUPABASE_URL||!cfg.SUPABASE_PUBLISHABLE_KEY||!SES?.access_token)return reject(Error('Supabase belum terhubung atau sesi login berakhir.'));const xhr=new XMLHttpRequest();const url=cfg.SUPABASE_URL.replace(/\/$/,'')+'/storage/v1/object/'+encodeURIComponent(bucket)+'/'+path.split('/').map(encodeURIComponent).join('/');xhr.open('POST',url);xhr.setRequestHeader('apikey',cfg.SUPABASE_PUBLISHABLE_KEY);xhr.setRequestHeader('Authorization','Bearer '+SES.access_token);xhr.setRequestHeader('Content-Type',file.type||'application/octet-stream');xhr.setRequestHeader('x-upsert','false');xhr.setRequestHeader('cache-control','3600');xhr.upload.onprogress=e=>{if(e.lengthComputable&&onProgress)onProgress(e.loaded/e.total*100)};xhr.onerror=()=>reject(Error('Koneksi terputus saat mengunggah.'));xhr.onabort=()=>reject(Error('Unggahan dibatalkan.'));xhr.onload=()=>{let data={};try{data=JSON.parse(xhr.responseText||'{}')}catch{}if(xhr.status>=200&&xhr.status<300)resolve(data);else reject(Error(data.message||data.error||`Unggah ditolak server (${xhr.status}).`))};xhr.send(file)})}
+
 // Media actions: press and hold for 1 second. Uploads stay in preview until explicitly referenced.
 function openUploadChoice(){sh('Tambah media',[[ic('img')+' Unggah gambar',()=>{$('file').accept='image/*';$('file').click()}],[ic('play')+' Unggah video',()=>{$('file').accept='video/*';$('file').click()}]])}
 // ===== Unggah/import media: gambar dan video diproses dulu, lalu langsung dibuka di pratinjau =====
@@ -543,18 +549,26 @@ $('file').onchange=async e=>{
   p.items.unshift(it);p.updatedAt=NOW();if(!first)first=it;
   save();toast(`Menyiapkan ${t==='video'?'video':'gambar'}: ${f.name||'file'}…`);
   try{
-   // File terpilih sudah berada di browser; baca seluruh berkas sebelum menandai siap.
-   await f.arrayBuffer();
-   it.uploadProgress=100;it.status='ready';
+   // Unggah file asli ke Supabase Storage; jangan tandai siap hanya karena file sudah dipilih di browser.
+   if(!SB)throw Error('Penyimpanan belum terhubung. Periksa konfigurasi Supabase.');
+   if(!SES)throw Error('Masuk dulu agar gambar/video bisa diunggah ke penyimpanan.');
+   const ext=((f.name||'').split('.').pop()|| (t==='image'?'jpg':'mp4')).toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,8)||(t==='image'?'jpg':'mp4');
+   const path=`${SES.user.id}/${Date.now()}-${uuid()}.${ext}`;
+   it.uploadProgress=0;save();showUploadProgress(f,0,`Mengunggah ${t==='video'?'video':'gambar'}…`);toast(`Mengunggah ${t==='video'?'video':'gambar'}…`);
+   const up=await uploadToSupabaseWithProgress('video-references',path,f,pct=>{it.uploadProgress=pct;setUploadPct(pct);save()});
+   const {data:pub}=SB.storage.from('video-references').getPublicUrl(path);
+   if(!pub?.publicUrl)throw Error('File terunggah tetapi URL pratinjau tidak tersedia.');
+   it.url=pub.publicUrl;it.storagePath=path;it.uploadProgress=100;it.status='ready';showUploadProgress(f,100,'Unggahan berhasil');
    if(ADDREF&&t==='image')sc.refs.push(it.id);
    if(t==='video')await checkVideo(p,it);
-  }catch(err){it.status='error';it.error=String(err&&err.message||err);toast(`Gagal menyiapkan ${f.name||'file'}.`)}
+  }catch(err){it.status='error';it.error=String(err&&err.message||err);if($('uploadProgressTitle'))$('uploadProgressTitle').textContent='Unggahan gagal';toast(`Gagal mengunggah ${f.name||'file'}: ${it.error}`);hideUploadProgress(3500)}
   save();
  }
  if(rej)toast(`${rej} file dilewati: bukan gambar atau video yang dikenali.`);
  ADDREF=false;e.target.value='';save();
  // Setelah file siap, buka layar pratinjau media—bukan sekadar kembali ke daftar media.
  if(first){location.hash=`#/v/${p.id}/${first.id}`;route()}
+ if(first&&first.status==='ready')hideUploadProgress(1400);
 };
 (async()=>{await initAuth();refreshBal();const d=await load();if(d&&d.projects)S={...S,...d,set:{...S.set,...d.set}};migrate();if(!M(S.set.model)||!M(S.set.model).on)S.set.model='seedance-2.0-fast';
  S.projects.forEach(p=>p.items.forEach(it=>{if(it.status==='processing'){if(it.jobId||it.req)run(it);else{it.status='failed';it.error='Terputus saat halaman dimuat ulang.'}}else if(it.status==='failed'&&it.resume&&!it.jobId&&it.req){it.status='processing';it.error='';it.resume=false;run(it)}}));
