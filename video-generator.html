@@ -16,6 +16,44 @@
 .sl{animation:sl .22s}.sr{animation:sr .22s}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
+<style id="kamisah-video-canvas">
+/* Studio Canvas mobile layout — perubahan terbatas pada halaman Video AI */
+.canvas-page{max-width:900px!important;padding:calc(12px + env(safe-area-inset-top)) 14px calc(128px + env(safe-area-inset-bottom))!important}
+.canvas-top{display:flex;align-items:center;gap:10px;padding:4px 0 14px;border-bottom:1px solid var(--ln);margin-bottom:14px}
+.canvas-back{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#171c2b;flex:none}
+.canvas-title{font-size:17px;font-weight:800;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.canvas-tools{display:flex;align-items:center;gap:2px}
+.canvas-caption{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:8px 0 12px}
+.canvas-caption strong{font-size:11px;letter-spacing:.16em;color:var(--mu)}
+.canvas-action{display:flex;align-items:center;gap:7px;padding:10px 12px;border-radius:14px;background:var(--s1);border:1px solid var(--ln);font-size:12px;font-weight:700;white-space:nowrap}
+.canvas-gal{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.canvas-gal .tile{aspect-ratio:4/3;border-radius:15px}
+.canvas-gal .tile .fill{object-fit:cover}
+.canvas-empty{min-height:38vh;border:1px solid var(--ln);border-radius:24px;background:linear-gradient(160deg,#0d1020,#090b16);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:26px 20px;margin-bottom:14px}
+.canvas-empty .sparkbox{width:68px;height:68px;border-radius:22px;display:grid;place-items:center;background:#1b2040;color:#a78bfa;margin-bottom:18px}
+.canvas-empty h2{font-size:24px;margin-bottom:8px}
+.canvas-empty p{color:var(--mu);line-height:1.6;font-size:14px;max-width:330px}
+.canvas-composer-wrap{position:fixed;left:0;right:0;bottom:0;z-index:25;padding:8px 14px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent,var(--bg) 24%)}
+.canvas-composer{max-width:870px;margin:0 auto;border:1px solid #303750;border-radius:25px;background:rgba(19,23,40,.97);box-shadow:0 10px 40px #0005;padding:12px}
+.canvas-prompt{display:block;width:100%;min-height:58px;max-height:130px;resize:vertical;border:0;outline:0;background:transparent;color:var(--tx);font:inherit;font-size:15px;line-height:1.5;padding:2px 3px 10px}
+.canvas-prompt::placeholder{color:#858ca9}
+.canvas-composer-row{display:flex;align-items:center;gap:8px}
+.canvas-circle{width:46px;height:46px;border-radius:16px;background:#20263b;border:1px solid var(--ln);display:grid;place-items:center;flex:none}
+.canvas-mode{display:flex;align-items:center;gap:7px;border-radius:16px;background:#20263b;border:1px solid var(--ln);padding:0 12px;height:46px;font-size:12px;font-weight:700;white-space:nowrap}
+.canvas-send{width:52px;height:52px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,#3268ff,#822bff);box-shadow:0 5px 22px #583bff55;flex:none}
+.canvas-summary{display:flex;justify-content:space-between;gap:8px;color:var(--mu);font-size:10px;margin-top:10px;padding:0 2px}
+.canvas-refstrip{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:10px 0 12px}
+.canvas-ref{position:relative;width:60px;height:60px;border-radius:12px;overflow:hidden;flex:none;border:1px solid #343b53}
+.canvas-ref img,.canvas-ref video{width:100%;height:100%;object-fit:cover}
+.canvas-ref button{position:absolute;right:2px;top:2px;background:#080a17d9;width:20px;height:20px;border-radius:50%;display:grid;place-items:center}
+.canvas-ref-label{font-size:12px;color:var(--mu);white-space:nowrap}
+.canvas-pop{position:fixed;z-index:45;bottom:calc(102px + env(safe-area-inset-bottom));left:20px;width:205px;background:#171b2a;border:1px solid #333b55;border-radius:18px;padding:7px;box-shadow:0 16px 40px #0009}
+.canvas-pop button{width:100%;display:flex;align-items:center;gap:12px;padding:13px 12px;border-radius:12px;text-align:left;font-size:13px}
+.canvas-pop button:active{background:#292f48}
+.canvas-progress{border:1px solid var(--ln);background:#0e1222;border-radius:14px;padding:12px;font-family:monospace;color:#00ff41;font-size:12px}
+@media(min-width:620px){.canvas-gal{grid-template-columns:repeat(3,minmax(0,1fr))}.canvas-page{padding-left:22px!important;padding-right:22px!important}.canvas-empty{min-height:34vh}}
+
+</style>
 
 <style id="kamisah-ui-v7">
 :root{--bg:#060714;--s1:#0e1128;--s2:#161b3a;--ln:rgba(255,255,255,.09);--tx:#f4f5ff;--mu:#9aa1c4;--v:#7c4dff;--bl:#1d6bff;--or:#ff8a1f;color-scheme:dark}
@@ -100,7 +138,7 @@ a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;cursor:po
 
 </head>
 <body class="bg-black text-neutral-100 font-sans">
-<div id="view"></div><div id="sheet"></div><div id="uploadProgressPanel" style="display:none;position:fixed;z-index:100;left:16px;right:16px;top:calc(12px + env(safe-area-inset-top));max-width:520px;margin:auto;background:#171923;border:1px solid #393b50;border-radius:18px;padding:16px;box-shadow:0 12px 40px #0009"><div style="display:flex;align-items:center;gap:10px"><div style="font-size:24px">⇧</div><div style="flex:1;min-width:0"><div id="uploadProgressTitle" style="font-weight:700">Mengunggah…</div><div id="uploadProgressMeta" style="font-size:12px;color:#a5a8bd;overflow-wrap:anywhere"></div></div><div id="uploadProgressPct" style="font-weight:800">0%</div></div><div style="height:7px;background:#33364b;border-radius:99px;overflow:hidden;margin-top:12px"><div id="uploadProgressBar" style="height:100%;width:0;background:linear-gradient(90deg,#8b5cf6,#60a5fa);transition:width .15s"></div></div></div>
+<div id="view"></div><div id="sheet"></div>
 <div id="toast" role="status" class="fixed top-4 left-1/2 -translate-x-1/2 z-[60] hidden max-w-[90%] bg-neutral-800 border border-amber-500/40 px-4 py-2 rounded-full text-xs font-semibold shadow-xl"></div>
 <input id="file" type="file" accept="image/*,video/*" multiple class="hidden">
 <script src="config.js"></script>
@@ -113,7 +151,7 @@ a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;cursor:po
 const MODELS=[
  {id:'omni-flash',name:'Omni 1.1 Flash',on:false,note:'API terpisah',modes:[],res:['720p'],dur:[4,15]},
  {id:'seedance-2.0-fast',name:'Seedance 2.0 Fast',on:true,modes:['text','image'],res:['480p','720p'],dur:[4,15],rates:{'480p':13,'720p':26}},
- {id:'seedance-2.0',name:'Seedance 2.0',on:true,modes:['text','image','video'],res:['480p','720p','1080p'],dur:[4,15],rates:{'480p':16,'720p':32,'1080p':80}},
+ {id:'seedance-2.0',name:'Seedance 2.0',on:true,modes:['text','image'],res:['480p','720p','1080p'],dur:[4,15],rates:{'480p':16,'720p':32,'1080p':80}},
  {id:'seedance-2.5',name:'Seedance 2.5',on:true,modes:['text','image'],res:['480p','720p','1080p'],dur:[4,30],rates:{'480p':24,'720p':49,'1080p':120}}
 ];
 const ENDPOINT='/.netlify/functions/seedance';
@@ -126,15 +164,10 @@ const price=()=>{const m=cur();return (m.rates?Math.ceil(m.rates[S.set.res]*S.se
 function fit(mode){CTX=mode;let m=cur();if(!ok(m,mode)){const f=MODELS.find(x=>ok(x,mode));if(f)S.set.model=f.id}m=cur();if(!m.res.includes(S.set.res))S.set.res=m.res[0];if(m.dur)S.set.dur=Math.min(Math.max(S.set.dur,m.dur[0]),m.dur[1])}
 function toast(t){const e=$('toast');e.textContent=t;e.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.add('hidden'),3200)}
 
-// Penyimpanan lokal sebagai cache + sinkronisasi cloud ke Supabase untuk akun yang login.
+// ===== Penyimpanan di browser (IndexedDB). Sementara, sampai login + Supabase siap =====
 const idb=new Promise(r=>{try{const q=indexedDB.open('kreatorhub',1);q.onupgradeneeded=()=>q.result.createObjectStore('s');q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)}catch{r(null)}});
-async function localLoad(){const d=await idb;if(!d)return;return new Promise(r=>{const q=d.transaction('s').objectStore('s').get('db');q.onsuccess=()=>r(q.result);q.onerror=()=>r()})}
-let cloudTimer=null,cloudBusy=false,cloudAgain=false;
-async function cloudLoad(){if(!SB||!SES)return null;const{data,error}=await SB.from('user_projects').select('data,updated_at').eq('user_id',SES.user.id).maybeSingle();if(error){console.warn('Kamisah cloud load:',error.message);return null}return data?.data||null}
-async function load(){const local=await localLoad();if(!SB||!SES)return local;const cloud=await cloudLoad();if(!cloud)return local;if(!local||!Array.isArray(local.projects)||!local.projects.length)return cloud;const localTime=Number(local._savedAt||0),cloudTime=Number(cloud._savedAt||0);return cloudTime>localTime?cloud:local}
-async function persistLocal(snapshot){const d=await idb;try{if(d)await new Promise((resolve,reject)=>{const tx=d.transaction('s','readwrite');tx.objectStore('s').put(snapshot,'db');tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error)})}catch(e){console.warn('Kamisah local save:',e)}}
-async function persistCloud(snapshot){if(!SB||!SES)return;const safe=JSON.parse(JSON.stringify(snapshot));safe.projects=(safe.projects||[]).map(p=>({...p,items:(p.items||[]).map(it=>{const x={...it};delete x.blob;delete x.objectUrl;return x})}));const{error}=await SB.from('user_projects').upsert({user_id:SES.user.id,data:safe,updated_at:new Date().toISOString()},{onConflict:'user_id'});if(error){console.warn('Kamisah cloud save:',error.message);toast('Perubahan tersimpan di perangkat, tetapi sinkronisasi cloud gagal.');}}
-let st;function save(){S._savedAt=Date.now();const snap=JSON.parse(JSON.stringify(S,(k,v)=>k==='blob'?undefined:v));clearTimeout(st);st=setTimeout(()=>persistLocal(snap),80);clearTimeout(cloudTimer);if(SB&&SES)cloudTimer=setTimeout(()=>persistCloud(snap),500)}
+async function load(){const d=await idb;if(!d)return;return new Promise(r=>{const q=d.transaction('s').objectStore('s').get('db');q.onsuccess=()=>r(q.result);q.onerror=()=>r()})}
+let st;function save(){clearTimeout(st);st=setTimeout(async()=>{const d=await idb;try{d&&d.transaction('s','readwrite').objectStore('s').put(S,'db')}catch{}},300)}
 
 // ===== API & antrean generate (paralel, tidak saling menunggu) =====
 const uuid=()=>crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)});
@@ -164,21 +197,18 @@ let GEN_BUSY=false;
 async function generate(p,sc,prompt){if(GEN_BUSY)return;GEN_BUSY=true;try{await generateInner(p,sc,prompt)}finally{setTimeout(()=>{GEN_BUSY=false},1200)}}
 async function generateInner(p,sc,prompt){
  const pr=prompt.trim();
- const selectedRefs=refs(p,sc);
- const selectedImages=selectedRefs.filter(x=>x.type==='image'&&x.blob);
- const selectedVideos=selectedRefs.filter(x=>x.type==='video'&&!x.blob&&/^https:\/\//i.test(x.url||''));
- const mode=selectedVideos.length?'video':selectedImages.length?'image':'text';
+ const selectedRefs=refs(p,sc).filter(x=>x.blob);
+ const mode=selectedRefs.length?'image':'text';
  const m=cur();
- if(!ok(m,mode))return toast(mode==='video'?'Referensi video saat ini hanya disiapkan untuk Seedance 2.0. Pilih model itu atau hapus referensi video.':'Model ini belum mendukung mode itu. Pilih model lain.');
+ if(!ok(m,mode))return toast('Model ini belum mendukung mode itu. Pilih model lain.');
  if(!pr)return toast('Tulis prompt dulu.');
  if(SB&&!SES)return openAuth('Masuk dulu untuk generate video.');
  if(BAL!==null&&price()>BAL)return toast('Saldo kredit kurang.');
  let reference_image_urls=[];
- const reference_video_urls=selectedVideos.map(x=>x.url);
- if(selectedImages.length){
+ if(mode==='image'){
   try{
    const cap=m.id==='seedance-2.5'?30:9;
-   for(const item of selectedImages.slice(0,cap)){
+   for(const item of selectedRefs.slice(0,cap)){
     const data_url=await imgData(item.blob);
     const uploaded=await api({action:'upload_reference',data_url});
     reference_image_urls.push(uploaded.url);
@@ -186,9 +216,9 @@ async function generateInner(p,sc,prompt){
   }catch(e){return toast(e.message||'Gambar referensi gagal diunggah.')}
  }
  for(let k=0;k<S.set.n;k++){
-  const it={id:uid(),kind:'result',type:'video',status:'processing',sceneId:sc.id,ts:NOW(),prompt:pr,model:m.id,srcId:selectedRefs[0]?.id,referenceCount:reference_image_urls.length+reference_video_urls.length};const req={action:'create',idempotency_key:uuid(),model:m.id,prompt:pr,ratio:S.set.ratio,resolution:S.set.res,duration:S.set.dur,generate_audio:S.set.audio!==false,reference_image_urls,reference_video_urls};it.req=req;p.items.unshift(it);
+  const it={id:uid(),kind:'result',type:'video',status:'processing',sceneId:sc.id,ts:NOW(),prompt:pr,model:m.id,srcId:selectedRefs[0]?.id,referenceCount:reference_image_urls.length};const req={action:'create',idempotency_key:uuid(),model:m.id,prompt:pr,ratio:S.set.ratio,resolution:S.set.res,duration:S.set.dur,generate_audio:S.set.audio!==false,reference_image_urls};it.req=req;p.items.unshift(it);
   run(it,req)}
- save();toast(`${S.set.n} video diproses dengan ${reference_image_urls.length+reference_video_urls.length} referensi terpilih.`);
+ save();toast(`${S.set.n} video diproses dengan ${reference_image_urls.length} referensi terpilih.`);
  sc.draft='';p.updatedAt=NOW();location.hash=`#/s/${p.id}/${sc.id}`;
 }
 
@@ -209,26 +239,6 @@ async function sniffVideo(f){
   r.container='webm';const x=L1.decode(head);r.codec=x.includes('V_VP9')?'vp9':x.includes('V_VP8')?'vp8':x.includes('V_AV1')?'av1':null;
  }
  return r}
-// Konversi lokal opsional untuk HEVC: berjalan di browser, tanpa mengirim video ke server.
-// FFmpeg WebAssembly diunduh hanya jika video HEVC memang gagal diputar.
-let ffmpegPromise=null;
-async function convertHevcToH264(file){
- if(!ffmpegPromise)ffmpegPromise=(async()=>{
-  const {FFmpeg}=await import('https://unpkg.com/@ffmpeg/ffmpeg@0.12.15/dist/esm/index.js');
-  const ff=new FFmpeg();
-  const base='https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd';
-  await ff.load({coreURL:base+'/ffmpeg-core.js',wasmURL:base+'/ffmpeg-core.wasm'});
-  return ff;
- })().catch(e=>{ffmpegPromise=null;throw e});
- const ff=await ffmpegPromise;
- const input='input_video.'+((file.name||'video.mp4').split('.').pop().replace(/[^a-z0-9]/ig,'').slice(0,8)||'mp4');
- const output='kamish-preview.mp4';
- await ff.writeFile(input,new Uint8Array(await file.arrayBuffer()));
- await ff.exec(['-i',input,'-map','0:v:0','-map','0:a?','-c:v','libx264','-preset','ultrafast','-crf','26','-pix_fmt','yuv420p','-c:a','aac','-b:a','128k','-movflags','+faststart',output]);
- const data=await ff.readFile(output);
- try{await ff.deleteFile(input);await ff.deleteFile(output)}catch{}
- return new Blob([data],{type:'video/mp4'});
-}
 function probePlay(blob,ms=8000){return new Promise(res=>{const v=document.createElement('video'),u=URL.createObjectURL(blob);let done=false;
  const end=o=>{if(done)return;done=true;clearTimeout(t);v.removeAttribute('src');try{v.load()}catch{}URL.revokeObjectURL(u);res(o)};
  const t=setTimeout(()=>end({ok:false,code:'timeout'}),ms);
@@ -244,36 +254,27 @@ async function checkVideo(p,it){
  const tries=[f];if((info.container==='mp4'||info.container==='mov')&&f.type!=='video/mp4')tries.push(new File([f],f.name||'video.mp4',{type:'video/mp4'}));
  let pr={ok:false,code:'?'},relabeled=false;
  for(const b of tries){pr=await probePlay(b);if(pr.ok){if(b!==f){it.blob=b;delete U[it.id];relabeled=true}break}}
- // Bila HEVC gagal, coba transkode lokal ke H.264. File asli disimpan terpisah di memori.
- if(!pr.ok&&pr.code!=='timeout'&&info.codec==='hevc'){
-  toast('Video HEVC tidak didukung. Menyiapkan konversi otomatis ke H.264…');
-  try{
-   const converted=await convertHevcToH264(f);const convertedProbe=await probePlay(converted,12000);
-   if(convertedProbe.ok){it.originalBlob=f;it.blob=converted;delete U[it.id];pr=convertedProbe;it.converted=true;toast('Video berhasil dikonversi untuk pratinjau. File asli tidak diubah.');}
-   else throw new Error('Hasil konversi belum dapat diputar');
-  }catch(err){console.warn('Konversi HEVC gagal:',err);it.conversionFailed=true;toast('Konversi otomatis gagal di perangkat ini. File asli tetap tersimpan.');}
- }
- it.play={ok:!!pr.ok,code:pr.code??null,codec:it.converted?'h264':(info.codec||null),container:info.container||null,brand:info.brand||null,converted:!!it.converted};
+ it.play={ok:!!pr.ok,code:pr.code??null,codec:info.codec||null,container:info.container||null,brand:info.brand||null};
  save();
- if(!pr.ok&&pr.code!=='timeout'&&!it.conversionFailed)toast(`Video ini tidak bisa diputar di browser ini (${vidDetail(it)}). File asli tetap tersimpan.`);
+ if(!pr.ok&&pr.code!=='timeout')toast(`Video ini tidak bisa diputar di browser ini (${vidDetail(it)}). Tetap tersimpan; baca keterangan di pratinjau.`);
  const h=location.hash;if((!pr.ok||relabeled)&&(h.startsWith('#/p/'+p.id)||h.startsWith('#/v/'+p.id)))route()}
 function vidDetail(it){const pl=it.play||{},b=it.blob;return[pl.container&&pl.container.toUpperCase(),pl.codec&&pl.codec.toUpperCase(),b&&(b.type||'tipe tidak diketahui'),b&&(b.size/1048576).toFixed(1)+' MB'].filter(Boolean).join(' · ')}
 function uploadMsg(it,code){const pl=it.play||{};
  if(pl.container==='unknown')return'File ini tidak dikenali sebagai MP4/MOV/WebM, atau rusak.';
- if(pl.codec==='hevc')return it.conversionFailed?'Video HEVC tidak dapat dikonversi di perangkat ini. File asli tetap tersimpan. Coba video MP4/H.264.':'Video memakai HEVC/H.265 yang tidak didukung pemutar pada perangkat ini.';
- if(pl.codec==='av1'||pl.codec==='vp9'||pl.codec==='vp8')return`Codec ${pl.codec.toUpperCase()} tidak didukung pemutar pada perangkat ini. File asli tetap tersimpan; perlu dukungan pemutar atau konversi otomatis.`;
+ if(pl.codec==='hevc')return'Video memakai HEVC/H.265 yang tidak bisa diputar browser di perangkat ini. Ubah ke MP4 H.264 lalu unggah lagi.';
+ if(pl.codec==='av1'||pl.codec==='vp9'||pl.codec==='vp8')return`Codec ${pl.codec.toUpperCase()} tidak didukung browser di perangkat ini. Ubah ke MP4 H.264 lalu unggah lagi.`;
  if(code===2)return'File tidak bisa dibaca (mungkin sudah dipindah/dihapus dari galeri HP). Unggah ulang.';
  return'Browser tidak bisa memutar file ini (format atau codec tidak didukung).'}
-const src=it=>it.storagePath&&it.url?it.url:(it.blob?(U[it.id]??=URL.createObjectURL(it.blob)):it.url);
+const src=it=>it.blob?(U[it.id]??=URL.createObjectURL(it.blob)):it.url;
 const spin='<div class="w-7 h-7 rounded-full border-2 border-amber-500 border-t-transparent animate-spin"></div>';
 // ===== Desain v7: ikon, pembantu, rute, beranda, ruang proyek, media, panel generate =====
-const IC={back:'<path d="M15 5l-7 7 7 7"/>',more:'<path d="M12 5h.01M12 12h.01M12 19h.01"/>',plus:'<path d="M12 5v14M5 12h14"/>',play:'<path d="M7 4l13 8-13 8z" fill="currentColor"/>',pause:'<path d="M8 5v14M16 5v14"/>',vol:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 010 7"/>',mute:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l4 6M21 9l-4 6"/>',full:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',dl:'<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>',edit:'<path d="M4 20l1-4L16 5l3 3L8 19z"/>',trash:'<path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13"/>',chk:'<path d="M5 12l5 5 9-10"/>',bell:'<path d="M6 17v-6a6 6 0 0112 0v6l2 2H4zM10 21h4"/>',down:'<path d="M6 9l6 6 6-6"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',img:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M4 18l5-5 4 4 3-3 4 4"/>',spark:'<path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2"/>',right:'<path d="M9 5l7 7-7 7"/>'};
+const IC={back:'<path d="M15 5l-7 7 7 7"/>',more:'<path d="M12 5h.01M12 12h.01M12 19h.01"/>',plus:'<path d="M12 5v14M5 12h14"/>',play:'<path d="M7 4l13 8-13 8z" fill="currentColor"/>',pause:'<path d="M8 5v14M16 5v14"/>',vol:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 010 7"/>',mute:'<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l4 6M21 9l-4 6"/>',full:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',dl:'<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>',edit:'<path d="M4 20l1-4L16 5l3 3L8 19z"/>',trash:'<path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13"/>',chk:'<path d="M5 12l5 5 9-10"/>',bell:'<path d="M6 17v-6a6 6 0 0112 0v6l2 2H4zM10 21h4"/>',down:'<path d="M6 9l6 6 6-6"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',img:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M4 18l5-5 4 4 3-3 4 4"/>',spark:'<path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/>',copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2"/>',right:'<path d="M9 5l7 7-7 7"/>',upload:'<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v4h16v-4"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',sliders:'<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h9M17 18h3"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="15" cy="18" r="2"/>',camera:'<path d="M4 7h3l2-3h6l2 3h3v12H4z"/><circle cx="12" cy="13" r="3"/>'};
 const ic=(n,s=20)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
 const NOW=()=>Date.now(),PRJ=id=>S.projects.find(x=>x.id===id);
 const ago=t=>{if(!t)return'';const d=Math.floor((NOW()-t)/864e5);return d<1?'hari ini':d<2?'kemarin':d<30?d+' hari lalu':new Date(t).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'})};
 const fmtT=s=>Number.isFinite(s)?Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'):'0:00';
 const scn=(p,id)=>p.scenes.find(s=>s.id===id)||p.scenes[0],sItems=(p,s)=>p.items.filter(i=>i.sceneId===s.id);
-const refs=(p,s)=>(s.refs||[]).map(id=>p.items.find(i=>i.id===id)).filter(i=>i&&i.status==='ready'&&(i.type==='image'||(i.type==='video'&&!i.blob&&/^https:\/\//i.test(i.url||''))));
+const refs=(p,s)=>(s.refs||[]).map(id=>p.items.find(i=>i.id===id)).filter(i=>i&&i.type==='image'&&i.status==='ready');
 const best=a=>a.find(i=>i.status==='ready'&&!unplayable(i))||null;
 let CURS=null,MF='all',HF='all',ADDREF=false,DIRTY=false,IDEC=0,GI={tab:'t2i',ratio:'1:1',n:1};
 function newProject(n){const s={id:uid(),name:'Adegan 1',refs:[]};return{id:uid(),name:n,items:[],scenes:[s],cur:s.id,createdAt:NOW(),updatedAt:NOW()}}
@@ -293,7 +294,7 @@ function delScene(p,s){if(p.scenes.length<2)return toast('Proyek harus punya min
 const projMenu=p=>sh(p.name,[['Ganti nama',()=>ren(p)],['Hapus proyek',()=>delProject(p),'red']]);
 const sceneMenu=(p,s)=>sh(s.name,[['Buka media',()=>location.hash=`#/s/${p.id}/${s.id}`],['Generate di adegan ini',()=>location.hash=`#/g/${p.id}/${s.id}`],['Ganti nama',()=>ren(s)],['Hapus adegan',()=>delScene(p,s),'red']]);
 const upd=()=>{const e=$('sal');if(e)e.textContent=balTxt()};
-function route(){const[,k,a,b]=location.hash.split('/'),p=PRJ(a);closeSheet();DIRTY=false;scrollTo(0,0);document.getElementById('kamHomeNav')?.remove();
+function route(){const[,k,a,b]=location.hash.split('/'),p=PRJ(a);closeSheet();DIRTY=false;scrollTo(0,0);
  if(k==='p'&&p)return viewProject(p,b);
  if(k==='s'&&p){const s=p.scenes.find(x=>x.id===b);if(!s)return location.replace('#/p/'+p.id);CURS=p.cur=s.id;return viewScene(p,s)}
  if(k==='g'&&p){const s=scn(p,b);CURS=p.cur=s.id;return viewGen(p,s)}
@@ -302,7 +303,6 @@ function route(){const[,k,a,b]=location.hash.split('/'),p=PRJ(a);closeSheet();DI
  if(k==='hasil'||k==='antrean')return viewHasil();
  if(k==='ide')return viewIde(p,b);if(k==='lanjut')return viewLanjut();if(k==='gambar')return viewGambar();
  viewList()}
-function addKamHomeNav(){if(document.getElementById('kamHomeNav'))return;const a=document.createElement('a');a.id='kamHomeNav';a.href='#/';a.setAttribute('aria-label','Kembali ke Beranda');a.textContent='⌂ Beranda';a.style.cssText='position:fixed;left:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:35;padding:11px 16px;border-radius:999px;background:#262247;border:1px solid #7163c9;color:#fff;font-weight:800;font-size:13px;box-shadow:0 5px 20px #0008;text-decoration:none';document.body.appendChild(a)}
 let SHOWALL=false;
 function viewList(){
  const ps=S.projects,busy=ps.some(p=>p.items.some(i=>i.status==='processing')),all=SHOWALL?ps:ps.slice(0,4);
@@ -322,7 +322,7 @@ function viewList(){
 const FL=[['all','Semua'],['image','Gambar'],['video','Video'],['ref','Referensi']];
 const flt=(p,L,f)=>L.filter(i=>f==='all'||(f==='ref'?(scn(p,i.sceneId).refs||[]).includes(i.id):i.type===f));
 const fbar=(cur,k)=>`<div class="fl">${FL.map(([v,t])=>`<button type="button" class="tab${v===cur?' on':''}" data-f="${v}" data-fk="${k}">${t}</button>`).join('')}</div>`;
-function tiles(p,L){return L.map(it=>{const s=scn(p,it.sceneId),on=(s.refs||[]).includes(it.id),rd=it.status==='ready';return`<div class="tile"><button type="button" class="tbtn" data-open="${it.id}" aria-label="Buka pratinjau ${it.type==='video'?'video':'gambar'}">${thumb(it,'fill')}</button>${rd&&it.type==='video'?`<span class="bdg">${ic('play',10)} ${it.req?fmtT(it.req.duration):'Video'}</span>`:''}${it.status==='processing'?'<span class="bdg wait">Memproses</span>':''}${rd&&(it.type==='image'||(it.type==='video'&&!it.blob&&/^https:\/\//i.test(it.url||'')))?`<button type="button" class="chk${on?' on':''}" data-ref="${it.id}" aria-pressed="${on}" aria-label="${on?'Batalkan referensi':'Pilih sebagai referensi'}">${on?ic('chk',14):''}</button>`:''}</div>`}).join('')}
+function tiles(p,L){return L.map(it=>{const s=scn(p,it.sceneId),on=(s.refs||[]).includes(it.id),rd=it.status==='ready';return`<div class="tile" data-media-search="${esc((it.blob?.name||it.prompt||it.type||'').toLowerCase())}"><button type="button" class="tbtn" data-open="${it.id}" aria-label="Buka pratinjau ${it.type==='video'?'video':'gambar'}">${thumb(it,'fill')}</button>${rd&&it.type==='video'?`<span class="bdg">${ic('play',10)} ${it.req?fmtT(it.req.duration):'Video'}</span>`:''}${it.status==='processing'?'<span class="bdg wait">Memproses</span>':''}${rd&&it.type==='image'?`<button type="button" class="chk${on?' on':''}" data-ref="${it.id}" aria-pressed="${on}" aria-label="${on?'Batalkan referensi':'Pilih sebagai referensi'}">${on?ic('chk',14):''}</button>`:''}</div>`}).join('')}
 function bindMedia(p){
  document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>location.hash=`#/v/${p.id}/${b.dataset.open}`);
  document.querySelectorAll('[data-ref]').forEach(b=>b.onclick=()=>{const it=p.items.find(i=>i.id===b.dataset.ref),s=scn(p,it.sceneId);s.refs=s.refs.includes(it.id)?s.refs.filter(x=>x!==it.id):[...s.refs,it.id];save();const y=scrollY;route();scrollTo(0,y)});
@@ -333,7 +333,7 @@ function viewProject(p,tab){
  const hero=best(p.items.filter(i=>i.kind==='result'))||best(p.items),T=[['adegan','Adegan'],['media','Media'],['referensi','Referensi'],['pengaturan','Pengaturan']];let body='';
  if(tab==='adegan')body=`<button type="button" id="addS" class="cta">${ic('plus')} Tambah Adegan</button><div class="list">${p.scenes.map((s,k)=>{const its=sItems(p,s),r=its.filter(i=>i.kind==='result'),h=best(r)||best(its),d=(r.find(i=>i.req)||{}).req;return`<div class="card srow${s.id===p.cur?' on':''}"><a href="#/s/${p.id}/${s.id}" class="no">${String(k+1).padStart(2,'0')}</a><a href="#/s/${p.id}/${s.id}" class="thumb sm">${h?thumb(h,'fill'):ph('img')}</a><a href="#/s/${p.id}/${s.id}" class="grow"><b>${esc(s.name)}</b><small>${d?fmtT(d.duration)+' · ':''}${r.filter(i=>i.status==='ready').length} hasil</small></a><button type="button" data-sm="${s.id}" class="ib" aria-label="Menu ${esc(s.name)}">${ic('more')}</button></div>`}).join('')}</div>`;
  else if(tab==='media'){const L=flt(p,p.items,MF);body=`${fbar(MF,'m')}<div class="gal">${tiles(p,L)}</div>${L.length?'':'<div class="empty">Belum ada media di filter ini.</div>'}<div class="bar"><button type="button" id="addM" class="cta ghost">${ic('plus')} Tambah Media</button></div>`}
- else if(tab==='referensi'){const R=p.scenes.flatMap(s=>refs(p,s).map(i=>({s,i})));body=R.length?`<div class="gal">${R.map(({s,i})=>`<div class="tile"><button type="button" class="tbtn" data-open="${i.id}" aria-label="Buka pratinjau">${thumb(i,'fill')}</button><span class="bdg">${esc(s.name)}</span><button type="button" class="chk on" data-ref="${i.id}" aria-pressed="true" aria-label="Batalkan referensi">${ic('chk',14)}</button></div>`).join('')}</div><p class="note">Referensi dipakai oleh adegannya saat generate. Gambar dapat diunggah sebagai referensi; video hanya dapat dipakai jika sudah memiliki URL HTTPS publik dan model Seedance 2.0 mendukungnya. Video unggahan lokal belum bisa dikirim sebagai referensi.</p>`:'<div class="empty">Belum ada referensi.<br>Pilih gambar lewat kotak centang di Kelola Media.</div>'}
+ else if(tab==='referensi'){const R=p.scenes.flatMap(s=>refs(p,s).map(i=>({s,i})));body=R.length?`<div class="gal">${R.map(({s,i})=>`<div class="tile"><button type="button" class="tbtn" data-open="${i.id}" aria-label="Buka pratinjau">${thumb(i,'fill')}</button><span class="bdg">${esc(s.name)}</span><button type="button" class="chk on" data-ref="${i.id}" aria-pressed="true" aria-label="Batalkan referensi">${ic('chk',14)}</button></div>`).join('')}</div><p class="note">Referensi dipakai oleh adegannya saat generate. Hanya gambar yang dapat dijadikan referensi.</p>`:'<div class="empty">Belum ada referensi.<br>Pilih gambar lewat kotak centang di Kelola Media.</div>'}
  else body=`<div class="list"><button type="button" id="rnP" class="card lrow">Ganti nama proyek<span>${ic('right')}</span></button><button type="button" id="dlP" class="card lrow" style="color:#ff7b7b">Hapus proyek<span>${ic('right')}</span></button></div><p class="note">${p.scenes.length} adegan · ${p.items.length} media dan hasil. Data tersimpan di perangkat ini (IndexedDB).</p>`;
  $('view').innerHTML=`<div class="pg${tab==='media'?' fx':''}">${hdr(esc(p.name),`<button type="button" id="pm" class="ib" aria-label="Menu proyek">${ic('more')}</button>`)}
  <div class="tabs" role="tablist">${T.map(([v,t])=>`<a href="#/p/${p.id}/${v}" role="tab" aria-selected="${v===tab}" class="tab${v===tab?' on':''}">${t}</a>`).join('')}</div>
@@ -343,11 +343,28 @@ function viewProject(p,tab){
  if($('addS'))$('addS').onclick=()=>{const s={id:uid(),name:'Adegan '+(p.scenes.length+1),refs:[]};p.scenes.push(s);p.cur=s.id;p.updatedAt=NOW();save();route()};
  document.querySelectorAll('[data-sm]').forEach(b=>b.onclick=()=>sceneMenu(p,scn(p,b.dataset.sm)));bindMedia(p)}
 function viewScene(p,s){
- const L=flt(p,sItems(p,s),MF);
- $('view').innerHTML=`<div class="pg fx">${hdr(`<button type="button" id="sw" class="sw" aria-label="Pilih adegan">${esc(s.name)} ${ic('down',18)}</button>`,`<a href="#/g/${p.id}/${s.id}" class="ib" aria-label="Generate video di adegan ini" style="color:#b9a6ff">${ic('spark')}</a>`,'#/p/'+p.id)}
- ${fbar(MF,'s')}<div class="gal">${tiles(p,L)}</div>${L.length?'':`<div class="empty">${MF==='all'?'Adegan ini belum punya media.<br>Tambah media atau generate video.':'Belum ada media di filter ini.'}</div>`}
- <div class="bar"><button type="button" id="addM" class="cta">${ic('plus')} Tambah Media</button></div></div>`;
- $('addM').onclick=addMedia;$('sw').onclick=()=>sh('Pilih adegan',p.scenes.map(x=>[esc(x.name),()=>location.hash=`#/s/${p.id}/${x.id}`]));bindMedia(p)}
+ const L=flt(p,sItems(p,s),MF),R=refs(p,s),ready=L.filter(i=>i.status==='ready');
+ const refStrip=R.length?`<div class="canvas-refstrip"><span class="canvas-ref-label">Referensi (${R.length})</span>${R.map(i=>`<div class="canvas-ref">${thumb(i,'fill')}<button type="button" data-unref="${i.id}" aria-label="Hapus referensi">${ic('x',12)}</button></div>`).join('')}</div>`:'';
+ const grid=L.length?`<div class="canvas-gal">${tiles(p,L)}</div>`:`<div class="canvas-empty"><div class="sparkbox">${ic('spark',30)}</div><h2>Mulai kreasimu</h2><p>Tambahkan gambar atau video sebagai referensi, atau tulis prompt untuk memulai proyek video.</p><button type="button" id="canvasAddFirst" class="canvas-action" style="margin-top:18px;padding:13px 18px">${ic('plus')} Tambah referensi</button></div>`;
+ $('view').innerHTML=`<div class="pg fx canvas-page">
+ <header class="canvas-top"><button type="button" id="canvasBack" class="canvas-back" aria-label="Kembali ke proyek">${ic('left',26)}</button><div class="canvas-title">${esc(p.name)}</div><div class="canvas-tools"><button type="button" id="canvasUpload" class="ib" aria-label="Unggah media">${ic('upload')}</button><button type="button" id="canvasSearch" class="ib" aria-label="Cari media">${ic('search')}</button><button type="button" id="canvasMore" class="ib" aria-label="Menu proyek">${ic('more')}</button></div></header>
+ <div class="canvas-caption"><strong>KANVAS PROYEK</strong><div style="display:flex;gap:7px"><button type="button" id="canvasUpload2" class="canvas-action">${ic('upload',16)} Unggah</button><button type="button" id="canvasRefs" class="canvas-action">${ic('img',16)} Referensi</button></div></div>
+ ${grid}${refStrip}
+ <div class="canvas-composer-wrap"><div class="canvas-composer"><textarea id="canvasPrompt" class="canvas-prompt" maxlength="2000" placeholder="Ceritakan video yang ingin kamu buat…" aria-label="Prompt video">${esc(s.draft||'')}</textarea><div class="canvas-composer-row"><button type="button" id="canvasPlus" class="canvas-circle" aria-label="Tambah media">${ic('plus',26)}</button><button type="button" id="canvasMode" class="canvas-mode">${ic('play',17)} Video ×${S.set.n} ${ic('down',14)}</button><button type="button" id="canvasSettings" class="canvas-circle" aria-label="Pengaturan video">${ic('sliders',22)}</button><button type="button" id="canvasGenerate" class="canvas-send" aria-label="Generate video">${ic('right',26)}</button></div><div class="canvas-summary"><span>${R.length} referensi</span><span>${esc(cur().name)} · ${esc(S.set.res)} · ${S.set.dur}s</span></div></div></div>
+ </div>`;
+ $('canvasBack').onclick=()=>location.hash=`#/p/${p.id}`;
+ $('canvasMore').onclick=()=>projMenu(p);
+ $('canvasUpload').onclick=$('canvasUpload2').onclick=()=>openUploadChoice();
+ $('canvasPlus').onclick=()=>{const old=document.getElementById('canvasPop');if(old){old.remove();return}const pop=document.createElement('div');pop.id='canvasPop';pop.className='canvas-pop';pop.innerHTML=`<button type="button" data-cam>${ic('camera',20)} Ambil foto</button><button type="button" data-upimg>${ic('img',20)} Gambar</button><button type="button" data-upvid>${ic('play',20)} Video/Koleksi</button>`;document.body.appendChild(pop);pop.querySelector('[data-cam]').onclick=()=>{pop.remove();$('file').accept='image/*';$('file').capture='environment';$('file').click()};pop.querySelector('[data-upimg]').onclick=()=>{pop.remove();$('file').removeAttribute('capture');$('file').accept='image/*';$('file').click()};pop.querySelector('[data-upvid]').onclick=()=>{pop.remove();$('file').removeAttribute('capture');$('file').accept='image/*,video/*';$('file').click()};setTimeout(()=>document.addEventListener('pointerdown',function closePop(e){if(!pop.contains(e.target)&&e.target!==$('canvasPlus')){pop.remove();document.removeEventListener('pointerdown',closePop)}},{once:true}),0)};
+ $('canvasRefs').onclick=()=>{MF='image';const y=scrollY;route();scrollTo(0,y)};
+ $('canvasSearch').onclick=()=>{let box=document.getElementById('canvasSearchInput');if(!box){box=document.createElement('input');box.id='canvasSearchInput';box.placeholder='Cari nama file atau prompt…';box.className='ta';box.style.minHeight='44px';box.style.marginBottom='12px';document.querySelector('.canvas-caption').insertAdjacentElement('afterend',box);box.addEventListener('input',()=>{const q=box.value.trim().toLowerCase();document.querySelectorAll('[data-media-search]').forEach(el=>el.style.display=el.dataset.mediaSearch.includes(q)?'':'none')})}else{box.classList.toggle('hidden')}box.focus()};
+ $('canvasSettings').onclick=()=>{s.draft=$('canvasPrompt').value;save();location.hash=`#/g/${p.id}/${s.id}`};
+ $('canvasMode').onclick=()=>{s.draft=$('canvasPrompt').value;save();location.hash=`#/g/${p.id}/${s.id}`};
+ $('canvasGenerate').onclick=()=>{const prompt=$('canvasPrompt').value.trim();s.draft=prompt;save();if(!prompt)return toast('Tulis prompt video dulu.');generate(p,s,prompt)};
+ const first=$('canvasAddFirst');if(first)first.onclick=()=>openUploadChoice();
+ document.querySelectorAll('[data-unref]').forEach(b=>b.onclick=()=>{s.refs=s.refs.filter(x=>x!==b.dataset.unref);save();route()});
+ bindMedia(p);
+}
 function viewGen(p,s){
  if(PEND&&!s.draft){s.draft=PEND;PEND=null;try{localStorage.removeItem('kh_vprompt')}catch{}}
  fit('text');const m=cur(),R=refs(p,s),durs=[5,10,15,30].filter(d=>d>=m.dur[0]&&d<=m.dur[1]);
@@ -398,11 +415,11 @@ function viewItem(p,it){
  const media=!rdy?(it.status==='failed'?`<p class="warn" style="color:#ff7b7b;text-align:center;padding:24px">${esc(it.error||'Pembuatan video gagal.')}</p>`:`<div style="text-align:center;padding:28px;color:var(--mu);font-size:14px"><i class="spin" style="display:inline-block;margin-bottom:12px"></i><br>Sedang dibuat. Proses tetap berjalan jika kamu pindah halaman.<p class="note">${esc(it.prompt||'')}</p></div>`)
   :it.type==='image'?`<img src="${src(it)}" alt="Gambar ${i+1}" class="pv">`
   :unplayable(it)?`<div style="text-align:center;padding:24px"><div style="font-size:34px">▶✕</div><p class="warn">${esc(uploadMsg(it))}</p><p class="note">${esc(vidDetail(it))}</p><button type="button" id="forcePlay" class="chip" style="margin-top:12px">Coba putar juga</button></div>`
-  :`<video id="vid" src="${src(it)}" controls playsinline webkit-playsinline preload="metadata" class="pv" aria-label="Video"></video>`;
+  :`<video id="vid" src="${src(it)}" playsinline webkit-playsinline preload="auto" class="pv" aria-label="Video"></video>`;
  const A=[];if(rdy&&it.type==='image')A.push(['ref',isR?'Hapus Referensi':'Jadikan Referensi','spark']);if(rdy)A.push(['dl','Download','dl']);if(it.kind==='result'&&it.prompt)A.push(['ed','Edit','edit']);A.push(['rm','Hapus','trash','del']);
  $('view').innerHTML=`<div class="pg">${hdr(`${i+1} / ${L.length}`,`<button type="button" id="fav" class="ib" aria-label="${it.fav?'Hapus dari favorit':'Tandai favorit'}" aria-pressed="${!!it.fav}" style="${it.fav?'color:#ffc46b':''}">${ic('star')}</button>`,'#/s/'+p.id+'/'+s.id)}
  <div id="stage" class="stage ${c}">${media}${i>0?`<button type="button" class="nv l" id="pv" aria-label="Sebelumnya">${ic('back',18)}</button>`:''}${i<L.length-1?`<button type="button" class="nv r" id="nx" aria-label="Berikutnya">${ic('right',18)}</button>`:''}</div>
-
+ ${rdy&&it.type==='video'&&!unplayable(it)?`<div class="ctl"><button type="button" id="pp" class="ib" aria-label="Putar atau jeda">${ic('play')}</button><span class="tm" id="tm">0:00 / 0:00</span><button type="button" id="mu" class="ib" aria-label="Bisukan atau bunyikan">${ic('vol')}</button><input id="vl" class="vl" type="range" min="0" max="1" step="0.05" value="1" aria-label="Volume"><button type="button" id="fs" class="ib" aria-label="Layar penuh">${ic('full')}</button></div><input id="sk" class="sk" type="range" min="0" max="1000" value="0" aria-label="Posisi video">`:''}
  <div class="strip">${L.map(x=>`<a href="#/v/${p.id}/${x.id}" data-st class="st${x===it?' on':''}" aria-label="Buka media">${thumb(x,'fill')}</a>`).join('')}</div>
  <div class="acts">${A.map(([k,t,n,c2])=>`<button type="button" class="act ${c2||''}" data-a="${k}">${ic(n,22)}${t}</button>`).join('')}</div></div>`;
  document.querySelectorAll('[data-st]').forEach(a=>a.onclick=e=>{e.preventDefault();location.replace(a.href)});
@@ -410,11 +427,14 @@ function viewItem(p,it){
  $('fav').onclick=()=>{it.fav=!it.fav;save();route()};
  const act={ref:()=>{s.refs=isR?s.refs.filter(x=>x!==it.id):[...s.refs,it.id];save();toast(isR?'Referensi dibatalkan.':'Jadi referensi '+s.name+'.');route()},dl:()=>dl(it),ed:()=>editFrom(p,s,it),rm:()=>{if(confirm('Hapus item ini?')){it.gone=true;s.refs=s.refs.filter(x=>x!==it.id);p.items.splice(p.items.indexOf(it),1);save();location.replace(`#/s/${p.id}/${s.id}`)}}};
  document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>act[b.dataset.a]());
- const v=$('vid');if(v){
-  // Gunakan kontrol asli browser Android agar play/pause, scrubber, volume, dan fullscreen mengikuti dukungan perangkat.
-  v.controls=true;
-  v.addEventListener('error',()=>videoFail(v,it,true));
- }
+ const v=$('vid');if(v){const pp=$('pp'),tm=$('tm'),sk=$('sk'),sync=()=>{tm.textContent=fmtT(v.currentTime)+' / '+fmtT(v.duration);if(v.duration&&document.activeElement!==sk)sk.value=v.currentTime/v.duration*1000;pp.innerHTML=ic(v.paused?'play':'pause')};
+  ['timeupdate','loadedmetadata','durationchange','play','pause','ended'].forEach(e=>v.addEventListener(e,sync));
+  const tog=()=>v.paused?v.play().catch(()=>videoFail(v,it,true)):v.pause();pp.onclick=tog;v.onclick=tog;
+  sk.oninput=()=>{if(v.duration)v.currentTime=sk.value/1000*v.duration};
+  $('mu').onclick=()=>{v.muted=!v.muted;$('mu').innerHTML=ic(v.muted?'mute':'vol')};
+  $('vl').oninput=e=>{v.volume=+e.target.value;v.muted=v.volume===0;$('mu').innerHTML=ic(v.muted?'mute':'vol')};
+  $('fs').onclick=()=>{const f=v.requestFullscreen||v.webkitRequestFullscreen||v.webkitEnterFullscreen;if(!f)return toast('Layar penuh tidak didukung browser ini.');try{Promise.resolve(f.call(v)).catch(()=>toast('Layar penuh gagal dibuka.'))}catch{toast('Layar penuh gagal dibuka.')}};
+  v.addEventListener('error',()=>videoFail(v,it,true));sync()}
  if($('forcePlay'))$('forcePlay').onclick=()=>{it.play.force=true;save();route()};
  const sg=$('stage');let x0,y0;sg.ontouchstart=e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY};sg.ontouchend=e=>{const t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5)go(p,it,dx<0?1:-1)}}
 function go(p,it,d){const L=sItems(p,scn(p,it.sceneId)),n=L[L.indexOf(it)+d];if(!n)return toast(d>0?'Ini item terakhir.':'Ini item pertama.');DIR=d;location.replace(`#/v/${p.id}/${n.id}`)}
@@ -496,7 +516,7 @@ $('sheet').oninput=e=>{if(e.target.id!=='dur')return;S.set.dur=+e.target.value;$
 
 // ===== Login & saldo (Supabase). Kosong di config.js = mode tanpa login =====
 let SB=null,SES=null,BAL=null,CT=null;const balTxt=()=>BAL===null?'—':BAL;
-async function initAuth(){const c=window.KH||{};if(!c.SUPABASE_URL||!c.SUPABASE_PUBLISHABLE_KEY||!window.supabase)return;SB=supabase.createClient(c.SUPABASE_URL,c.SUPABASE_PUBLISHABLE_KEY);const{data}=await SB.auth.getSession();SES=data.session;await refreshBal();SB.auth.onAuthStateChange(async(_e,s)=>{const was=!!SES;SES=s;refreshBal();if(s&&!was){const remote=await cloudLoad();if(remote&&Array.isArray(remote.projects)&&remote._savedAt>Number(S._savedAt||0)){S={...S,...remote,set:{...S.set,...remote.set}};migrate();save();route()}}})}
+async function initAuth(){const c=window.KH||{};if(!c.SUPABASE_URL||!c.SUPABASE_PUBLISHABLE_KEY||!window.supabase)return;SB=supabase.createClient(c.SUPABASE_URL,c.SUPABASE_PUBLISHABLE_KEY);const{data}=await SB.auth.getSession();SES=data.session;await refreshBal();SB.auth.onAuthStateChange((_e,s)=>{SES=s;refreshBal()})}
 async function refreshBal(){if(!SB||!SES){BAL=null}else{const{data,error}=await SB.from('wallets').select('balance').eq('user_id',SES.user.id).maybeSingle();if(error){console.error('Kamisah: gagal membaca saldo',error.message);BAL=null}else{BAL=data?data.balance:0}}const e=$('bal');if(e)e.textContent=balTxt();upd()}
 function openAuth(msg){
  if(!SB)return toast('Login belum dikonfigurasi (isi config.js).');
@@ -533,52 +553,16 @@ function openPhone(){
   else{const{data,error}=await SB.auth.verifyOtp({phone,token:$('otp').value.trim(),type:'sms'});
    if(error)return toast('Kode salah atau kedaluwarsa.');if(data.session){closeSheet();toast('Berhasil masuk.')}}}}
 
-// Upload progress uses the real XMLHttpRequest upload events, not a simulated timer.
-function showUploadProgress(file,pct,title){const panel=$('uploadProgressPanel');if(!panel)return;panel.style.display='block';$('uploadProgressTitle').textContent=title||'Mengunggah…';$('uploadProgressMeta').textContent=`${file.name||'File'} · ${(file.size/1024/1024).toFixed(2)} MB`;setUploadPct(pct)}
-function setUploadPct(pct){const n=Math.max(0,Math.min(100,Math.round(pct||0)));if($('uploadProgressPct'))$('uploadProgressPct').textContent=n+'%';if($('uploadProgressBar'))$('uploadProgressBar').style.width=n+'%'}
-function hideUploadProgress(delay=0){setTimeout(()=>{if($('uploadProgressPanel'))$('uploadProgressPanel').style.display='none'},delay)}
-function uploadToSupabaseWithProgress(bucket,path,file,onProgress){return new Promise((resolve,reject)=>{const cfg=window.KH||{};if(!cfg.SUPABASE_URL||!cfg.SUPABASE_PUBLISHABLE_KEY||!SES?.access_token)return reject(Error('Supabase belum terhubung atau sesi login berakhir.'));const xhr=new XMLHttpRequest();const url=cfg.SUPABASE_URL.replace(/\/$/,'')+'/storage/v1/object/'+encodeURIComponent(bucket)+'/'+path.split('/').map(encodeURIComponent).join('/');xhr.open('POST',url);xhr.setRequestHeader('apikey',cfg.SUPABASE_PUBLISHABLE_KEY);xhr.setRequestHeader('Authorization','Bearer '+SES.access_token);xhr.setRequestHeader('Content-Type',file.type||'application/octet-stream');xhr.setRequestHeader('x-upsert','false');xhr.setRequestHeader('cache-control','3600');xhr.upload.onprogress=e=>{if(e.lengthComputable&&onProgress)onProgress(e.loaded/e.total*100)};xhr.onerror=()=>reject(Error('Koneksi terputus saat mengunggah.'));xhr.onabort=()=>reject(Error('Unggahan dibatalkan.'));xhr.onload=()=>{let data={};try{data=JSON.parse(xhr.responseText||'{}')}catch{}if(xhr.status>=200&&xhr.status<300)resolve(data);else reject(Error(data.message||data.error||`Unggah ditolak server (${xhr.status}).`))};xhr.send(file)})}
-
 // Media actions: press and hold for 1 second. Uploads stay in preview until explicitly referenced.
 function openUploadChoice(){sh('Tambah media',[[ic('img')+' Unggah gambar',()=>{$('file').accept='image/*';$('file').click()}],[ic('play')+' Unggah video',()=>{$('file').accept='video/*';$('file').click()}]])}
-// ===== Unggah/import media: gambar dan video diproses dulu, lalu langsung dibuka di pratinjau =====
-$('file').onchange=async e=>{
- const p=S.projects.find(x=>x.id===location.hash.split('/')[2]);
- const files=[...(e.target.files||[])]; if(!p||!files.length){e.target.value='';return}
- const sc=p.scenes.find(s=>s.id===CURS)||scn(p,p.cur);let rej=0,first=null;
- // Buat item dengan status importing agar UI tidak menganggap file siap sebelum diproses.
- for(const f of files){
-  const nm=(f.name||'').toLowerCase();
-  const t=f.type.startsWith('video')||/\.(mp4|m4v|mov|webm|3gp|mkv)$/.test(nm)?'video':f.type.startsWith('image')?'image':null;
-  if(!t){rej++;continue}
-  const it={id:uid(),kind:'upload',type:t,blob:f,status:'uploading',sceneId:sc.id,ts:NOW(),uploadProgress:0};
-  p.items.unshift(it);p.updatedAt=NOW();if(!first)first=it;
-  save();toast(`Menyiapkan ${t==='video'?'video':'gambar'}: ${f.name||'file'}…`);
-  try{
-   // Unggah file asli ke Supabase Storage; jangan tandai siap hanya karena file sudah dipilih di browser.
-   if(!SB)throw Error('Penyimpanan belum terhubung. Periksa konfigurasi Supabase.');
-   if(!SES)throw Error('Masuk dulu agar gambar/video bisa diunggah ke penyimpanan.');
-   const ext=((f.name||'').split('.').pop()|| (t==='image'?'jpg':'mp4')).toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,8)||(t==='image'?'jpg':'mp4');
-   const path=`${SES.user.id}/${Date.now()}-${uuid()}.${ext}`;
-   it.uploadProgress=0;save();showUploadProgress(f,0,`Mengunggah ${t==='video'?'video':'gambar'}…`);toast(`Mengunggah ${t==='video'?'video':'gambar'}…`);
-   const up=await uploadToSupabaseWithProgress('video-references',path,f,pct=>{it.uploadProgress=pct;setUploadPct(pct);save()});
-   const {data:pub}=SB.storage.from('video-references').getPublicUrl(path);
-   if(!pub?.publicUrl)throw Error('File terunggah tetapi URL pratinjau tidak tersedia.');
-   it.url=pub.publicUrl;it.storagePath=path;it.uploadProgress=100;it.status='ready';showUploadProgress(f,100,'Unggahan berhasil');
-   if(ADDREF&&t==='image')sc.refs.push(it.id);
-   if(t==='video')await checkVideo(p,it);
-  }catch(err){it.status='error';it.error=String(err&&err.message||err);if($('uploadProgressTitle'))$('uploadProgressTitle').textContent='Unggahan gagal';toast(`Gagal mengunggah ${f.name||'file'}: ${it.error}`);hideUploadProgress(3500)}
-  save();
- }
+// ===== Unggah & mulai =====
+$('file').onchange=e=>{const p=S.projects.find(x=>x.id===location.hash.split('/')[2]);if(!p)return;
+ let rej=0;[...e.target.files].forEach(f=>{const nm=(f.name||'').toLowerCase(),t=f.type.startsWith('video')||/\.(mp4|m4v|mov|webm|3gp|mkv)$/.test(nm)?'video':f.type.startsWith('image')?'image':null;if(!t){rej++;return}const sc=p.scenes.find(s=>s.id===CURS)||scn(p,p.cur),it={id:uid(),kind:'upload',type:t,blob:f,status:'ready',sceneId:sc.id,ts:NOW()};p.items.unshift(it);p.updatedAt=NOW();if(ADDREF&&t==='image')sc.refs.push(it.id);if(t==='video')checkVideo(p,it)});
  if(rej)toast(`${rej} file dilewati: bukan gambar atau video yang dikenali.`);
- ADDREF=false;e.target.value='';save();
- // Setelah file siap, buka layar pratinjau media—bukan sekadar kembali ke daftar media.
- if(first){location.hash=`#/v/${p.id}/${first.id}`;route()}
- if(first&&first.status==='ready')hideUploadProgress(1400);
-};
+ ADDREF=false;e.target.value='';save();route()};
 (async()=>{await initAuth();refreshBal();const d=await load();if(d&&d.projects)S={...S,...d,set:{...S.set,...d.set}};migrate();if(!M(S.set.model)||!M(S.set.model).on)S.set.model='seedance-2.0-fast';
  S.projects.forEach(p=>p.items.forEach(it=>{if(it.status==='processing'){if(it.jobId||it.req)run(it);else{it.status='failed';it.error='Terputus saat halaman dimuat ulang.'}}else if(it.status==='failed'&&it.resume&&!it.jobId&&it.req){it.status='processing';it.error='';it.resume=false;run(it)}}));
- addEventListener('hashchange',()=>{route();if(location.hash&&location.hash!=='#/'&&location.hash!=='')addKamHomeNav()});route();if(location.hash&&location.hash!=='#/'&&location.hash!=='')addKamHomeNav();if(PEND)toast('Prompt dari Story AI siap. Tekan Buat Video untuk memakainya.')})();
+ addEventListener('hashchange',route);route();if(PEND)toast('Prompt dari Story AI siap. Tekan Buat Video untuk memakainya.')})();
 </script>
 </body>
 </html>

@@ -1,0 +1,26 @@
+PERUBAHAN KHUSUS HALAMAN VIDEO AI
+
+File yang diubah: video-generator.html saja.
+
+Yang dipertahankan:
+- index.html / beranda Kamisah
+- auth.js dan config.js
+- Supabase schema dan seluruh Netlify Functions
+- endpoint Seedance, alur antrean, saldo/kredit, dan penyimpanan proyek yang sudah ada
+- halaman Story, Music, Chat, Ideas
+- netlify.toml
+
+Perubahan tampilan:
+- Halaman adegan menggunakan layout Studio Canvas dengan header, grid media, area referensi, dan prompt terapung.
+- Tombol tambah media menyediakan pilihan kamera, gambar, dan video/koleksi.
+- Tombol pengaturan membuka panel parameter video yang sudah ada.
+- Tombol panah mengirim prompt melalui fungsi generate() yang sudah ada di v5.
+- Pencarian media lokal dan tombol kembali ke proyek.
+
+Validasi yang dilakukan:
+- Kedua blok JavaScript inline lolos `node --check`.
+- ZIP lolos pemeriksaan integritas.
+
+Belum dilakukan:
+- Pengujian browser langsung di HP.
+- Pengujian transaksi Generate sungguhan terhadap API Seedance.
