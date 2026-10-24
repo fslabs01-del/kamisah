@@ -1,0 +1,57 @@
+KAMISAH v5 — PEROMBAKAN DESAIN STUDIO VIDEO (mengikuti gambar referensi)
+=========================================================================
+
+FILE YANG DIUBAH
+- video-generator.html  (satu-satunya file kode yang diubah; lapisan tampilan ditulis ulang)
+- PERBAIKAN-V5-DESAIN.txt (BARU, file ini)
+TIDAK DIUBAH: seedance.mjs dan semua fungsi Netlify lain, config.js, auth.js, netlify.toml, folder supabase/, index.html, story.html, dll.
+TIDAK ADA perubahan database, endpoint, atau environment variable. Tidak ada API key/secret di frontend.
+
+URUTAN DEPLOY
+Tidak ada SQL baru. Deploy ke preview Netlify dulu, uji di HP, baru ke production.
+(schema-5-idempotency.sql dari v4 tetap wajib sudah dijalankan.)
+
+APA YANG BERUBAH
+1. Beranda (#/): logo Kamisah, saldo kredit, lonceng, profil; 3 kartu (Buat Video, Buat Gambar, Dari Teks ke Video -> /story); daftar proyek (thumbnail, nama, jumlah adegan, waktu, menu); tombol Buat Proyek Baru.
+   Lonceng membuka Hasil Generate dan menampilkan titik oranye saat ada video diproses (belum ada sistem notifikasi lain).
+2. Ruang Proyek (#/p/<id>): tab Adegan, Media, Referensi, Pengaturan. Daftar adegan bernomor, adegan terakhir dibuka disorot ungu, Tambah Adegan, menu adegan (buka, generate, ganti nama, hapus).
+3. Kelola Media (#/s/<id>/<adegan>): galeri, filter Semua/Gambar/Video/Referensi, kotak centang kecil = pilih referensi, ketuk thumbnail = pratinjau (tanpa tekan lama), Tambah Media, pindah adegan lewat nama adegan.
+4. Pratinjau (#/v/<id>/<item>): gambar besar; video dengan play/pause, durasi, seek, mute+volume, layar penuh; geser/tombol panah antar item; strip thumbnail; aksi Jadikan Referensi (gambar), Download, Edit (hasil generate: buka panel dengan prompt+setelan terisi), Hapus. Favorit (bintang) disimpan di perangkat. Pesan kesalahan video dari v4 dipertahankan.
+5. Panel Generate (#/g/<id>/<adegan>): referensi (hapus/tambah), prompt + penghitung 2000, model Seedance (hanya 3 yang didukung backend), durasi 5/10/15/30 (30 hanya Seedance 2.5), rasio, resolusi, audio Aktif/Bisukan, perkiraan kredit + saldo, tombol Generate memakai fungsi generate() yang sama (idempotency key, potong kredit, polling). Hasil masuk ke adegan yang sedang dibuka.
+6. Halaman tambahan: Hasil Generate (#/hasil, filter + hapus yang gagal), Mode Prompt Cepat (#/ide, 4 kategori, tombol Salin dan Pakai), Pengaturan Lanjutan (#/lanjut), Buat Gambar AI (#/gambar).
+7. Navigasi bawah dan tombol Chat AI tidak ada di Studio Video. Akun (#/akun) kini punya tombol kembali.
+
+PERUBAHAN MODEL DATA (di IndexedDB perangkat, otomatis dimigrasi saat dibuka)
+- Proyek punya `scenes`; item punya `sceneId`. Proyek lama otomatis mendapat "Adegan 1" berisi semua item lamanya.
+- Referensi kini disimpan per adegan (`scene.refs`). Migrasi: hanya gambar yang benar-benar bertanda `selected: true` yang menjadi referensi.
+  Catatan: di v4, gambar lama yang `selected` kosong (undefined) tidak tampak tercentang tetapi tetap ikut terkirim saat generate. Sekarang hanya referensi yang terlihat yang dikirim.
+
+PENYESUAIAN DARI GAMBAR (karena backend/fitur nyata)
+- Resolusi 480p/720p/1080p (bukan 360p): itu yang didukung seedance.mjs. 1080p dinonaktifkan untuk Seedance 2.5 + 9:16 (aturan backend) dan untuk Seedance 2.0 Fast.
+- Kotak centang referensi hanya pada GAMBAR. Backend/alur unggah saat ini hanya menerima gambar sebagai referensi; video tidak diberi kotak centang agar tidak ada kontrol palsu.
+- Buat Gambar AI: hanya antarmuka; tombol Generate dinonaktifkan dan ada keterangan. Tidak ada integrasi Nano Banana dan tidak ada harga kredit gambar.
+- Pengaturan Lanjutan hanya berisi yang diproses backend (jumlah video, audio). Seed, motion strength, gerakan kamera, enhance detail, guide video TIDAK ditampilkan karena backend belum mendukungnya.
+- Estimasi waktu generate (mis. "~30 detik") tidak ditampilkan karena tidak ada datanya.
+- Halaman Akun/Login/Top-up masih bergaya lama (Tailwind CDN tetap dimuat untuk bagian itu); belum didesain ulang.
+- index.html (beranda situs), Story, Musik, Chat, Ide tidak diubah.
+
+STATUS PENGUJIAN (jujur)
+LOLOS (otomatis, Chromium ukuran HP 390x844, Seedance/Supabase TIRUAN):
+- node --check JavaScript inline dan semua .mjs.
+- 37 pemeriksaan alur di browser: migrasi data lama; tambah adegan; kotak centang vs ketuk thumbnail; filter; unggah video ke adegan aktif; pratinjau video (durasi terbaca, play, pause, seek, mute, layar penuh); panel generate (aturan model/durasi/resolusi, estimasi kredit); tombol Generate memanggil API `create` 1x dengan payload benar (model, durasi, rasio, resolusi, audio, 2 referensi terunggah, idempotency_key); hasil masuk ke adegan yang sama; Edit mengisi ulang prompt; Salin prompt ke clipboard; Pakai prompt; Hasil Generate; Buat Gambar dinonaktifkan; tidak ada Chat AI/nav bawah; tidak ada scroll horizontal pada lebar 320/360/412 px; tidak ada error JavaScript.
+BELUM DIUJI:
+- Seedance/Loopling, Supabase, dan Netlify yang ASLI (generate sungguhan, potong kredit, refund, login, top-up).
+- Android sungguhan (Chrome Android): sentuhan, geser, layar penuh, unggah dari galeri, codec H.264/HEVC. Browser uji tidak punya H.264, jadi video uji memakai WebM.
+- Halaman Akun, login, OTP, top-up QRIS setelah perubahan.
+- Keyboard HP menutupi tombol Generate/prompt (perlu dilihat langsung).
+
+DAFTAR UJI DI HP (urutan saran)
+1. Buka beranda: saldo muncul setelah login; Buat Proyek Baru; menu titik tiga.
+2. Masuk proyek -> Tambah Adegan -> buka adegan -> Tambah Media (gambar + video dari galeri).
+3. Centang 1-2 gambar; ketuk thumbnail (harus membuka pratinjau, bukan memilih).
+4. Pratinjau video: play, geser seek, mute, layar penuh, putar lagi setelah keluar.
+5. Panel Generate: pilih 2.0 Fast 5s 480p, generate 1 video. Cek saldo turun sekali, hasil muncul di adegan itu.
+6. Matikan internet saat generate lalu nyalakan: kredit tidak boleh terpotong ganda (logika v4).
+7. Ketuk hasil -> Edit -> prompt dan setelan terisi.
+8. Mode Prompt Cepat: Salin lalu tempel di aplikasi lain.
+9. Cek halaman lama yang bisa memicu masalah: Akun, Masuk, Top-up.
