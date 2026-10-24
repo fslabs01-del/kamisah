@@ -129,3 +129,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .toast-message { position:fixed; z-index:30; bottom:calc(115px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); width:max-content; max-width:90%; padding:11px 14px; border:1px solid #3a4560; border-radius:12px; background:#1a2034; box-shadow:0 8px 28px #0008; text-align:center; font-size:12px; }
 .studio-disclaimer { text-align:center; color:#59627e; font-size:9px; margin:0; }
 @media(min-width:600px) { .media-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } .canvas-welcome { min-height:390px; } }
+
+/* Studio header keeps account access visible without replacing the project home. */
+.studio-avatar { flex: 0 0 36px; cursor: pointer; color: white; }
+.studio-topbar .studio-title { flex: 1; min-width: 0; }
+.studio-topbar .studio-title strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

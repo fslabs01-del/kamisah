@@ -38,12 +38,27 @@ function ProjectStudio() {
   }, [jobs.length, activeProjectId, updateGeneration])
 
   const notify = (message) => { setToast(message); window.setTimeout(() => setToast(''), 2600) }
-  const addFiles = (files) => {
-    const items = Array.from(files || []).map(file => ({ id: crypto.randomUUID(), type: file.type.startsWith('video/') ? 'video' : 'image', title: file.name, url: URL.createObjectURL(file), fileName: file.name }))
-    setLocalMedia(prev => [...items, ...prev])
-    setAttachedAssets([...assets, ...items])
+  const addFiles = async (files) => {
+    const selected = Array.from(files || [])
+    if (!selected.length) return
+    // Images are stored as data URLs so their thumbnails survive refreshes.
+    // Videos use temporary object URLs to avoid filling localStorage with large files.
+    const items = await Promise.all(selected.map(file => new Promise(resolve => {
+      const base = { id: crypto.randomUUID(), type: file.type.startsWith('video/') ? 'video' : 'image', title: file.name, fileName: file.name }
+      if (base.type === 'image') {
+        const reader = new FileReader()
+        reader.onload = () => resolve({ ...base, url: reader.result })
+        reader.onerror = () => resolve({ ...base, url: '' })
+        reader.readAsDataURL(file)
+      } else {
+        resolve({ ...base, url: URL.createObjectURL(file) })
+      }
+    })))
+    const validItems = items.filter(item => item.url)
+    setLocalMedia(prev => [...validItems, ...prev])
+    setAttachedAssets([...assets, ...validItems])
     setPopup('')
-    notify(`${items.length} file ditambahkan ke referensi`)
+    notify(`${validItems.length} file ditambahkan ke referensi`)
   }
   const toggleAsset = (item) => {
     const exists = assets.some(a => a.id === item.id)
@@ -61,6 +76,8 @@ function ProjectStudio() {
       <button className="icon-button" onClick={closeProject} aria-label="Kembali"><ArrowLeft /></button>
       <div className="studio-title"><strong>{project?.name || 'Proyek'}</strong><span>Studio kreatif</span></div>
       <button className="icon-button" onClick={() => setRefOpen(true)} aria-label="Referensi"><Images /></button>
+      <button className="icon-button" onClick={() => notify('Notifikasi akan tersedia pada tahap berikutnya')} aria-label="Notifikasi"><Bell /></button>
+      <button className="avatar studio-avatar" onClick={() => notify('Profil akun akan tersedia pada tahap berikutnya')} aria-label="Profil pengguna">U</button>
       <button className="icon-button" onClick={() => notify('Menu proyek segera tersedia')} aria-label="Menu"><MoreVertical /></button>
     </header>
 
@@ -68,14 +85,14 @@ function ProjectStudio() {
     <input ref={fileRef} type="file" accept="image/*,video/*" multiple hidden onChange={e => addFiles(e.target.files)} />
 
     <section className="media-canvas">
-      {localMedia.length === 0 && jobs.length === 0 ? <div className="canvas-welcome"><div className="welcome-icon"><Sparkles size={26}/></div><h1>Mulai kreasimu</h1><p>Tambahkan referensi atau tulis prompt untuk memulai proyek video.</p><button className="outline-button" onClick={() => setRefOpen(true)}><Plus size={17}/> Tambah referensi</button></div> : <div className="media-grid">
+      {assets.length === 0 && jobs.length === 0 ? <div className="canvas-welcome"><div className="welcome-icon"><Sparkles size={26}/></div><h1>Mulai kreasimu</h1><p>Tambahkan referensi atau tulis prompt untuk memulai proyek video.</p><button className="outline-button" onClick={() => setRefOpen(true)}><Plus size={17}/> Tambah referensi</button></div> : <div className="media-grid">
         {localMedia.map(item => <button key={item.id} className="media-tile" onClick={() => item.type === 'video' ? notify(`Video: ${item.title}`) : toggleAsset(item)}>{item.type === 'video' ? <video src={item.url} muted /> : <img src={item.url} alt={item.title}/>}<span className="media-tag">{item.type === 'video' ? 'VIDEO' : 'GAMBAR'}</span></button>)}
         {jobs.map(job => <div className="job-tile" key={job.id}><div className="job-spinner"><Sparkles size={20}/></div><strong>{job.status === 'queued' ? 'Dalam antrean' : 'Sedang diproses'}</strong><p>{job.message || 'Menyiapkan adegan…'}</p><small>{job.settings?.model} · {job.settings?.duration}s</small><span className="job-note">Demo antrean · belum tersambung API</span></div>)}
         <button className="add-media-tile" onClick={() => setRefOpen(true)}><Plus size={24}/><span>Tambah media</span></button>
       </div>}
     </section>
 
-    {assets.length > 0 && <section className="attached-strip"><div className="strip-heading"><span>Referensi terpilih ({assets.length})</span><button onClick={() => setAttachedAssets([])}>Hapus semua</button></div><div className="attached-items">{assets.map(item => <div className="attached-item" key={item.id}>{item.type === 'video' ? <Video size={17}/> : <img src={item.url} alt=""/>}<span>{item.title || 'Referensi'}</span><button onClick={() => toggleAsset(item)} aria-label="Hapus referensi"><X size={14}/></button></div>)}</div></section>}
+    {assets.length > 0 && <section className="attached-strip"><div className="strip-heading"><span>Referensi terpilih ({assets.length})</span><button onClick={() => setAttachedAssets([])}>Hapus semua</button></div><div className="attached-items">{assets.map(item => <div className="attached-item" key={item.id}>{item.type === 'video' ? <Video size={17}/> : <img src={item.url} alt="" onError={e => { e.currentTarget.style.opacity = '0.25' }} />}<span>{item.title || 'Referensi'}</span><button onClick={() => toggleAsset(item)} aria-label="Hapus referensi"><X size={14}/></button></div>)}</div></section>}
 
     <section className="prompt-dock">
       <textarea value={promptState.text} onChange={e => setPromptText(e.target.value)} placeholder="Ceritakan video yang ingin kamu buat…" rows={2} />
