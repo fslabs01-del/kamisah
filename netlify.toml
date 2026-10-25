@@ -9,8 +9,8 @@
   node_bundler = "esbuild"
 
 [[redirects]]
-  from = "/film-studio"
-  to = "/film-studio.html"
+  from = "/studio-film"
+  to = "/studio-film.html"
   status = 200
 
 [[redirects]]
