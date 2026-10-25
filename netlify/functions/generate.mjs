@@ -28,7 +28,9 @@ export default async (request) => {
   const input = String(body.input || '').trim().slice(0, 8000);
   if (!input) return new Response(JSON.stringify({ error: 'Topik cerita wajib diisi.' }), { status: 400, headers: { 'content-type': 'application/json; charset=utf-8' } });
 
-  const prompt = `Kamu adalah penulis naskah video profesional yang menulis dalam Bahasa Indonesia alami.\nMode cerita: ${mode}\nMateri dari pengguna: ${input}\n\nBuat hasil yang spesifik terhadap materi pengguna, bukan template generik. Gunakan format:\n1. JUDUL VIRAL\n2. HOOK 3 DETIK PERTAMA\n3. ALUR CERITA 3 BABAK (pengenalan, konflik, penyelesaian/plot twist)\n4. NASKAH VOICEOVER per scene, siap didubbing\n5. PROMPT VISUAL AI per scene, konsisten dengan karakter dan lokasi\n6. CATATAN PRODUKSI singkat.\nUntuk dokumenter/fakta, jangan menyajikan rumor sebagai fakta; tandai klaim yang perlu diverifikasi. Jangan menambahkan label atau penjelasan tentang dirimu.`;
+  const prompt = mode === 'film'
+    ? `Kamu adalah showrunner, penulis skenario film, script supervisor, dan perancang shot profesional. Tulis dalam Bahasa Indonesia yang alami. Materi dan spesifikasi film dari pengguna: ${input}\n\nSusun dokumen pra-produksi yang spesifik dan dapat digunakan tim produksi. Gunakan judul dan bagian yang jelas: A) JUDUL DAN LOGLINE; B) SINOPSIS; C) KARAKTER UTAMA DAN PENDUKUNG, masing-masing dengan ciri wajah, rambut, kostum awal, kepribadian, tujuan, dan aturan konsistensi; D) STRUKTUR BABAK, tujuan, konflik, dan perubahan karakter; E) DAFTAR ADEGAN BERURUTAN, setiap adegan berisi nomor, lokasi, waktu/cuaca, aksi, karakter yang hadir, kondisi kostum/properti, dan durasi perkiraan; F) BREAKDOWN 8 SHOT PERTAMA, setiap shot berisi nomor shot, adegan, durasi, ukuran shot/sudut kamera/gerakan kamera, aksi visual yang dapat difilmkan, dialog jika diperlukan, kondisi kontinuitas, dan prompt video mandiri; G) ATURAN KONTINUITAS KARAKTER, LOKASI, PROPERTI, DAN ALUR WAKTU; H) RENCANA PRODUKSI DAN CATATAN RISIKO.\nJangan mengklaim video sudah dibuat, shot sudah lolos pemeriksaan, atau durasi final sudah pasti. Durasi adalah estimasi naskah; durasi final ditentukan oleh klip yang dipakai di timeline. Hindari pengulangan dan buat setiap shot berbeda secara visual.`
+    : `Kamu adalah penulis naskah video profesional yang menulis dalam Bahasa Indonesia alami.\nMode cerita: ${mode}\nMateri dari pengguna: ${input}\n\nBuat hasil yang spesifik terhadap materi pengguna, bukan template generik. Gunakan format:\n1. JUDUL VIRAL\n2. HOOK 3 DETIK PERTAMA\n3. ALUR CERITA 3 BABAK (pengenalan, konflik, penyelesaian/plot twist)\n4. NASKAH VOICEOVER per scene, siap didubbing\n5. PROMPT VISUAL AI per scene, konsisten dengan karakter dan lokasi\n6. CATATAN PRODUKSI singkat.\nUntuk dokumenter/fakta, jangan menyajikan rumor sebagai fakta; tandai klaim yang perlu diverifikasi. Jangan menambahkan label atau penjelasan tentang dirimu.`;
 
   try {
     const upstream = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(MODEL)}:generateContent`, {
@@ -36,7 +38,7 @@ export default async (request) => {
       headers: { 'content-type': 'application/json', 'x-goog-api-key': apiKey },
       body: JSON.stringify({
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.8, maxOutputTokens: 3500 }
+        generationConfig: { temperature: 0.8, maxOutputTokens: mode === 'film' ? 7000 : 3500 }
       })
     });
     const result = await upstream.json().catch(() => ({}));
