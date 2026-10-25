@@ -1,0 +1,21 @@
+KAMISAH — WORKSPACE BARU “BUAT FILM AI”
+
+Perubahan:
+- Menambahkan halaman khusus buat-film-ai.html dengan desain mobile-first gelap biru/sian.
+- Menambahkan route /buat-film-ai pada netlify.toml.
+- Menambahkan CTA “Buat Film AI” pada beranda tanpa menghapus atau merombak fitur lama.
+- Form proyek menyimpan data proyek dan hasil cerita pada localStorage browser (maksimal 30 proyek di perangkat tersebut).
+- Pengembangan cerita memakai endpoint backend yang sudah ada: /.netlify/functions/generate dengan mode film.
+- Backend generate.mjs sekarang memiliki prompt pra-produksi khusus mode film: sinopsis, karakter, struktur babak, daftar adegan, 8 shot awal, dan aturan kontinuitas.
+- Tombol lanjut produksi meneruskan prompt ke halaman Video AI yang sudah ada melalui localStorage key kh_vprompt.
+- Menambahkan checklist pra-produksi dan pratinjau gambar referensi lokal.
+
+Batasan yang harus diketahui:
+- Data proyek pada versi ini tersimpan lokal di browser, belum tersinkron ke database/server.
+- Gambar referensi hanya dipratinjau lokal di halaman baru ini; belum diunggah otomatis ke storage/provider dari halaman ini.
+- Halaman ini belum menjalankan antrean ratusan shot, analisis kontinuitas otomatis berbasis video, timeline multi-track, atau ekspor film panjang secara terintegrasi.
+- Produksi video tetap dilakukan di halaman Video AI yang sudah ada. Pastikan konfigurasi backend, login, provider, dan kredit aktif sebelum tes.
+
+Pemeriksaan:
+- node --check pada netlify/functions/generate.mjs: lulus.
+- Pemeriksaan sintaks JavaScript inline pada halaman baru dan beranda: lulus.
