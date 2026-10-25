@@ -1,4 +1,9 @@
 [[redirects]]
+  from = "/ai-film-analyzer"
+  to = "/ai-film-analyzer.html"
+  status = 200
+
+[[redirects]]
   from = "/studio-film"
   to = "/studio-film.html"
   status = 200

@@ -48,3 +48,13 @@ PEMERIKSAAN SEBELUM UPLOAD (2026-10-21)
 - Top-up frontend/backend diselaraskan ke minimum Rp10.000 agar tidak bentrok dengan constraint database aman.
 - Tetap belum diuji end-to-end di browser atau terhadap layanan Supabase/AI/payment gateway sungguhan.
 - Jangan jalankan SQL gabungan lama jika migrasi aman sudah dijalankan; jangan upload folder berbeda ke repo yang salah. Pastikan repo yang terhubung ke Netlify memang untuk aplikasi Kamisah, karena paket ini mengganti file root seperti `index.html`.
+
+
+FITUR TAMBAHAN — AI FILM ANALYZER
+- Halaman baru: /ai-film-analyzer atau /ai-film-analyzer.html.
+- Auto Cut menggunakan FFmpeg WebAssembly dari CDN di browser. Pertama kali perlu internet untuk memuat engine; file besar bisa menghabiskan RAM/performa HP.
+- Analisis Gemini dan suara AI menggunakan Netlify Functions `film-analyze.mjs` dan `film-voice.mjs`.
+- Tambahkan `GEMINI_API_KEY` pada Netlify Environment Variables. Opsional: `GEMINI_MODEL` (default gemini-2.5-flash), `GEMINI_TTS_MODEL` (default gemini-2.5-flash-preview-tts).
+- Batas analisis halaman saat ini 18 MB karena unggahan melewati Netlify Function; film panjang memerlukan alur unggah langsung ke penyimpanan cloud dan pemrosesan bertahap. Jangan menganggap unggahan film panjang sudah didukung.
+- Suara AI saat ini satu permintaan; naskah lebih dari 28.000 karakter perlu dukungan pemecahan dan penggabungan audio bertahap.
+- Editor manual timeline lengkap belum tersedia; tombol memberi status jujur dan hasil Auto Cut bisa diunduh untuk diedit di editor lain.

@@ -1,0 +1,12 @@
+PERUBAHAN BERANDA KAMISAH
+
+- Studio AI Film dipindahkan menjadi kartu pertama pada grid fitur utama dan diberi aksen cyan serta label FITUR UNGGULAN agar lebih mudah ditemukan.
+- Studio Musik AI dipindahkan menjadi kartu kedua dalam grid yang sama, menggunakan aksen ungu.
+- Video AI, Story AI, Chat AI, dan Generator Ide tetap ada dan menggunakan kartu serta navigasi yang sudah tersedia.
+- Kartu tambahan lama di bawah grid dihapus agar tidak ada duplikasi Studio AI Film atau Studio Musik AI.
+- Tautan Studio AI Film menggunakan route /studio-film yang sudah terdaftar pada netlify.toml.
+- Tidak ada file halaman atau fungsi Kamisah lama yang dihapus.
+
+PENGUJIAN
+- Pemeriksaan statis HTML dan urutan kartu berhasil.
+- Build Vite belum dapat dijalankan di lingkungan ini karena dependensi proyek belum terpasang (perintah vite tidak ditemukan). Tidak dilakukan deploy ke Netlify.
