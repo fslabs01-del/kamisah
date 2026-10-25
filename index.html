@@ -75,9 +75,6 @@
     .feature-blue { --feature-color:#06b6d4; background:linear-gradient(145deg,rgba(6,182,212,.22),rgba(3,18,28,.95)); border-color:rgba(6,182,212,.6); }
     .feature-purple { --feature-color:#a855f7; background:linear-gradient(145deg,rgba(168,85,247,.24),rgba(18,10,31,.95)); border-color:rgba(168,85,247,.6); }
     .feature-green { --feature-color:#10b981; background:linear-gradient(145deg,rgba(16,185,129,.22),rgba(3,22,17,.95)); border-color:rgba(16,185,129,.6); }
-    .feature-cyan { --feature-color:#22d3ee; background:linear-gradient(145deg,rgba(6,182,212,.28),rgba(3,18,28,.98)); border-color:rgba(34,211,238,.8); box-shadow:inset 0 0 24px rgba(6,182,212,.06); }
-    .feature-violet { --feature-color:#c084fc; background:linear-gradient(145deg,rgba(139,92,246,.25),rgba(22,10,38,.98)); border-color:rgba(192,132,252,.65); }
-    .feature-kicker { display:inline-flex; align-items:center; gap:5px; border:1px solid rgba(103,232,249,.32); background:rgba(8,145,178,.15); color:#a5f3fc; border-radius:999px; padding:4px 7px; font-size:.58rem; font-weight:800; letter-spacing:.07em; margin-top:7px; }
     @media(max-width:480px) { .hero-chat { min-height:230px; padding:18px; } .feature-card { min-height:205px; padding:13px; } .feature-card p { font-size:.72rem; } }
   </style>
 </head>
@@ -114,13 +111,14 @@
       </div>
     </section>
 
-    <!-- Semua fitur utama dalam satu grid. Studio AI Film ditempatkan pertama karena merupakan fitur unggulan. -->
+    <!-- Fitur utama -->
     <section aria-label="Fitur utama Kamisah" class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-      <a href="/studio-film" class="feature-card feature-cyan">
-        <span class="feature-icon">🎞️</span><span class="feature-kicker">FITUR UNGGULAN</span><h2>Studio AI Film</h2><p>Kelola produksi film dari cerita, adegan, dan shot hingga timeline serta ekspor.</p><span class="feature-arrow">→</span>
-      </a>
-      <a href="/music" class="feature-card feature-violet">
-        <span class="feature-icon">🎵</span><h2>Studio Musik AI</h2><p>Siapkan lagu, lirik, genre, dan prompt musik dalam satu studio.</p><span class="feature-arrow">→</span>
+      <a href="/ai-film-analyzer.html" class="feature-card feature-purple">
+        <span class="feature-icon">🎬</span>
+        <span class="feature-kicker">ANALISIS & AUTO CUT</span>
+        <h2>AI Film Analyzer</h2>
+        <p>Analisis video menjadi alur cerita, kenali adegan, dan siapkan potongan video otomatis.</p>
+        <span class="feature-arrow">→</span>
       </a>
       <a href="/video-generator" class="feature-card feature-orange">
         <span class="feature-icon">🎬</span><h2>Video AI</h2><p>Buat video AI dari ide, gambar, atau cerita.</p><span class="feature-arrow">→</span>
@@ -135,6 +133,15 @@
         <span class="feature-icon">💡</span><h2>Generator Ide</h2><p>Temukan ide konten untuk YouTube, TikTok, dan Reels.</p><span class="feature-arrow">→</span>
       </a>
     </section>
+
+    <!-- Akses tambahan: Studio Musik AI (kartu utama tetap empat sesuai desain yang disepakati) -->
+    <div class="flex justify-center -mt-1">
+      <a href="/music" class="inline-flex items-center gap-3 rounded-2xl border border-violet-500/30 bg-violet-950/20 px-4 py-3 hover:border-violet-400/60 transition">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-violet-500/15 text-xl">🎵</span>
+        <span class="text-left"><span class="block text-sm font-bold text-violet-200">Studio Musik AI</span><span class="block text-xs text-neutral-400">Siapkan lagu, lirik, genre, dan prompt musik</span></span>
+        <span class="ml-2 text-violet-300">→</span>
+      </a>
+    </div>
 
     <!-- Top Responsive Ad Slot (728x90) -->
     <div class="w-full flex justify-center">
