@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
-import { demoProjects } from '../data/demoProjects'
 
 const makeProject = (name = 'Proyek Baru') => ({
   id: crypto.randomUUID(),
@@ -14,7 +13,7 @@ const makeProject = (name = 'Proyek Baru') => ({
 })
 
 export const useKamisahStore = create(persist((set, get) => ({
-  projects: demoProjects,
+  projects: [],
   activeProjectId: null,
   promptState: {
     text: '',
