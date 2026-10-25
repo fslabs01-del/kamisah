@@ -4,11 +4,6 @@ import { useKamisahStore } from './store/useKamisahStore'
 import ProjectsHome from './pages/ProjectsHome'
 
 const models = ['Veo 2.5', 'Seedance 2.0 Fast', 'Seedance 2.0', 'Kling AI']
-const demoMedia = [
-  { id: 'demo-1', type: 'image', title: 'Referensi hutan', url: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=700&q=80' },
-  { id: 'demo-2', type: 'image', title: 'Suasana pegunungan', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=700&q=80' },
-  { id: 'demo-3', type: 'image', title: 'Dunia fantasi', url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=700&q=80' },
-]
 
 function ProjectStudio() {
   const { projects, activeProjectId, closeProject, promptState, setPromptText, setAttachedAssets, setGenerationSettings, enqueueGeneration, generationQueue, updateGeneration } = useKamisahStore()
@@ -23,7 +18,7 @@ function ProjectStudio() {
   const videoRef = useRef(null)
   const assets = [...(promptState.attachedAssets || [])]
   const jobs = generationQueue.filter(j => j.projectId === activeProjectId)
-  const media = [...localMedia, ...demoMedia]
+  const media = [...localMedia]
 
   useEffect(() => {
     if (!jobs.length) return
