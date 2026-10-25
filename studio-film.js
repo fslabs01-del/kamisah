@@ -1,18 +1,117 @@
-(()=>{
-const panels=[...document.querySelectorAll('.panel')], nav=document.getElementById('sectionNav'), toast=document.getElementById('toast');let active=0,history=[],future=[];
-const titles=panels.map(p=>p.dataset.title);nav.innerHTML=titles.map((t,i)=>`<button data-go="${i}" class="${i===0?'active':''}"><b>${i+1}</b>${t}</button>`).join('');
-function showPanel(i,scroll=true){active=Math.max(0,Math.min(panels.length-1,i));panels.forEach((p,n)=>p.classList.toggle('mobile-active',n===active));[...nav.children].forEach((b,n)=>b.classList.toggle('active',n===active));if(scroll&&innerWidth<=700)document.querySelector('.page-heading').scrollIntoView({behavior:'smooth',block:'start'});}
-function msg(s){toast.textContent=s;toast.classList.add('show');clearTimeout(msg.t);msg.t=setTimeout(()=>toast.classList.remove('show'),2600)}
-nav.addEventListener('click',e=>{let b=e.target.closest('[data-go]');if(b)showPanel(+b.dataset.go)});
-// tabs are real selectable controls and keep the active choice visible
- document.querySelectorAll('[data-tabs]').forEach(group=>group.addEventListener('click',e=>{let b=e.target.closest('[data-tab]');if(!b)return;group.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));msg(`Tab “${b.dataset.tab}” dipilih. Data contoh ditampilkan; koneksi data penuh perlu backend.`)}));
-document.querySelectorAll('[data-filter-group]').forEach(group=>group.addEventListener('click',e=>{let b=e.target.closest('[data-filter]');if(!b)return;group.querySelectorAll('button').forEach(x=>x.classList.toggle('selected',x===b));if(group.dataset.filterGroup==='projects')document.querySelectorAll('.project-row').forEach(row=>row.hidden=!(b.dataset.filter==='Semua'||row.dataset.status===b.dataset.filter));else document.querySelectorAll('[data-job]').forEach(row=>row.hidden=!(b.dataset.filter==='Semua'||row.dataset.job===b.dataset.filter));}));
-const idea=document.getElementById('storyIdea'),count=document.getElementById('ideaCount');function countIdea(){count.textContent=`${idea.value.length}/1000`}idea.addEventListener('input',countIdea);countIdea();
-function ask(title,body,ok='OK'){let result=prompt(`${title}\n\n${body}\n\nKetik OK untuk konfirmasi:`);if(result&&result.trim().toUpperCase()==='OK')msg(`${title}: dicatat di demo. Belum dikirim ke backend.`);}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;const a=b.dataset.action;switch(a){case'new-project':ask('Buat proyek baru','Proyek baru akan memakai data demo sampai penyimpanan backend dihubungkan.');break;case'project-menu':ask('Menu proyek','Aksi demo: ubah nama, duplikat, atau arsip proyek.');break;case'notifications':msg('Tidak ada notifikasi baru dalam data demo.');break;case'profile':msg('Profil demo — autentikasi tetap dikelola aplikasi utama.');break;case'ai-idea':idea.value='Seorang polisi yang dikhianati rekannya menyusup ke sindikat kriminal, menemukan konspirasi besar, dan harus memilih antara keadilan dan keselamatan keluarganya.';countIdea();msg('Contoh ide dimasukkan. AI sungguhan belum terhubung.');break;case'upload-script':{let input=document.createElement('input');input.type='file';input.accept='.txt,.md,.doc,.docx,.pdf';input.onchange=()=>msg(input.files[0]?`File dipilih: ${input.files[0].name}. Pembacaan file perlu diimplementasikan.`:'Tidak ada file dipilih.');input.click();break}case'template':idea.value='Film aksi kriminal dengan protagonis yang dikhianati, rahasia masa lalu, konflik bertingkat, dan akhir yang tuntas.';countIdea();msg('Template contoh dimasukkan.');break;case'add-reference':{let input=document.createElement('input');input.type='file';input.accept='image/*,video/*';input.multiple=true;input.onchange=()=>msg(`${input.files.length} aset dipilih. Upload ke penyimpanan belum dihubungkan.`);input.click();break}case'develop':showPanel(2);msg('Berpindah ke Hasil Pengembangan. Analisis AI nyata belum terhubung.');break;case'apply-duration':msg('Rekomendasi demo dipilih. Durasi timeline belum dihitung otomatis.');break;case'fix-prompt':ask('Perbaiki prompt','Prompt akan disiapkan untuk revisi. Tidak ada panggilan AI yang dilakukan.');break;case'redo-shot':ask('Buat ulang shot','Versi sebelumnya tetap disimpan. Generasi video perlu API aktif.');break;case'affected-shots':showPanel(6);msg('Daftar shot terdampak dibuka.');break;case'recheck':msg('Pemeriksaan demo dijalankan; persentase tidak diubah secara palsu. Hubungkan mesin pemeriksa untuk hasil nyata.');break;case'start-production':msg('Produksi belum dimulai: selesaikan masalah kritis dan hubungkan backend terlebih dahulu.');break;case'open-shot':showPanel(7);msg('Detail Shot dibuka.');break;case'all-transactions':msg('Transaksi demo: 3 catatan. Riwayat nyata memerlukan backend kredit.');break;case'topup':msg('Top up nyata tetap melalui sistem pembayaran aplikasi utama.');break;case'add-shot':ask('Tambah shot','Tambahkan shot baru ke Adegan 018?');break;case'duplicate-shot':msg('Shot terpilih diduplikasi secara visual hanya di mode demo.');break;case'delete-shot':if(confirm('Hapus shot demo terpilih? Tindakan ini hanya simulasi.'))msg('Shot demo dihapus dari simulasi (data sumber tidak berubah).');break;case'preview':msg('Pratinjau memakai placeholder; belum ada file video nyata yang terhubung.');break;case'compare-version':msg('Perbandingan versi tersedia sebagai rancangan; data versi memerlukan penyimpanan backend.');break;case'retry-failed':msg('8 shot gagal ditemukan dalam data demo. Tidak ada job yang dikirim ke API.');break;case'refresh-jobs':msg('Status demo diperbarui dari data lokal.');break;case'undo':case'redo':if(a==='undo'){future.push('perubahan');msg('Undo demo: operasi terakhir belum dihubungkan ke model timeline.')}else msg('Redo demo: operasi belum dihubungkan ke model timeline.');break;case'split':msg('Mode split demo dipilih. Pemotongan file nyata memerlukan editor/rendering engine.');break;case'delete-clip':if(confirm('Hapus klip demo terpilih dari timeline?')){let c=document.querySelector('.clip.selected');if(c)c.remove();msg('Klip demo dihapus dari tampilan.')}break;case'apply-clip':{let selected=document.getElementById('selectedClip').value,duration=document.getElementById('clipDuration').value;msg(`${selected}: durasi ${duration}s dicatat sebagai demo. Sinkronisasi audio/subtitle belum berjalan.`);document.getElementById('autosave').textContent='● Perubahan demo tersimpan lokal';break}case'export':msg('Ekspor belum dijalankan. Hubungkan backend rendering sebelum menghasilkan file film.');break;case'old-export':msg('Belum ada file ekspor tersimpan untuk diunduh.');break;case'save-project':try{localStorage.setItem('kamisah-studio-film-demo',JSON.stringify({idea:idea.value,updatedAt:new Date().toISOString()}));msg('Ide disimpan di penyimpanan lokal browser, bukan cloud.')}catch{msg('Browser tidak mengizinkan penyimpanan lokal.')}break;}}
-);
-// timeline clips can be selected and reordered by drag/drop (UI demo only)
-let dragged=null;document.querySelectorAll('.clip').forEach(c=>{c.addEventListener('click',()=>{document.querySelectorAll('.clip').forEach(x=>x.classList.toggle('selected',x===c));document.getElementById('selectedClip').value=c.textContent});c.addEventListener('dragstart',()=>{dragged=c;history.push([...document.querySelectorAll('.clip')].map(x=>x.textContent))});c.addEventListener('dragover',e=>e.preventDefault());c.addEventListener('drop',e=>{e.preventDefault();if(dragged&&dragged!==c){c.parentNode.insertBefore(dragged,c);msg('Urutan klip demo diubah. File video asli tidak berubah.')}})});
-document.getElementById('zoom').addEventListener('input',e=>{document.querySelectorAll('.clip').forEach(c=>c.style.flex=`${e.target.value/100} 1 0`)});
-showPanel(0,false);
+(() => {
+  const KEY = 'kamisah-studio-film-v1';
+  const blank = () => ({ projects: [], activeProjectId: null, assets: [], scenes: [], shots: [], settings: {} });
+  let state;
+  try { state = { ...blank(), ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch { state = blank(); }
+  let screen = 'projects', projectFilter = 'all', assetType = 'Karakter', activeCreditTab = 'summary', activeJobFilter = 'all', activeDevTab = 'synopsis', zoom = 1, undoStack = [], redoStack = [];
+  const $ = id => document.getElementById(id);
+  const toast = msg => { const el=$('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(toast.timer); toast.timer=setTimeout(()=>el.classList.remove('show'),2600); };
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); $('saveStatus').textContent = state.activeProjectId ? 'Tersimpan di perangkat' : 'Belum ada proyek'; } catch { $('saveStatus').textContent='Penyimpanan perangkat penuh'; } };
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const activeProject = () => state.projects.find(p=>p.id===state.activeProjectId);
+  const projectForUI = () => activeProject();
+  function go(next) {
+    screen=next;
+    document.querySelectorAll('.screen').forEach(el=>el.classList.toggle('active',el.id===`screen-${next}`));
+    document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active',el.dataset.screen===next));
+    $('screenSelect').value=next;
+    renderAll();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function requireProject() {
+    if (!activeProject()) { toast('Buat atau pilih proyek terlebih dahulu.'); go('projects'); return false; }
+    return true;
+  }
+  function createProject() {
+    const name = window.prompt('Nama proyek film:', '');
+    if (name === null) return;
+    if (!name.trim()) { toast('Nama proyek belum diisi.'); return; }
+    const project={id:crypto.randomUUID(),name:name.trim(),idea:'',settings:{},createdAt:new Date().toISOString(),assets:[],scenes:[],shots:[],status:'draft'};
+    state.projects.unshift(project); state.activeProjectId=project.id; save(); renderAll(); fillForm(); go('input'); toast('Proyek dibuat. Silakan isi ide dan pengaturan.');
+  }
+  function renderProjects() {
+    const projects=state.projects.filter(p=>projectFilter==='all'||p.status===projectFilter);
+    $('projectList').innerHTML=projects.map(p=>`<article class="project-card"><div class="asset-type">${esc(p.status==='done'?'Selesai':p.status==='production'?'Produksi':'Draft')}</div><h3>${esc(p.name)}</h3><p>${esc(p.idea ? p.idea.slice(0,125)+(p.idea.length>125?'…':'') : 'Ide cerita belum diisi.')}</p><p>Dibuat ${new Date(p.createdAt).toLocaleDateString('id-ID')}</p><div class="project-actions"><button class="btn primary" data-open-project="${p.id}">Buka Proyek</button><button class="btn secondary" data-delete-project="${p.id}">Hapus</button></div></article>`).join('');
+    $('projectEmpty').classList.toggle('hidden',projects.length>0);
+    $('projectList').classList.toggle('hidden',projects.length===0);
+  }
+  function fillForm() {
+    const p=activeProject(); if(!p) return;
+    $('projectName').value=p.name||''; $('storyIdea').value=p.idea||'';
+    const s=p.settings||{};
+    for(const [id,key] of [['targetDuration','duration'],['genre','genre'],['visualStyle','visualStyle'],['dialogLanguage','language'],['actCount','actCount'],['endingType','ending']]) $(id).value=s[key]||'';
+    $('exportTarget').textContent=s.duration?(s.duration==='custom'?'Durasi khusus':`${s.duration} menit`):'Belum ditentukan';
+    $('referenceStatus').textContent=(p.referenceNames||[]).length ? p.referenceNames.join(', ') : 'Belum ada referensi dipilih.';
+  }
+  function renderDevelopment() {
+    const p=activeProject(); const has=p&&p.idea.trim();
+    $('developmentEmpty').classList.toggle('hidden',!!has);
+    $('developmentContent').classList.toggle('hidden',!has);
+    if(has){$('devProjectName').textContent=p.name;$('devStory').textContent=p.idea;$('devDuration').textContent=p.settings?.duration?(p.settings.duration==='custom'?'Durasi khusus':`${p.settings.duration} menit`):'Belum ditentukan';$('devActs').textContent=p.settings?.actCount||'Belum ditentukan';$('devScenes').textContent=p.scenes?.length||'Belum dibuat';$('devShots').textContent=(p.shots||[]).length||'Belum dibuat';}
+  }
+  function renderAssets() {
+    const p=activeProject(); const assets=(p?.assets||[]).filter(a=>a.type===assetType);
+    $('assetList').innerHTML=assets.map(a=>`<article class="asset-card"><div class="asset-type">${esc(a.type)}</div><h3>${esc(a.name)}</h3><p>${esc(a.notes||'Belum ada catatan.')}</p><button class="btn secondary" data-delete-asset="${a.id}">Hapus Aset</button></article>`).join('');
+    $('assetEmpty').classList.toggle('hidden',assets.length>0);
+    $('assetList').classList.toggle('hidden',assets.length===0);
+  }
+  function renderScenes() {
+    const p=activeProject(); const scenes=p?.scenes||[];
+    $('sceneList').innerHTML=scenes.map(s=>`<article class="scene-card"><div class="asset-type">ADEGAN</div><h3>${esc(s.name)}</h3><p>${esc(s.notes||'Belum ada deskripsi.')}</p><p>${(s.shots||[]).length} shot</p><div class="button-row"><button class="btn primary" data-add-shot="${s.id}">＋ Tambah Shot</button><button class="btn secondary" data-delete-scene="${s.id}">Hapus Adegan</button></div></article>`).join('');
+    $('sceneEmpty').classList.toggle('hidden',scenes.length>0); $('sceneList').classList.toggle('hidden',scenes.length===0);
+  }
+  function renderShots() {
+    const p=activeProject(); const shots=p?.shots||[];
+    $('shotEmpty').classList.toggle('hidden',shots.length>0);
+    $('shotDetail').classList.toggle('hidden',shots.length===0);
+    if(shots.length){const sh=shots[shots.length-1];$('shotName').value=sh.name||'';$('shotPrompt').value=sh.prompt||'';}
+  }
+  function renderChecks() {
+    const p=activeProject(); const has=!!(p&&p.idea.trim());
+    $('checksEmpty').classList.toggle('hidden',!!state.lastCheck&&has);
+    $('checksResult').classList.toggle('hidden',!(state.lastCheck&&has));
+    if(state.lastCheck&&has){$('checksRows').innerHTML=[['Nama proyek',!!p.name],['Ide cerita',!!p.idea.trim()],['Durasi target',!!p.settings?.duration],['Genre',!!p.settings?.genre],['Referensi visual',(p.referenceNames||[]).length>0]].map(([label,ok])=>`<div class="check-row" style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #193144"><span>${esc(label)}</span><b style="color:${ok?'#00e59b':'#ffc857'}">${ok?'Lengkap':'Belum diisi'}</b></div>`).join('');}
+  }
+  function renderProduction() {
+    const p=activeProject(); const jobs=p?.jobs||[]; const filtered=jobs.filter(j=>activeJobFilter==='all'||j.status===activeJobFilter);
+    $('productionEmpty').classList.toggle('hidden',filtered.length>0);$('productionList').classList.toggle('hidden',filtered.length===0);
+    $('productionList').innerHTML=filtered.length?`<table><thead><tr><th>Shot</th><th>Generasi</th><th>Kontinuitas</th><th>Persetujuan</th></tr></thead><tbody>${filtered.map(j=>`<tr><td>${esc(j.name)}</td><td>${esc(j.status)}</td><td>Belum diperiksa</td><td>Belum disetujui</td></tr>`).join('')}</tbody></table>`:'';
+  }
+  function renderAll(){renderProjects();renderDevelopment();renderAssets();renderScenes();renderShots();renderChecks();renderProduction();if(!activeProject())$('saveStatus').textContent='Belum ada proyek';}
+  $('sideNav').addEventListener('click',e=>{const b=e.target.closest('[data-screen]');if(b)go(b.dataset.screen)});
+  $('screenSelect').addEventListener('change',e=>go(e.target.value));
+  document.addEventListener('click',e=>{
+    const goto=e.target.closest('[data-goto]');if(goto){go(goto.dataset.goto);return}
+    const op=e.target.closest('[data-open-project]');if(op){state.activeProjectId=op.dataset.openProject;save();fillForm();go('input');return}
+    const del=e.target.closest('[data-delete-project]');if(del){if(confirm('Hapus proyek ini beserta data lokalnya?')){state.projects=state.projects.filter(p=>p.id!==del.dataset.deleteProject);if(state.activeProjectId===del.dataset.deleteProject)state.activeProjectId=null;save();renderAll();toast('Proyek dihapus dari penyimpanan lokal.')}return}
+    const da=e.target.closest('[data-delete-asset]');if(da){const p=activeProject();p.assets=p.assets.filter(a=>a.id!==da.dataset.deleteAsset);save();renderAssets();return}
+    const ds=e.target.closest('[data-delete-scene]');if(ds){const p=activeProject();p.scenes=p.scenes.filter(a=>a.id!==ds.dataset.deleteScene);save();renderScenes();renderDevelopment();return}
+    const add=e.target.closest('[data-add-shot]');if(add){const p=activeProject();const scene=p.scenes.find(s=>s.id===add.dataset.addShot);const sh={id:crypto.randomUUID(),name:'Shot baru',prompt:'',sceneId:scene.id,status:'queued'};p.shots.push(sh);scene.shots.push(sh.id);save();go('shot');toast('Shot kosong dibuat. Lengkapi prompt sebelum produksi.');return}
+  });
+  $('newProject').addEventListener('click',createProject);$('emptyCreate').addEventListener('click',createProject);
+  document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{projectFilter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x===b));renderProjects()}));
+  $('projectForm').addEventListener('submit',e=>{e.preventDefault();if(!requireProject())return;const p=activeProject();p.name=$('projectName').value.trim()||p.name;p.idea=$('storyIdea').value.trim();p.settings={duration:$('targetDuration').value,genre:$('genre').value,visualStyle:$('visualStyle').value,language:$('dialogLanguage').value,actCount:$('actCount').value,ending:$('endingType').value};p.referenceNames=Array.from($('referenceFiles').files||[]).map(f=>f.name);save();renderAll();fillForm();toast('Pengaturan proyek disimpan.');});
+  $('clearForm').addEventListener('click',()=>{if(!requireProject())return;if(!confirm('Kosongkan ide dan pengaturan proyek ini?'))return;$('storyIdea').value='';for(const id of ['targetDuration','genre','visualStyle','dialogLanguage','actCount','endingType'])$(id).value='';$('referenceFiles').value='';toast('Form dikosongkan. Simpan untuk menerapkan perubahan.');});
+  $('toDevelopment').addEventListener('click',()=>{if(!$('projectForm').requestSubmit){$('projectForm').dispatchEvent(new Event('submit',{cancelable:true,bubbles:true}))}else $('projectForm').requestSubmit();if(activeProject()?.idea)go('development');});
+  $('referenceFiles').addEventListener('change',()=>{$('referenceStatus').textContent=Array.from($('referenceFiles').files||[]).map(f=>f.name).join(', ')||'Belum ada referensi dipilih.';});
+  document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{activeDevTab=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));if(activeDevTab!=='synopsis')toast('Tab ini menunggu layanan pengembangan cerita.');}));
+  document.querySelectorAll('[data-asset]').forEach(b=>b.addEventListener('click',()=>{assetType=b.dataset.asset;document.querySelectorAll('[data-asset]').forEach(x=>x.classList.toggle('active',x===b));renderAssets()}));
+  const assetDialog=$('assetDialog');const sceneDialog=$('sceneDialog');
+  const openAsset=()=>{if(!requireProject())return;$('assetType').value=assetType;$('assetName').value='';$('assetNotes').value='';assetDialog.showModal()};
+  $('addAsset').addEventListener('click',openAsset);$('emptyAddAsset').addEventListener('click',openAsset);
+  $('saveAsset').addEventListener('click',e=>{e.preventDefault();if(!$('assetName').value.trim()){toast('Nama aset wajib diisi.');return}const p=activeProject();p.assets.push({id:crypto.randomUUID(),type:$('assetType').value,name:$('assetName').value.trim(),notes:$('assetNotes').value.trim()});assetType=$('assetType').value;save();assetDialog.close();renderAssets();toast('Aset disimpan pada proyek ini.')});
+  const openScene=()=>{if(!requireProject())return;$('sceneName').value='';$('sceneNotes').value='';sceneDialog.showModal()};
+  $('addScene').addEventListener('click',openScene);$('emptyAddScene').addEventListener('click',openScene);
+  $('saveScene').addEventListener('click',e=>{e.preventDefault();if(!$('sceneName').value.trim()){toast('Nama adegan wajib diisi.');return}const p=activeProject();p.scenes.push({id:crypto.randomUUID(),name:$('sceneName').value.trim(),notes:$('sceneNotes').value.trim(),shots:[]});save();sceneDialog.close();renderScenes();renderDevelopment();toast('Adegan ditambahkan.')});
+  $('runChecks').addEventListener('click',()=>{if(!requireProject())return;state.lastCheck=new Date().toISOString();save();renderChecks();toast('Pemeriksaan kelengkapan lokal selesai; bukan analisis AI.')});
+  document.querySelectorAll('[data-credit-tab]').forEach(b=>b.addEventListener('click',()=>{activeCreditTab=b.dataset.creditTab;document.querySelectorAll('[data-credit-tab]').forEach(x=>x.classList.toggle('active',x===b));toast('Data kredit menunggu koneksi backend akun.')}));
+  document.querySelectorAll('[data-job-filter]').forEach(b=>b.addEventListener('click',()=>{activeJobFilter=b.dataset.jobFilter;document.querySelectorAll('[data-job-filter]').forEach(x=>x.classList.toggle('active',x===b));renderProduction()}));
+  $('saveShot').addEventListener('click',()=>{const p=activeProject();if(!p?.shots.length){toast('Belum ada shot.');return}const sh=p.shots[p.shots.length-1];sh.name=$('shotName').value.trim()||'Shot baru';sh.prompt=$('shotPrompt').value.trim();save();toast('Detail shot disimpan.')});
+  $('generateShot').addEventListener('click',()=>toast('API generasi video belum terhubung. Tidak ada kredit yang dipotong.'));
+  $('zoomTimeline').addEventListener('click',()=>{zoom=zoom===1?1.25:zoom===1.25?1.5:1;document.querySelectorAll('.track-empty').forEach(el=>el.style.minWidth=`${100*zoom}%`);$('timelineStatus').textContent=`Tampilan zoom ${Math.round(zoom*100)}%`;});
+  $('undoTimeline').addEventListener('click',()=>toast('Belum ada perubahan timeline untuk dibatalkan.'));
+  $('redoTimeline').addEventListener('click',()=>toast('Belum ada perubahan timeline untuk diulang.'));
+  $('exportButton').addEventListener('click',()=>toast('Ekspor belum tersedia karena timeline dan backend media belum terhubung.'));
+  $('oldExport').addEventListener('click',()=>toast('Belum ada versi ekspor yang tersimpan.'));
+  renderAll();if(activeProject())fillForm();save();
 })();

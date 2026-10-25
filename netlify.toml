@@ -1,3 +1,8 @@
+[[redirects]]
+  from = "/studio-film"
+  to = "/studio-film.html"
+  status = 200
+
 [build]
   publish = "."
   functions = "netlify/functions"
@@ -7,11 +12,6 @@
 
 [functions]
   node_bundler = "esbuild"
-
-[[redirects]]
-  from = "/studio-film"
-  to = "/studio-film.html"
-  status = 200
 
 [[redirects]]
   from = "/video-generator"

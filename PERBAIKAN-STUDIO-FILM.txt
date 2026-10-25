@@ -1,0 +1,24 @@
+KAMISAH — CATATAN PERBAIKAN STUDIO AI FILM
+
+Perubahan:
+- Menambahkan studio-film.html, studio-film.css, dan studio-film.js.
+- Studio AI Film ditambahkan sebagai akses baru dari beranda; halaman Video AI lama tidak diganti.
+- 11 layar tersedia sebagai halaman/navigasi terpisah. Nomor urutan desain tidak ditampilkan.
+- Proyek, ide, durasi target, karakter, kostum, lokasi, adegan, dan shot tidak diisi dengan data contoh secara otomatis.
+- Proyek baru dimulai dari kosong; durasi target ditentukan pengguna.
+- Fungsi lokal dasar: buat/hapus proyek, simpan ide dan pengaturan, tambah/hapus aset, tambah/hapus adegan, tambah shot, pemeriksaan kelengkapan lokal.
+- Kredit, generasi video, analisis kontinuitas AI, timeline editing penuh, dan ekspor belum terhubung ke backend; UI menyatakan batasan tersebut dan tidak mengklaim pekerjaan palsu berhasil.
+- React prototype juga tidak lagi memuat proyek/media demo otomatis.
+- Menghapus file dokumentasi duplikat dengan nama huruf besar/kecil, salinan fungsi server di root yang sama dengan netlify/functions, salinan index.html duplikat dalam dist, dan salinan setup SQL yang identik. Sumber fungsi yang dipakai Netlify tetap di netlify/functions.
+- Menambahkan rewrite /studio-film; rute lama tetap dipertahankan.
+
+Validasi:
+- node --check studio-film.js: lulus.
+- node --check script.js: lulus.
+- node --check auth.js: lulus.
+- Pengecekan ID HTML terhadap selector JS: tidak ada selector ID yang hilang.
+
+Batasan:
+- Build penuh Vite belum dijalankan karena dependensi node_modules tidak disertakan dalam ZIP.
+- Belum diuji terhadap API produksi, database, sistem kredit, atau ekspor media.
+- Jangan deploy production sebelum diuji melalui deploy preview.
