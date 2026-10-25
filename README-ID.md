@@ -30,3 +30,10 @@ Jangan meletakkan secret API di frontend atau file yang dipublikasikan. Hubungka
 - Referensi terpilih sekarang ditampilkan di kanvas.
 - Thumbnail gambar unggahan disimpan sebagai data URL agar tetap muncul setelah halaman dimuat ulang. Video memakai URL sementara agar tidak memenuhi localStorage.
 - Generate masih antrean demo dan belum terhubung ke API video.
+
+## Studio Film Panjang (rancangan UI)
+- Halaman baru: `film-studio.html` (dapat dibuka pada `/film-studio.html`).
+- Memuat 11 tampilan berdasarkan gambar acuan: Beranda & Proyek, Input Cerita, Hasil Pengembangan, Pusat Kontinuitas, Pemeriksaan Proyek, Pengaturan Kredit, Detail Adegan & Shot, Detail Shot, Produksi per Shot, Timeline Editor, dan Hasil Akhir & Ekspor.
+- Tombol navigasi antarhalaman dan beberapa kontrol pratinjau berjalan pada frontend.
+- PENTING: produksi video, pemeriksaan AI, pencatatan kredit server, penyuntingan timeline sebenarnya, dan ekspor belum tersambung ke backend/API. UI menampilkan pemberitahuan pada tindakan yang memerlukan layanan tersebut.
+- Halaman lama di `index.html` dan Studio Canvas tetap dipertahankan. Beranda lama memiliki tombol **Studio Film** untuk membuka halaman baru.

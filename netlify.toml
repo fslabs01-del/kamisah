@@ -14,11 +14,6 @@
   status = 200
 
 [[redirects]]
-  from = "/buat-film-ai"
-  to = "/buat-film-ai.html"
-  status = 200
-
-[[redirects]]
   from = "/story"
   to = "/story.html"
   status = 200
