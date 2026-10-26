@@ -22,13 +22,9 @@
   --green: #00e0a0;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
@@ -37,9 +33,7 @@ body {
   font-family: "Plus Jakarta Sans", system-ui, sans-serif;
 }
 
-a {
-  -webkit-tap-highlight-color: transparent;
-}
+a { -webkit-tap-highlight-color: transparent; }
 
 .app {
   width: min(100%, 720px);
@@ -50,7 +44,6 @@ a {
 }
 
 /* HEADER */
-
 .header {
   position: sticky;
   top: 0;
@@ -74,11 +67,7 @@ a {
   text-decoration: none;
 }
 
-.logo {
-  width: 42px;
-  height: 42px;
-  flex-shrink: 0;
-}
+.logo { width: 42px; height: 42px; flex-shrink: 0; }
 
 .brand-name {
   display: block;
@@ -205,13 +194,9 @@ a {
 }
 
 /* CONTENT */
+.content { padding: 10px 14px 20px; }
 
-.content {
-  padding: 10px 14px 20px;
-}
-
-/* BANNER UTAMA */
-
+/* BANNER PROMOSI: GAMBAR SUDAH MEMUAT TEKS PROMOSI */
 .banner {
   display: block;
   width: 100%;
@@ -231,10 +216,7 @@ a {
 }
 
 /* JUDUL FITUR */
-
-.section-title {
-  margin: 17px 0 12px;
-}
+.section-title { margin: 17px 0 12px; }
 
 .section-title h1 {
   margin: 0;
@@ -244,9 +226,7 @@ a {
   letter-spacing: -.8px;
 }
 
-.spark {
-  color: #ffdc45;
-}
+.spark { color: #ffdc45; }
 
 .gradient {
   background: linear-gradient(90deg, #c179ff, #26bfff);
@@ -263,7 +243,6 @@ a {
 }
 
 /* KARTU FITUR */
-
 .cards {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -284,16 +263,9 @@ a {
   transition: transform .16s ease;
 }
 
-.feature:active {
-  transform: scale(.985);
-}
+.feature:active { transform: scale(.985); }
 
-/*
- * PERBAIKAN UTAMA:
- * Gambar kartu mengikuti dimensi intrinsik file.
- * Tidak memaksakan rasio 321/223 atau memotong gambar.
- */
-
+/* Gambar kartu utuh mengikuti dimensi intrinsik, tanpa pemotongan. */
 .feature img {
   display: block;
   width: 100%;
@@ -305,7 +277,6 @@ a {
 }
 
 /* KARTU IDE DAN PROMPT */
-
 .wide-card {
   position: relative;
   display: flex;
@@ -336,10 +307,7 @@ a {
   font-size: 28px;
 }
 
-.wide-copy {
-  min-width: 0;
-  flex: 1;
-}
+.wide-copy { min-width: 0; flex: 1; }
 
 .wide-label {
   display: inline-block;
@@ -406,7 +374,6 @@ a {
 }
 
 /* NAVIGASI BAWAH */
-
 .bottom-nav {
   position: fixed;
   z-index: 25;
@@ -436,201 +403,67 @@ a {
   text-decoration: none;
 }
 
-.nav-icon {
-  font-size: 21px;
-  line-height: 1.1;
-}
+.nav-icon { font-size: 21px; line-height: 1.1; }
 
 .nav-item.active {
   color: #ffdf38;
   text-shadow: 0 0 16px #ffc40055;
 }
 
-.nav-item.active .nav-icon {
-  filter: drop-shadow(0 0 6px #ffcf26);
-}
+.nav-item.active .nav-icon { filter: drop-shadow(0 0 6px #ffcf26); }
 
 /* LAYAR KECIL */
-
 @media (max-width: 420px) {
-  .header {
-    gap: 5px;
-    padding: 8px 9px;
-  }
-
-  .logo {
-    width: 34px;
-    height: 34px;
-  }
-
-  .brand {
-    gap: 5px;
-  }
-
-  .brand-name {
-    font-size: 15px;
-  }
-
-  .tagline {
-    font-size: 7px;
-    letter-spacing: -.2px;
-  }
-
-  .credit {
-    gap: 4px;
-    padding: 4px 5px;
-  }
-
-  .coin {
-    width: 21px;
-    height: 21px;
-    font-size: 13px;
-  }
-
-  .balance {
-    font-size: 9px;
-  }
-
-  .balance small {
-    font-size: 7px;
-  }
-
-  .topup {
-    padding: 7px;
-    font-size: 9px;
-  }
-
-  .icon-btn {
-    width: 22px;
-    font-size: 18px;
-  }
-
-  .avatar {
-    width: 29px;
-    height: 29px;
-  }
-
-  .cards {
-    gap: 9px;
-  }
-
-  .feature {
-    border-radius: 14px;
-  }
-
-  .wide-card {
-    gap: 8px;
-    min-height: 82px;
-    padding: 9px;
-  }
-
-  .wide-icon {
-    width: 44px;
-    height: 44px;
-    font-size: 24px;
-  }
-
-  .wide-title {
-    font-size: 12px;
-  }
-
-  .wide-description {
-    font-size: 9px;
-  }
-
-  .wide-arrow {
-    width: 28px;
-    height: 28px;
-    font-size: 17px;
-  }
+  .header { gap: 5px; padding: 8px 9px; }
+  .logo { width: 34px; height: 34px; }
+  .brand { gap: 5px; }
+  .brand-name { font-size: 15px; }
+  .tagline { font-size: 7px; letter-spacing: -.2px; }
+  .credit { gap: 4px; padding: 4px 5px; }
+  .coin { width: 21px; height: 21px; font-size: 13px; }
+  .balance { font-size: 9px; }
+  .balance small { font-size: 7px; }
+  .topup { padding: 7px; font-size: 9px; }
+  .icon-btn { width: 22px; font-size: 18px; }
+  .avatar { width: 29px; height: 29px; }
+  .cards { gap: 9px; }
+  .feature { border-radius: 14px; }
+  .wide-card { gap: 8px; min-height: 82px; padding: 9px; }
+  .wide-icon { width: 44px; height: 44px; font-size: 24px; }
+  .wide-title { font-size: 12px; }
+  .wide-description { font-size: 9px; }
+  .wide-arrow { width: 28px; height: 28px; font-size: 17px; }
 }
 
 @media (min-width: 600px) {
-  .header {
-    gap: 12px;
-    padding: 13px 20px;
-  }
-
-  .logo {
-    width: 48px;
-    height: 48px;
-  }
-
-  .tagline {
-    font-size: 10px;
-  }
-
-  .credit {
-    gap: 8px;
-    padding: 6px 10px;
-  }
-
-  .coin {
-    width: 29px;
-    height: 29px;
-  }
-
-  .topup {
-    padding: 9px 14px;
-    font-size: 12px;
-  }
-
-  .content {
-    padding: 14px 20px 24px;
-  }
-
-  .cards {
-    gap: 12px;
-  }
-
-  .feature,
-  .banner,
-  .wide-card {
-    border-radius: 20px;
-  }
-
-  .section-title {
-    margin-top: 20px;
-  }
-
-  .nav-item {
-    font-size: 11px;
-  }
-
-  .nav-item .nav-icon {
-    font-size: 23px;
-  }
+  .header { gap: 12px; padding: 13px 20px; }
+  .logo { width: 48px; height: 48px; }
+  .tagline { font-size: 10px; }
+  .credit { gap: 8px; padding: 6px 10px; }
+  .coin { width: 29px; height: 29px; }
+  .topup { padding: 9px 14px; font-size: 12px; }
+  .content { padding: 14px 20px 24px; }
+  .cards { gap: 12px; }
+  .feature, .banner, .wide-card { border-radius: 20px; }
+  .section-title { margin-top: 20px; }
+  .nav-item { font-size: 11px; }
+  .nav-item .nav-icon { font-size: 23px; }
 }
 
 @media (max-width: 370px) {
-  .content {
-    padding-right: 10px;
-    padding-left: 10px;
-  }
-
-  .cards {
-    gap: 7px;
-  }
-
-  .feature {
-    border-radius: 13px;
-  }
-
-  .section-title h1 {
-    font-size: 22px;
-  }
+  .content { padding-right: 10px; padding-left: 10px; }
+  .cards { gap: 7px; }
+  .feature { border-radius: 13px; }
+  .section-title h1 { font-size: 22px; }
 }
 </style>
 </head>
 
 <body>
-
 <main class="app">
 
   <header class="header">
-
     <a class="brand" href="index.html" aria-label="Beranda Kamisah AI">
-
       <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
         <defs>
           <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
@@ -642,210 +475,123 @@ a {
         <path d="M10 8Q10 2 17 6L57 28Q65 32 57 37L17 59Q10 63 10 55Z" fill="url(#lg)"/>
         <path d="M25 19L46 31L25 44Z" fill="#061426"/>
       </svg>
-
       <span>
         <span class="brand-name">Kamisah <span>AI</span></span>
         <span class="tagline">Buat Cerita, Visualkan, Jadi Nyata</span>
       </span>
-
     </a>
 
     <div class="credit" aria-label="Saldo kredit">
-
       <span class="coin">◉</span>
-
       <span class="balance">
         <span id="balance">—</span>
         <small>Kredit</small>
       </span>
-
       <a class="topup" href="video-generator.html#/akun">Top Up</a>
-
     </div>
 
     <button class="icon-btn" id="notifications" type="button" aria-label="Notifikasi">
-      ♟
-      <span class="dot"></span>
+      ♟<span class="dot"></span>
     </button>
 
     <a class="avatar" id="profile" href="video-generator.html#/akun" aria-label="Akun">
       <span id="avatarInitial">K</span>
     </a>
-
   </header>
 
   <div class="content">
 
-    <!-- BANNER UTAMA -->
-
+    <!-- BANNER PROMOSI: teks promosi sudah menyatu di dalam gambar -->
     <a class="banner" href="chat.html" aria-label="Chat dulu sama AI">
-
       <img
-        src="./assets/kamisah-hero.webp"
-        alt="Teman cerita kamu. Cerita aja, kita ngobrol dulu dengan Kamisah AI."
+        src="./assets/home-banner-promo.webp"
+        alt="Teman cerita kamu. Cinta bikin pusing? Kepikiran buat selingkuh? Pengen cepat kaya? Cerita aja, kita ngobrol dulu. Chat dulu sama AI."
         fetchpriority="high"
       >
-
     </a>
 
     <!-- JUDUL BERANDA -->
-
     <section class="section-title">
-
       <h1>
         <span class="spark">✨</span>
         Mau Bikin <span class="gradient">Apa Hari Ini?</span>
       </h1>
-
       <p>Semua alat AI ada di sini. Pilih sesuai kebutuhanmu!</p>
-
     </section>
 
-    <!-- KARTU FITUR -->
-
+    <!-- KARTU FITUR: gunakan aset home-* yang gambarnya satu kartu utuh -->
     <section class="cards" aria-label="Fitur Kamisah AI">
 
       <a class="feature" href="studio-film.html" aria-label="Studio Pembuat Film AI">
-
-        <img
-          src="./assets/card-film.webp"
-          alt="Studio Pembuat Film AI"
-          loading="lazy"
-        >
-
+        <img src="./assets/home-film.webp" alt="Studio Pembuat Film AI" loading="lazy">
       </a>
 
       <a class="feature" href="ai-film-analyzer.html" aria-label="Buat Alur Cerita Film">
-
-        <img
-          src="./assets/card-analyzer.webp"
-          alt="Buat Alur Cerita Film"
-          loading="lazy"
-        >
-
+        <img src="./assets/home-analyzer.webp" alt="Buat Alur Cerita Film" loading="lazy">
       </a>
 
       <a class="feature" href="music.html" aria-label="Buat Lagu dengan AI">
-
-        <img
-          src="./assets/card-music.webp"
-          alt="Buat Lagu dengan AI"
-          loading="lazy"
-        >
-
+        <img src="./assets/home-music.webp" alt="Buat Lagu dengan AI" loading="lazy">
       </a>
 
       <a class="feature" href="video-generator.html" aria-label="Buat Video AI">
-
-        <img
-          src="./assets/card-video.webp"
-          alt="Buat Video AI"
-          loading="lazy"
-        >
-
+        <img src="./assets/home-video.webp" alt="Buat Video AI" loading="lazy">
       </a>
 
       <a class="feature" href="story.html" aria-label="Buat Cerita dan Naskah">
-
-        <img
-          src="./assets/card-story.webp"
-          alt="Buat Cerita dan Naskah"
-          loading="lazy"
-        >
-
+        <img src="./assets/home-story.webp" alt="Buat Cerita dan Naskah" loading="lazy">
       </a>
 
       <a class="feature" href="chat.html" aria-label="Chat dan Curhat dengan AI">
-
-        <img
-          src="./assets/card-chat.webp"
-          alt="Chat dan Curhat dengan AI"
-          loading="lazy"
-        >
-
+        <img src="./assets/home-chat.webp" alt="Chat dan Curhat dengan AI" loading="lazy">
       </a>
 
     </section>
 
     <!-- CARI IDE KONTEN -->
-
     <a class="wide-card" href="ideas.html" aria-label="Cari Ide Konten">
-
       <span class="wide-icon" aria-hidden="true">💡</span>
-
       <span class="wide-copy">
-
         <span class="wide-label">IDE KONTEN</span>
-
         <span class="wide-title">Cari Ide Konten</span>
-
-        <span class="wide-description">
-          Temukan ide konten untuk YouTube, TikTok, dan Reels.
-        </span>
-
+        <span class="wide-description">Temukan ide konten untuk YouTube, TikTok, dan Reels.</span>
       </span>
-
       <span class="wide-arrow" aria-hidden="true">→</span>
-
     </a>
 
     <!-- KUMPULAN PROMPT DAN IDE -->
-
     <a class="wide-card prompts" href="ideas.html" aria-label="Buka Kumpulan Prompt dan Ide">
-
       <span class="wide-icon" aria-hidden="true">🧰</span>
-
       <span class="wide-copy">
-
         <span class="wide-title">Kumpulan Prompt dan Ide</span>
-
-        <span class="wide-description">
-          Temukan contoh prompt dan ide kreatif yang bisa langsung kamu salin dan gunakan.
-        </span>
-
+        <span class="wide-description">Temukan contoh prompt dan ide kreatif yang bisa langsung kamu salin dan gunakan.</span>
       </span>
-
       <span class="wide-arrow" aria-hidden="true">→</span>
-
     </a>
 
   </div>
-
 </main>
 
 <!-- NAVIGASI BAWAH -->
-
 <nav class="bottom-nav" aria-label="Navigasi utama">
-
   <a class="nav-item active" href="index.html">
-    <span class="nav-icon">⌂</span>
-    <span>Beranda</span>
+    <span class="nav-icon">⌂</span><span>Beranda</span>
   </a>
-
   <a class="nav-item" href="video-generator.html">
-    <span class="nav-icon">🎬</span>
-    <span>Video AI</span>
+    <span class="nav-icon">🎬</span><span>Video AI</span>
   </a>
-
   <a class="nav-item" href="story.html">
-    <span class="nav-icon">▤</span>
-    <span>Story AI</span>
+    <span class="nav-icon">▤</span><span>Story AI</span>
   </a>
-
   <a class="nav-item" href="chat.html">
-    <span class="nav-icon">☏</span>
-    <span>Chat</span>
+    <span class="nav-icon">☏</span><span>Chat</span>
   </a>
-
   <a class="nav-item" href="video-generator.html#/akun">
-    <span class="nav-icon">♙</span>
-    <span>Akun</span>
+    <span class="nav-icon">♙</span><span>Akun</span>
   </a>
-
 </nav>
 
-<!-- SUPABASE -->
-
+<!-- SUPABASE DAN PEMERIKSAAN SESI -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./config.js"></script>
 
@@ -875,8 +621,7 @@ a {
       return;
     }
 
-    const session = data.session;
-    const user = session.user;
+    const user = data.session.user;
     const email = user.email || "";
     const metadata = user.user_metadata || {};
 
@@ -897,18 +642,14 @@ a {
 
     if (picture) {
       const image = document.createElement("img");
-
       image.src = picture;
       image.alt = "";
       image.referrerPolicy = "no-referrer";
-
       image.onerror = () => image.remove();
-
       document.getElementById("profile").replaceChildren(image);
     }
 
     /* Membaca saldo kredit tanpa mengubah saldo. */
-
     const {
       data: wallet,
       error: walletError
@@ -930,7 +671,6 @@ a {
     }
 
     /* Arahkan pengguna ke Welcome jika keluar dari akun. */
-
     supabaseClient.auth.onAuthStateChange((event, nextSession) => {
       if (event === "SIGNED_OUT" || !nextSession) {
         location.replace("welcome.html");
@@ -944,12 +684,9 @@ a {
 })();
 
 /* Tombol notifikasi */
-
-document
-  .getElementById("notifications")
-  .addEventListener("click", () => {
-    alert("Belum ada notifikasi baru.");
-  });
+document.getElementById("notifications").addEventListener("click", () => {
+  alert("Belum ada notifikasi baru.");
+});
 </script>
 
 </body>
