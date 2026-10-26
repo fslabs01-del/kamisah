@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#061120">
+<title>Kamisah AI — Semua Kreativitas, Satu Platform</title>
+<meta name="description" content="Mulai perjalanan kreatifmu bersama Kamisah AI. Buat cerita, video, musik, dan banyak lagi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#04101e;--line:#1b3b58;--cyan:#12d9ff;--violet:#963cff;--pink:#f42bcf}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f8fbff;font-family:"Plus Jakarta Sans",system-ui,sans-serif}
+.page{width:min(100%,720px);margin:auto;min-height:100dvh;position:relative;overflow:hidden;background:linear-gradient(180deg,#071426 0%,#020914 100%)}
+.hero{position:relative;min-height:360px;padding:14px 16px 18px;overflow:hidden;background:linear-gradient(90deg,rgba(2,11,24,.95) 0%,rgba(2,11,24,.74) 43%,rgba(2,11,24,.1) 100%),url("assets/kamisah-hero.webp") center top/cover no-repeat}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative;z-index:2}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}.mark{width:46px;height:46px;flex-shrink:0}.brandname{font-size:clamp(20px,5vw,29px);font-weight:800;letter-spacing:-1px;white-space:nowrap}.brandname span{background:linear-gradient(90deg,#16d8ff,#b14aff);background-clip:text;color:transparent}.tagline{font-size:10px;color:#d0d8e8;letter-spacing:.1px}
+.lang{background:rgba(12,29,49,.8);border:1px solid #5b7897;color:#edf6ff;border-radius:24px;padding:9px 11px;font-size:11px;white-space:nowrap}
+.copy{position:relative;z-index:1;margin-top:100px;max-width:510px;text-shadow:0 2px 18px #020914}
+h1{font-size:clamp(35px,8vw,55px);line-height:1.03;letter-spacing:-1.8px;margin:0;font-weight:800}h1 span{display:block;background:linear-gradient(90deg,#21d8ff 0%,#9c55ff 55%,#f52bd1 100%);background-clip:text;color:transparent}
+.sub{font-size:clamp(14px,3.8vw,18px);line-height:1.5;color:#d4deed;margin:12px 0 18px;max-width:420px}
+.features{padding:0 16px 18px;margin-top:-2px;display:grid;gap:9px}
+.feature{position:relative;display:flex;align-items:center;min-height:82px;overflow:hidden;text-decoration:none;color:white;border:1px solid #21425e;border-radius:21px;background:linear-gradient(100deg,#111a37,#081729 72%);padding:12px;isolation:isolate}
+.feature:before{content:"";position:absolute;inset:0;z-index:-2;background-image:var(--art);background-size:auto 130%;background-repeat:no-repeat;background-position:right center;opacity:.78}
+.feature:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(3,12,27,.97) 0%,rgba(3,12,27,.88) 49%,rgba(3,12,27,.15) 100%)}
+.icon{display:grid;place-items:center;width:48px;height:54px;flex:0 0 48px;border:1px solid var(--accent);border-radius:16px;background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent);font-size:25px;margin-right:10px;box-shadow:0 0 20px color-mix(in srgb,var(--accent) 25%,transparent)}
+.featurecopy{max-width:65%;min-width:0}.feature h2{font-size:14px;line-height:1.22;margin:0 0 3px;font-weight:800}.feature h2 span{display:block;color:var(--accent)}.feature p{font-size:11px;line-height:1.4;color:#d2dced;margin:0}
+.start{display:flex;align-items:center;justify-content:center;gap:12px;width:calc(100% - 32px);margin:0 16px 18px;padding:14px 15px;border:0;border-radius:22px;text-decoration:none;color:white;font-weight:800;font-size:16px;background:linear-gradient(100deg,#08c7ff,#5435ff 55%,#f000d4);box-shadow:0 8px 30px #493cff44}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;padding:0 18px 22px}.stat{display:flex;align-items:center;justify-content:center;gap:7px;padding:8px 4px;border-right:1px solid #19324c}.stat:last-child{border:0}.stat b{display:block;font-size:11px}.stat small{display:block;color:#9db0c8;font-size:9px}.stat .ico{font-size:23px;color:#24aaff}
+@media(max-width:420px){.mark{width:38px;height:38px}.brand{gap:7px}.brandname{font-size:19px}.tagline{font-size:8px}.lang{font-size:9px;padding:8px 9px}}\n@media(min-width:600px){.hero{min-height:500px;padding:24px 28px}.copy{margin-top:150px}.features{padding:0 28px 22px}.feature{min-height:100px}.feature h2{font-size:17px}.feature p{font-size:13px}.start{width:calc(100% - 56px);margin-left:28px;margin-right:28px;font-size:19px}.stats{padding:0 28px 28px}}
+@media(max-width:360px){.hero{padding:12px 12px;min-height:340px}.mark{width:38px;height:38px}.brandname{font-size:19px}.tagline{font-size:9px}.lang{font-size:10px;padding:8px}.copy{margin-top:90px}.features{padding-left:12px;padding-right:12px}.feature{padding:9px;min-height:98px}.icon{width:48px;height:58px;flex-basis:48px;margin-right:9px}.featurecopy{max-width:70%}.feature h2{font-size:14px}.feature p{font-size:11px}.start{width:calc(100% - 24px);margin-left:12px;margin-right:12px;font-size:14px}}
+</style>
+</head>
+<body>
+<main class="page">
+<section class="hero">
+  <header class="top">
+    <a class="brand" href="welcome.html" style="text-decoration:none;color:inherit">
+      <svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#18e1ff"/><stop offset=".55" stop-color="#3458ff"/><stop offset="1" stop-color="#ed2cf5"/></linearGradient></defs><path d="M10 8Q10 2 17 6L57 28Q65 32 57 37L17 59Q10 63 10 55Z" fill="url(#lg)"/><path d="M25 19L46 31L25 44Z" fill="#061426"/></svg>
+      <span><span class="brandname">Kamisah <span>AI</span></span><span class="tagline" style="display:block">Buat Cerita, Visualkan, Jadi Nyata</span></span>
+    </a>
+    <span class="lang" aria-label="Bahasa Indonesia">◎ Bahasa Indonesia⌄</span>
+  </header>
+  <div class="copy">
+    <h1>Semua Kreativitas,<span>Satu Platform!</span></h1>
+    <p class="sub">Dari ide menjadi cerita, dari cerita menjadi karya nyata dengan Kamisah AI.</p>
+  </div>
+</section>
+
+<section class="features" aria-label="Fitur Kamisah AI">
+  <article class="feature" style="--accent:#e044ff;--art:url('assets/welcome-film.webp')"><div class="icon">🎬</div><div class="featurecopy"><h2>Buat Alur Cerita Film<span>Sekali Klik</span></h2><p>Ubah video menjadi alur cerita lengkap dengan mudah.</p></div></article>
+  <article class="feature" style="--accent:#19c9ff;--art:url('assets/welcome-video.webp')"><div class="icon">▣</div><div class="featurecopy"><h2>Buat Video AI<span>Visual sinematik</span></h2><p>Wujudkan ide menjadi video dari teks atau gambar.</p></div></article>
+  <article class="feature" style="--accent:#16e9c4;--art:url('assets/welcome-music.webp')"><div class="icon">♫</div><div class="featurecopy"><h2>Ciptakan<span>Lagu Sendiri</span></h2><p>Buat lagu dengan AI sesuai ide dan gaya musikmu.</p></div></article>
+  <article class="feature" style="--accent:#ff4eb8;--art:url('assets/welcome-chat.webp')"><div class="icon">♥</div><div class="featurecopy"><h2>Curhat Asmara<span>dengan AI</span></h2><p>Cerita soal cinta, hubungan, atau masalah hidup.</p></div></article>
+</section>
+
+<a class="start" href="login.html">Mulai Berkreasi Sekarang <span aria-hidden="true">→</span></a>
+
+<section class="stats" aria-label="Keunggulan Kamisah">
+  <div class="stat"><span class="ico">♟</span><span><b>Kreatif</b><small>Untuk semua ide</small></span></div>
+  <div class="stat"><span class="ico">ϟ</span><span><b>AI Tools</b><small>Lengkap &amp; mudah</small></span></div>
+  <div class="stat"><span class="ico">♢</span><span><b>Aman</b><small>Data terlindungi</small></span></div>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script>
+(async()=>{try{const c=window.KH||{};if(!window.supabase||!c.SUPABASE_URL||!c.SUPABASE_PUBLISHABLE_KEY)return;const sb=window.supabase.createClient(c.SUPABASE_URL,c.SUPABASE_PUBLISHABLE_KEY);const {data}=await sb.auth.getSession();if(data.session)location.replace('index.html')}catch(e){console.warn('Pemeriksaan sesi dilewati',e)}})();
+</script>
+</body>
+</html>
