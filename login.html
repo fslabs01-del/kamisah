@@ -6,217 +6,1014 @@
 <meta name="theme-color" content="#061120">
 <title>Masuk ke Kamisah AI</title>
 <meta name="description" content="Masuk atau daftar akun Kamisah AI.">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 <style>
-*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:#030c19;color:#f7fbff;font-family:"Plus Jakarta Sans",system-ui,sans-serif}
-.screen{min-height:100dvh;position:relative;display:flex;align-items:center;justify-content:center;padding:28px 16px;background:linear-gradient(180deg,rgba(3,12,25,.15),rgba(3,12,25,.94) 43%,#030c19 100%),url("assets/kamisah-hero.webp") center top/auto 48vh no-repeat}
-.card{width:min(100%,440px);border:1px solid rgba(126,174,215,.35);border-radius:30px;background:rgba(4,17,33,.88);box-shadow:0 24px 80px #0008;backdrop-filter:blur(20px);padding:25px 20px 20px;margin-top:clamp(100px,25vh,220px)}
-.brand{text-align:center;margin-bottom:20px}.logo{width:54px;height:54px;margin:auto auto 4px;display:block}.brand h1{font-size:30px;line-height:1.1;margin:0;font-weight:800;letter-spacing:-1px}.brand h1 span{color:#b477ff}.brand p{font-size:12px;color:#b8c6d9;margin:5px 0 0}
-h2{text-align:center;font-size:22px;letter-spacing:-.5px;margin:0 0 6px}.intro{text-align:center;color:#b8c6d9;font-size:13px;line-height:1.55;margin:0 0 18px}
-.oauth{width:100%;height:47px;border-radius:14px;border:1px solid #d7e0ea;background:#f9fbff;color:#101827;font-family:inherit;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;gap:11px;margin:9px 0;cursor:pointer}.oauth svg{width:21px;height:21px}.oauth.apple{background:#fff}.divider{display:flex;align-items:center;gap:12px;color:#91a4bc;font-size:12px;margin:15px 0}.divider:before,.divider:after{content:"";height:1px;background:#29405a;flex:1}
-label{display:block;font-size:12px;font-weight:700;color:#dce7f5;margin:12px 0 7px}.field{position:relative;display:flex;align-items:center;border:1px solid #304a67;background:#0c1c30;border-radius:13px;min-height:47px}.field .field-icon{width:19px;height:19px;margin-left:13px;color:#c9d7e8;flex-shrink:0}.field input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#fff;padding:13px 12px;font:500 13px inherit}.field input::placeholder{color:#8ea0b7}.toggle{border:0;background:transparent;color:#c7d4e5;padding:10px 12px;cursor:pointer;font-size:12px}
-.row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px 0 16px;font-size:12px;color:#b9c8dc}.remember{display:flex;align-items:center;gap:7px;margin:0;font-weight:500;color:#b9c8dc}.remember input{accent-color:#a336ff;width:16px;height:16px}.textbtn{border:0;background:transparent;color:#b77aff;font-weight:700;font-size:12px;cursor:pointer;padding:0}
-.submit{width:100%;border:0;border-radius:15px;min-height:50px;background:linear-gradient(100deg,#12c9ff,#463cff 54%,#f000d6);color:white;font-family:inherit;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 8px 25px #4b36ff38}.submit:disabled,.oauth:disabled{opacity:.65;cursor:wait}
-.switch{text-align:center;color:#b8c6d9;font-size:12px;margin:17px 0}.switch button{color:#b77aff;background:none;border:0;font-family:inherit;font-weight:800;font-size:12px;cursor:pointer}
-.secure{display:flex;align-items:center;gap:11px;margin-top:20px;padding:13px;border:1px solid #194d62;border-radius:16px;background:linear-gradient(100deg,#07344399,#19183e99);font-size:11px;color:#c2d2e5}.secure .shield{font-size:25px;color:#5cf4d0}.secure b{display:block;color:#edfaff;font-size:11px;margin-bottom:3px}.msg{display:none;border-radius:12px;padding:11px 12px;font-size:12px;line-height:1.5;margin:12px 0}.msg.show{display:block}.msg.error{background:#4b1624;color:#ffd6df;border:1px solid #963b52}.msg.ok{background:#103b31;color:#b7ffdf;border:1px solid #26765e}.back{display:block;text-align:center;color:#9eb1c9;text-decoration:none;font-size:12px;margin-top:17px}
-@media(max-width:380px){.card{padding:22px 16px 17px;border-radius:24px;margin-top:100px}.brand h1{font-size:27px}.screen{padding:16px 12px;background-size:auto 42vh}.oauth{height:44px}.intro{font-size:12px}}
+*{box-sizing:border-box}
+
+:root{
+  color-scheme:dark;
+  --bg:#030c19;
+  --panel:#07172b;
+  --border:#304a67;
+  --text:#f7fbff;
+  --muted:#b8c6d9;
+  --purple:#b77aff;
+  --cyan:#12c9ff;
+}
+
+html{min-height:100%;background:var(--bg)}
+
+body{
+  margin:0;
+  min-height:100vh;
+  min-height:100dvh;
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Plus Jakarta Sans",system-ui,sans-serif;
+}
+
+button,input{font:inherit}
+button{touch-action:manipulation}
+a{-webkit-tap-highlight-color:transparent}
+
+.screen{
+  min-height:100vh;
+  min-height:100dvh;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px 16px;
+  padding-top:max(24px,env(safe-area-inset-top));
+  padding-bottom:max(24px,env(safe-area-inset-bottom));
+  background:
+    linear-gradient(
+      180deg,
+      rgba(3,12,25,.18),
+      rgba(3,12,25,.88) 38%,
+      #030c19 75%
+    ),
+    url("assets/kamisah-hero.webp") center top/100% auto no-repeat;
+}
+
+.card{
+  width:min(100%,440px);
+  border:1px solid rgba(126,174,215,.35);
+  border-radius:28px;
+  background:rgba(4,17,33,.94);
+  box-shadow:0 24px 80px #0008;
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  padding:25px 20px 20px;
+  margin-top:clamp(70px,15vh,150px);
+}
+
+.brand{
+  text-align:center;
+  margin-bottom:22px;
+}
+
+.logo{
+  width:54px;
+  height:54px;
+  margin:0 auto 7px;
+  display:block;
+}
+
+.brand h1{
+  font-size:30px;
+  line-height:1.1;
+  margin:0;
+  font-weight:800;
+  letter-spacing:-1px;
+}
+
+.brand h1 span{
+  background:linear-gradient(90deg,#13d7ff,#b477ff);
+  background-clip:text;
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.brand p{
+  font-size:12px;
+  color:var(--muted);
+  margin:6px 0 0;
+}
+
+h2{
+  text-align:center;
+  font-size:22px;
+  letter-spacing:-.5px;
+  margin:0 0 7px;
+}
+
+.intro{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+  margin:0 0 18px;
+}
+
+.oauth{
+  width:100%;
+  min-height:47px;
+  border-radius:14px;
+  border:1px solid #d7e0ea;
+  background:#f9fbff;
+  color:#101827;
+  font-family:inherit;
+  font-weight:700;
+  font-size:13px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:11px;
+  margin:9px 0;
+  cursor:pointer;
+  transition:opacity .2s,transform .2s;
+}
+
+.oauth:active,.submit:active{
+  transform:scale(.99);
+}
+
+.oauth svg{
+  width:21px;
+  height:21px;
+  flex-shrink:0;
+}
+
+.oauth.apple{background:#fff}
+
+.oauth:disabled{
+  opacity:.6;
+  cursor:wait;
+}
+
+.divider{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:#91a4bc;
+  font-size:12px;
+  margin:16px 0;
+}
+
+.divider:before,.divider:after{
+  content:"";
+  height:1px;
+  background:#29405a;
+  flex:1;
+}
+
+label{
+  display:block;
+  font-size:12px;
+  font-weight:700;
+  color:#dce7f5;
+  margin:12px 0 7px;
+}
+
+.field{
+  position:relative;
+  display:flex;
+  align-items:center;
+  border:1px solid var(--border);
+  background:#0c1c30;
+  border-radius:13px;
+  min-height:48px;
+  transition:border-color .2s,box-shadow .2s;
+}
+
+.field:focus-within{
+  border-color:#8a56e8;
+  box-shadow:0 0 0 3px #8a56e822;
+}
+
+.field .field-icon{
+  width:19px;
+  height:19px;
+  margin-left:13px;
+  color:#c9d7e8;
+  flex-shrink:0;
+}
+
+.field input{
+  width:100%;
+  min-width:0;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:#fff;
+  padding:13px 12px;
+  font-family:inherit;
+  font-size:13px;
+  font-weight:500;
+}
+
+.field input::placeholder{color:#8ea0b7}
+
+.field input:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+.toggle{
+  border:0;
+  background:transparent;
+  color:#c7d4e5;
+  padding:10px 12px;
+  cursor:pointer;
+  font-size:12px;
+  flex-shrink:0;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin:13px 0 17px;
+  font-size:12px;
+  color:var(--muted);
+}
+
+.remember{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin:0;
+  font-weight:500;
+  color:var(--muted);
+  cursor:pointer;
+}
+
+.remember input{
+  accent-color:#a336ff;
+  width:16px;
+  height:16px;
+  margin:0;
+}
+
+.textbtn{
+  border:0;
+  background:transparent;
+  color:var(--purple);
+  font-weight:700;
+  font-size:12px;
+  cursor:pointer;
+  padding:4px 0;
+}
+
+.submit{
+  width:100%;
+  border:0;
+  border-radius:15px;
+  min-height:50px;
+  padding:12px;
+  background:linear-gradient(100deg,#12c9ff,#463cff 54%,#f000d6);
+  color:white;
+  font-family:inherit;
+  font-weight:800;
+  font-size:15px;
+  cursor:pointer;
+  box-shadow:0 8px 25px #4b36ff38;
+  transition:opacity .2s,transform .2s;
+}
+
+.submit:disabled{
+  opacity:.65;
+  cursor:wait;
+}
+
+.switch{
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.7;
+  margin:17px 0;
+}
+
+.switch button{
+  color:var(--purple);
+  background:none;
+  border:0;
+  font-family:inherit;
+  font-weight:800;
+  font-size:12px;
+  cursor:pointer;
+  padding:4px;
+}
+
+.secure{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  margin-top:20px;
+  padding:13px;
+  border:1px solid #194d62;
+  border-radius:16px;
+  background:linear-gradient(100deg,#07344399,#19183e99);
+  font-size:11px;
+  line-height:1.5;
+  color:#c2d2e5;
+}
+
+.secure .shield{
+  font-size:25px;
+  color:#5cf4d0;
+  flex-shrink:0;
+}
+
+.secure b{
+  display:block;
+  color:#edfaff;
+  font-size:11px;
+  margin-bottom:3px;
+}
+
+.msg{
+  display:none;
+  border-radius:12px;
+  padding:11px 12px;
+  font-size:12px;
+  line-height:1.6;
+  margin:12px 0;
+  overflow-wrap:anywhere;
+}
+
+.msg.show{display:block}
+
+.msg.error{
+  background:#4b1624;
+  color:#ffd6df;
+  border:1px solid #963b52;
+}
+
+.msg.ok{
+  background:#103b31;
+  color:#b7ffdf;
+  border:1px solid #26765e;
+}
+
+.msg.info{
+  background:#122944;
+  color:#d4eaff;
+  border:1px solid #315b83;
+}
+
+.back{
+  display:block;
+  text-align:center;
+  color:#9eb1c9;
+  text-decoration:none;
+  font-size:12px;
+  margin-top:17px;
+}
+
+.back:hover{color:#fff}
+
+@media(max-width:380px){
+  .card{
+    padding:22px 16px 17px;
+    border-radius:24px;
+    margin-top:80px;
+  }
+
+  .brand h1{font-size:27px}
+  .screen{padding-left:12px;padding-right:12px}
+  .oauth{min-height:45px}
+  .intro{font-size:12px}
+  h2{font-size:20px}
+}
+
+@media(min-width:600px){
+  .card{padding:30px 28px 24px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    scroll-behavior:auto!important;
+    transition:none!important;
+  }
+}
 </style>
 </head>
+
 <body>
 <main class="screen">
 <section class="card">
+
   <header class="brand">
-    <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#18e1ff"/><stop offset=".55" stop-color="#3458ff"/><stop offset="1" stop-color="#ed2cf5"/></linearGradient></defs><path d="M10 8Q10 2 17 6L57 28Q65 32 57 37L17 59Q10 63 10 55Z" fill="url(#lg)"/><path d="M25 19L46 31L25 44Z" fill="#061426"/></svg>
+    <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
+      <defs>
+        <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+          <stop stop-color="#18e1ff"/>
+          <stop offset=".55" stop-color="#3458ff"/>
+          <stop offset="1" stop-color="#ed2cf5"/>
+        </linearGradient>
+      </defs>
+      <path d="M10 8Q10 2 17 6L57 28Q65 32 57 37L17 59Q10 63 10 55Z" fill="url(#lg)"/>
+      <path d="M25 19L46 31L25 44Z" fill="#061426"/>
+    </svg>
+
     <h1>Kamisah <span>AI</span></h1>
     <p>Buat Cerita, Visualkan, Jadi Nyata</p>
   </header>
 
   <h2 id="formTitle">Masuk ke Akun Kamu</h2>
-  <p class="intro" id="formIntro">Lanjutkan perjalanan kreatifmu<br>bersama Kamisah AI</p>
+  <p class="intro" id="formIntro">
+    Lanjutkan perjalanan kreatifmu<br>
+    bersama Kamisah AI
+  </p>
 
-  <button class="oauth" id="googleBtn" type="button">
-    <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.72 7.18l7.62 5.91c4.45-4.1 7.14-10.15 7.14-17.56z"/><path fill="#FBBC05" d="M10.53 28.59a14.4 14.4 0 0 1 0-9.18l-7.98-6.19a23.9 23.9 0 0 0 0 21.56z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.9-5.89l-7.62-5.91c-2.12 1.42-4.84 2.26-8.28 2.26-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-    Masuk dengan Google
-  </button>
+  <div id="oauthArea">
+    <button class="oauth" id="googleBtn" type="button">
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.72 7.18l7.62 5.91c4.45-4.1 7.14-10.15 7.14-17.56z"/>
+        <path fill="#FBBC05" d="M10.53 28.59a14.4 14.4 0 0 1 0-9.18l-7.98-6.19a23.9 23.9 0 0 0 0 21.56z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.9-5.89l-7.62-5.91c-2.12 1.42-4.84 2.26-8.28 2.26-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+      </svg>
+      <span>Masuk dengan Google</span>
+    </button>
 
-  <button class="oauth apple" id="appleBtn" type="button">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#111" d="M16.37 12.2c.02 2.16 1.9 2.88 1.92 2.89-.02.05-.3 1.03-.99 2.04-.6.88-1.23 1.76-2.22 1.78-.97.02-1.28-.57-2.39-.57-1.1 0-1.45.55-2.37.59-.95.04-1.68-.95-2.29-1.82-1.25-1.81-2.2-5.12-.92-7.36.64-1.11 1.78-1.81 3.01-1.83.94-.02 1.83.64 2.4.64.57 0 1.64-.79 2.77-.67.47.02 1.8.19 2.65 1.45-.07.04-1.58.92-1.57 2.86zM14.55 5.97c.5-.6.83-1.43.74-2.26-.72.03-1.59.48-2.11 1.08-.46.53-.87 1.38-.76 2.19.8.06 1.62-.41 2.13-1.01z"/></svg>
-    Masuk dengan Apple
-  </button>
+    <button class="oauth apple" id="appleBtn" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="#111" d="M16.37 12.2c.02 2.16 1.9 2.88 1.92 2.89-.02.05-.3 1.03-.99 2.04-.6.88-1.23 1.76-2.22 1.78-.97.02-1.28-.57-2.39-.57-1.1 0-1.45.55-2.37.59-.95.04-1.68-.95-2.29-1.82-1.25-1.81-2.2-5.12-.92-7.36.64-1.11 1.78-1.81 3.01-1.83.94-.02 1.83.64 2.4.64.57 0 1.64-.79 2.77-.67.47.02 1.8.19 2.65 1.45-.07.04-1.58.92-1.57 2.86zM14.55 5.97c.5-.6.83-1.43.74-2.26-.72.03-1.59.48-2.11 1.08-.46.53-.87 1.38-.76 2.19.8.06 1.62-.41 2.13-1.01z"/>
+      </svg>
+      <span>Masuk dengan Apple</span>
+    </button>
 
-  <div class="divider">atau</div>
+    <div class="divider">atau</div>
+  </div>
 
-  <form id="authForm">
-    <label for="email">Email</label>
-    <div class="field">
-      <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
-      <input id="email" type="email" autocomplete="email" placeholder="Masukkan email kamu" required>
+  <form id="authForm" novalidate>
+    <div id="emailGroup">
+      <label for="email">Email</label>
+      <div class="field">
+        <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <rect x="3" y="5" width="18" height="14" rx="2"/>
+          <path d="m4 7 8 6 8-6"/>
+        </svg>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          placeholder="Masukkan email kamu"
+          maxlength="254"
+          required
+        >
+      </div>
     </div>
 
-    <label for="password">Kata Sandi</label>
-    <div class="field">
-      <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-      <input id="password" type="password" autocomplete="current-password" placeholder="Masukkan kata sandi" minlength="8" required>
-      <button class="toggle" id="showPassword" type="button" aria-label="Tampilkan kata sandi">◉</button>
+    <div id="passwordGroup">
+      <label for="password" id="passwordLabel">Kata Sandi</label>
+      <div class="field">
+        <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <rect x="4" y="10" width="16" height="11" rx="2"/>
+          <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+        </svg>
+
+        <input
+          id="password"
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          placeholder="Masukkan kata sandi"
+          minlength="8"
+          required
+        >
+
+        <button
+          class="toggle"
+          id="showPassword"
+          type="button"
+          aria-label="Tampilkan kata sandi"
+          aria-pressed="false"
+        >Lihat</button>
+      </div>
     </div>
 
-    <div class="row">
-      <label class="remember"><input id="remember" type="checkbox" checked> Ingat saya</label>
-      <button class="textbtn" id="forgotBtn" type="button">Lupa kata sandi?</button>
+    <div class="row" id="optionsRow">
+      <label class="remember" id="rememberLabel">
+        <input id="remember" type="checkbox" checked>
+        Ingat saya
+      </label>
+
+      <button class="textbtn" id="forgotBtn" type="button">
+        Lupa kata sandi?
+      </button>
     </div>
 
     <div class="msg" id="message" role="status" aria-live="polite"></div>
-    <button class="submit" id="submitBtn" type="submit">Masuk <span aria-hidden="true">→</span></button>
+
+    <button class="submit" id="submitBtn" type="submit">
+      Masuk →
+    </button>
   </form>
 
-  <p class="switch" id="switchLine">Belum punya akun? <button id="switchMode" type="button">Daftar sekarang</button></p>
+  <p class="switch" id="switchLine">
+    Belum punya akun?
+    <button id="switchMode" type="button">Daftar sekarang</button>
+  </p>
 
-  <div class="secure"><span class="shield">✓</span><span><b>Login aman</b>Gunakan akunmu untuk melanjutkan perjalanan kreatif di Kamisah AI.</span></div>
-  <a class="back" href="welcome.html">← Kembali ke halaman pembuka</a>
+  <div class="secure" id="secureBox">
+    <span class="shield" aria-hidden="true">✓</span>
+    <span>
+      <b>Login aman</b>
+      Gunakan akunmu untuk melanjutkan perjalanan kreatif di Kamisah AI.
+    </span>
+  </div>
+
+  <a class="back" id="backLink" href="welcome.html">
+    ← Kembali ke halaman pembuka
+  </a>
+
 </section>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
+
 <script>
 (() => {
+  'use strict';
+
   const $ = id => document.getElementById(id);
+
   const message = $('message');
   const submit = $('submitBtn');
-  let isSignUp = new URLSearchParams(location.search).get('mode') === 'signup';
+  const form = $('authForm');
+  const emailInput = $('email');
+  const passwordInput = $('password');
+
+  let isSignUp =
+    new URLSearchParams(location.search).get('mode') === 'signup';
+
   let isRecovery = false;
+  let isBusy = false;
   let sb = null;
 
-  function say(text, type='error') {
+  function say(text, type = 'error') {
     message.textContent = text;
     message.className = 'msg show ' + type;
   }
+
+  function clearMessage() {
+    message.textContent = '';
+    message.className = 'msg';
+  }
+
+  function ready() {
+    const config = window.KH || {};
+
+    if (
+      !window.supabase ||
+      !config.SUPABASE_URL ||
+      !config.SUPABASE_PUBLISHABLE_KEY
+    ) {
+      say(
+        'Konfigurasi login belum tersedia. Periksa file config.js dan pastikan konfigurasi Supabase sudah benar.'
+      );
+      return false;
+    }
+
+    if (!sb) {
+      try {
+        sb = window.supabase.createClient(
+          config.SUPABASE_URL,
+          config.SUPABASE_PUBLISHABLE_KEY
+        );
+      } catch (error) {
+        console.error('Gagal menginisialisasi Supabase:', error);
+        say('Layanan login tidak dapat diinisialisasi. Coba lagi nanti.');
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  function setBusy(busy, text) {
+    isBusy = busy;
+    submit.disabled = busy;
+    $('googleBtn').disabled = busy;
+    $('appleBtn').disabled = busy;
+
+    if (text) {
+      submit.textContent = text;
+    } else if (!busy) {
+      updateSubmitText();
+    }
+  }
+
+  function updateSubmitText() {
+    if (isRecovery) {
+      submit.textContent = 'Simpan Kata Sandi →';
+    } else if (isSignUp) {
+      submit.textContent = 'Daftar Sekarang →';
+    } else {
+      submit.textContent = 'Masuk →';
+    }
+  }
+
   function setMode(signup) {
+    if (isRecovery || isBusy) return;
+
     isSignUp = signup;
-    $('formTitle').textContent = signup ? 'Buat Akun Kamisah' : 'Masuk ke Akun Kamu';
+
+    $('formTitle').textContent = signup
+      ? 'Buat Akun Kamisah'
+      : 'Masuk ke Akun Kamu';
+
     $('formIntro').innerHTML = signup
       ? 'Daftar untuk memulai perjalanan kreatifmu<br>bersama Kamisah AI'
       : 'Lanjutkan perjalanan kreatifmu<br>bersama Kamisah AI';
-    submit.innerHTML = signup ? 'Daftar Sekarang →' : 'Masuk →';
+
+    passwordInput.autocomplete = signup
+      ? 'new-password'
+      : 'current-password';
+
+    $('forgotBtn').style.display = signup ? 'none' : 'inline-block';
+    $('rememberLabel').style.display = signup ? 'none' : 'flex';
+
     $('switchLine').innerHTML = signup
       ? 'Sudah punya akun? <button id="switchMode" type="button">Masuk sekarang</button>'
       : 'Belum punya akun? <button id="switchMode" type="button">Daftar sekarang</button>';
-    $('password').autocomplete = signup ? 'new-password' : 'current-password';
-    $('forgotBtn').style.visibility = signup ? 'hidden' : 'visible';
-    message.className = 'msg';
-  }
-  function ready() {
-    const c = window.KH || {};
-    if (!window.supabase || !c.SUPABASE_URL || !c.SUPABASE_PUBLISHABLE_KEY) {
-      say('Konfigurasi login belum tersedia. Periksa config.js.');
-      return false;
-    }
-    if (!sb) sb = window.supabase.createClient(c.SUPABASE_URL, c.SUPABASE_PUBLISHABLE_KEY);
-    return true;
+
+    updateSubmitText();
+    clearMessage();
   }
 
   function setRecoveryMode() {
     isRecovery = true;
+    isSignUp = false;
+
     $('formTitle').textContent = 'Buat Kata Sandi Baru';
-    $('formIntro').textContent = 'Buat kata sandi baru untuk akun Kamisah AI.';
-    $('googleBtn').style.display = 'none';
-    $('appleBtn').style.display = 'none';
-    document.querySelector('.divider').style.display = 'none';
-    $('email').closest('.field').parentElement.querySelector('label').style.display = 'none';
-    $('email').closest('.field').style.display = 'none';
-    $('password').closest('.field').previousElementSibling.textContent = 'Kata Sandi Baru';
-    document.querySelector('.row').style.display = 'none';
+    $('formIntro').textContent =
+      'Buat kata sandi baru untuk akun Kamisah AI.';
+
+    $('oauthArea').style.display = 'none';
+    $('emailGroup').style.display = 'none';
+    $('optionsRow').style.display = 'none';
     $('switchLine').style.display = 'none';
-    submit.textContent = 'Simpan Kata Sandi →';
-    $('forgotBtn').style.display = 'none';
-    $('password').value = '';
-    $('password').focus();
+    $('secureBox').style.display = 'none';
+
+    emailInput.required = false;
+    emailInput.disabled = true;
+
+    passwordInput.disabled = false;
+    passwordInput.required = true;
+    passwordInput.minLength = 8;
+    passwordInput.autocomplete = 'new-password';
+    passwordInput.value = '';
+
+    $('passwordLabel').textContent = 'Kata Sandi Baru';
+    passwordInput.placeholder = 'Buat kata sandi baru';
+
+    $('backLink').textContent = '← Kembali ke halaman masuk';
+    $('backLink').href = 'login.html';
+
+    updateSubmitText();
+    clearMessage();
+    passwordInput.focus();
   }
 
-  setMode(isSignUp);
-  if (ready()) {
-    sb.auth.getSession().then(({data}) => {
-      const recoveryInHash = new URLSearchParams(location.hash.slice(1)).get('type') === 'recovery';
-      if (recoveryInHash) setRecoveryMode();
-      else if (data.session) location.replace('index.html');
-    });
-    sb.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') setRecoveryMode();
-    });
-  }
-  $('switchLine').addEventListener('click', event => {
-    if (event.target.closest('#switchMode')) setMode(!isSignUp);
-  });
-  $('showPassword').addEventListener('click', () => {
-    const field = $('password');
-    field.type = field.type === 'password' ? 'text' : 'password';
-    $('showPassword').textContent = field.type === 'password' ? '◉' : '◎';
-  });
+  function showNormalForm() {
+    isRecovery = false;
+    emailInput.disabled = false;
+    emailInput.required = true;
+    passwordInput.disabled = false;
+    passwordInput.required = true;
 
-  $('authForm').addEventListener('submit', async event => {
-    event.preventDefault();
+    $('oauthArea').style.display = '';
+    $('emailGroup').style.display = '';
+    $('optionsRow').style.display = '';
+    $('switchLine').style.display = '';
+    $('secureBox').style.display = '';
+
+    $('passwordLabel').textContent = 'Kata Sandi';
+    passwordInput.placeholder = 'Masukkan kata sandi';
+
+    setMode(isSignUp);
+  }
+
+  function friendlyError(error) {
+    const messageText = String(error?.message || '').toLowerCase();
+    const code = String(error?.code || '').toLowerCase();
+
+    if (
+      messageText.includes('invalid login credentials') ||
+      messageText.includes('invalid_credentials')
+    ) {
+      return 'Email atau kata sandi salah. Periksa kembali data yang kamu masukkan.';
+    }
+
+    if (
+      messageText.includes('email not confirmed')
+    ) {
+      return 'Email belum dikonfirmasi. Periksa kotak masuk email kamu.';
+    }
+
+    if (
+      messageText.includes('user already registered')
+    ) {
+      return 'Email ini sudah terdaftar. Silakan masuk menggunakan akun tersebut.';
+    }
+
+    if (
+      messageText.includes('password should be at least') ||
+      messageText.includes('weak_password') ||
+      code.includes('weak_password')
+    ) {
+      return 'Kata sandi terlalu lemah. Gunakan minimal 8 karakter dan ikuti persyaratan keamanan.';
+    }
+
+    if (
+      messageText.includes('rate limit') ||
+      messageText.includes('too many requests')
+    ) {
+      return 'Terlalu banyak percobaan. Tunggu beberapa saat sebelum mencoba kembali.';
+    }
+
+    if (
+      messageText.includes('network') ||
+      messageText.includes('fetch')
+    ) {
+      return 'Koneksi bermasalah. Periksa internet kamu lalu coba lagi.';
+    }
+
+    return error?.message || 'Terjadi kesalahan. Silakan coba kembali.';
+  }
+
+  function validEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  async function initialize() {
     if (!ready()) return;
-    const email = $('email').value.trim();
-    const password = $('password').value;
-    if (password.length < 8) return say('Kata sandi harus minimal 8 karakter.');
-    submit.disabled = true;
-    submit.textContent = isSignUp ? 'Membuat akun…' : 'Memeriksa akun…';
+
+    try {
+      const { data, error } = await sb.auth.getSession();
+
+      if (error) throw error;
+
+      const hashParams = new URLSearchParams(
+        location.hash.startsWith('#')
+          ? location.hash.slice(1)
+          : location.hash
+      );
+
+      const recoveryInHash = hashParams.get('type') === 'recovery';
+
+      if (recoveryInHash) {
+        setRecoveryMode();
+        return;
+      }
+
+      if (data.session) {
+        location.replace('index.html');
+      }
+    } catch (error) {
+      console.error('Pemeriksaan sesi gagal:', error);
+      say('Tidak dapat memeriksa sesi login. Coba muat ulang halaman.');
+    }
+
+    sb.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setRecoveryMode();
+        return;
+      }
+
+      if (
+        event === 'SIGNED_IN' &&
+        session &&
+        !isRecovery
+      ) {
+        location.replace('index.html');
+      }
+    });
+  }
+
+  $('switchLine').addEventListener('click', event => {
+    if (event.target.closest('#switchMode')) {
+      setMode(!isSignUp);
+    }
+  });
+
+  $('showPassword').addEventListener('click', () => {
+    const visible = passwordInput.type === 'password';
+
+    passwordInput.type = visible ? 'text' : 'password';
+    $('showPassword').textContent = visible ? 'Sembunyi' : 'Lihat';
+    $('showPassword').setAttribute(
+      'aria-pressed',
+      String(visible)
+    );
+
+    $('showPassword').setAttribute(
+      'aria-label',
+      visible ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'
+    );
+  });
+
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+
+    if (isBusy) return;
+    if (!ready()) return;
+
+    clearMessage();
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!isRecovery) {
+      if (!validEmail(email)) {
+        say('Masukkan alamat email yang valid.');
+        emailInput.focus();
+        return;
+      }
+    }
+
+    if (password.length < 8) {
+      say('Kata sandi harus minimal 8 karakter.');
+      passwordInput.focus();
+      return;
+    }
+
+    setBusy(
+      true,
+      isRecovery
+        ? 'Menyimpan kata sandi…'
+        : isSignUp
+          ? 'Membuat akun…'
+          : 'Memeriksa akun…'
+    );
+
     try {
       if (isRecovery) {
-        const {error} = await sb.auth.updateUser({password});
+        const { error } = await sb.auth.updateUser({
+          password: password
+        });
+
         if (error) throw error;
-        say('Kata sandi berhasil diperbarui. Membuka beranda Kamisah…', 'ok');
-        setTimeout(() => location.replace('index.html'), 900);
-      } else {
-        const result = isSignUp
-          ? await sb.auth.signUp({email, password, options:{emailRedirectTo:location.origin + '/index.html'}})
-          : await sb.auth.signInWithPassword({email, password});
-        if (result.error) throw result.error;
-        if (result.data.session) {
-          say('Berhasil. Membuka beranda Kamisah…', 'ok');
-          location.replace('index.html');
-        } else if (isSignUp) {
-          say('Akun berhasil dibuat. Periksa email untuk konfirmasi, lalu masuk.', 'ok');
-        } else {
-          say('Login belum menghasilkan sesi. Periksa email dan kata sandi.');
-        }
+
+        say(
+          'Kata sandi berhasil diperbarui. Silakan masuk kembali.',
+          'ok'
+        );
+
+        setTimeout(() => {
+          location.replace('login.html');
+        }, 1400);
+
+        return;
       }
-    } catch (err) {
-      say(err.message || 'Tidak dapat masuk. Coba lagi.');
+
+      if (isSignUp) {
+        const { data, error } = await sb.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: location.origin + '/index.html'
+          }
+        });
+
+        if (error) throw error;
+
+        if (data.session) {
+          say('Pendaftaran berhasil. Membuka beranda Kamisah…', 'ok');
+
+          setTimeout(() => {
+            location.replace('index.html');
+          }, 500);
+        } else {
+          say(
+            'Pendaftaran berhasil. Periksa email kamu untuk mengonfirmasi akun sebelum masuk.',
+            'ok'
+          );
+
+          form.reset();
+          isSignUp = false;
+          setMode(false);
+        }
+
+        return;
+      }
+
+      const { data, error } = await sb.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) throw error;
+
+      if (data.session) {
+        say('Login berhasil. Membuka beranda Kamisah…', 'ok');
+
+        setTimeout(() => {
+          location.replace('index.html');
+        }, 350);
+      } else {
+        say('Login belum menghasilkan sesi. Silakan coba kembali.');
+      }
+
+    } catch (error) {
+      console.error('Proses autentikasi gagal:', error);
+      say(friendlyError(error));
     } finally {
-      submit.disabled = false;
-      submit.innerHTML = isSignUp ? 'Daftar Sekarang →' : 'Masuk →';
+      setBusy(false);
     }
   });
 
   async function oauth(provider) {
-    if (!ready()) return;
+    if (isBusy || !ready()) return;
+
+    clearMessage();
+
+    setBusy(true, 'Menghubungkan akun…');
+
     try {
-      const {error} = await sb.auth.signInWithOAuth({
+      const { error } = await sb.auth.signInWithOAuth({
         provider,
-        options:{redirectTo:location.origin + '/index.html'}
+        options: {
+          redirectTo: location.origin + '/index.html'
+        }
       });
+
       if (error) throw error;
-    } catch (err) {
-      say('Login ' + (provider === 'google' ? 'Google' : 'Apple') + ' belum berhasil: ' + (err.message || 'coba lagi') + '. Pastikan provider sudah diaktifkan di Supabase.');
+
+    } catch (error) {
+      console.error('OAuth gagal:', error);
+
+      say(
+        'Login ' +
+        (provider === 'google' ? 'Google' : 'Apple') +
+        ' belum berhasil. ' +
+        friendlyError(error) +
+        ' Pastikan provider dan URL callback sudah dikonfigurasi di Supabase.'
+      );
+
+      setBusy(false);
     }
   }
-  $('googleBtn').addEventListener('click', () => oauth('google'));
-  $('appleBtn').addEventListener('click', () => oauth('apple'));
+
+  $('googleBtn').addEventListener('click', () => {
+    oauth('google');
+  });
+
+  $('appleBtn').addEventListener('click', () => {
+    oauth('apple');
+  });
 
   $('forgotBtn').addEventListener('click', async () => {
-    if (!ready()) return;
-    const email = $('email').value.trim();
-    if (!email) return say('Masukkan email terlebih dahulu, lalu tekan Lupa kata sandi.');
+    if (isBusy || !ready()) return;
+
+    clearMessage();
+
+    const email = emailInput.value.trim();
+
+    if (!validEmail(email)) {
+      say('Masukkan email yang valid terlebih dahulu.');
+      emailInput.focus();
+      return;
+    }
+
+    setBusy(true, 'Mengirim tautan…');
+
     try {
-      const {error} = await sb.auth.resetPasswordForEmail(email, {redirectTo:location.origin + '/login.html'});
+      const { error } = await sb.auth.resetPasswordForEmail(
+        email,
+        {
+          redirectTo: location.origin + '/login.html'
+        }
+      );
+
       if (error) throw error;
-      say('Jika email terdaftar, tautan pemulihan akan dikirim ke email tersebut.', 'ok');
-    } catch (err) {
-      say(err.message || 'Permintaan pemulihan kata sandi gagal.');
+
+      say(
+        'Jika email tersebut terdaftar, tautan pemulihan akan dikirim. Periksa kotak masuk dan folder spam.',
+        'ok'
+      );
+
+    } catch (error) {
+      console.error('Permintaan pemulihan gagal:', error);
+      say(friendlyError(error));
+    } finally {
+      setBusy(false);
     }
   });
+
+  setMode(isSignUp);
+  initialize();
 })();
 </script>
 </body>
