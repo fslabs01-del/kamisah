@@ -121,6 +121,7 @@ a {
   place-items: center;
   width: 25px;
   height: 25px;
+  flex-shrink: 0;
   border-radius: 50%;
   background: linear-gradient(135deg, #ffe18a, #f4a900);
   color: #6b3b00;
@@ -166,6 +167,7 @@ a {
   background: transparent;
   color: #d5e0ef;
   font-size: 21px;
+  cursor: pointer;
   text-decoration: none;
 }
 
@@ -192,9 +194,11 @@ a {
   color: #071321;
   font-size: 13px;
   font-weight: 800;
+  text-decoration: none;
 }
 
 .avatar img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -206,8 +210,11 @@ a {
   padding: 10px 14px 20px;
 }
 
+/* BANNER UTAMA */
+
 .banner {
   display: block;
+  width: 100%;
   overflow: hidden;
   border: 1px solid #a28a48;
   border-radius: 20px;
@@ -220,9 +227,10 @@ a {
   display: block;
   width: 100%;
   height: auto;
+  max-width: 100%;
 }
 
-/* SECTION TITLE */
+/* JUDUL FITUR */
 
 .section-title {
   margin: 17px 0 12px;
@@ -254,20 +262,25 @@ a {
   line-height: 1.45;
 }
 
-/* FEATURE CARDS */
+/* KARTU FITUR */
 
 .cards {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 9px;
+  gap: 12px;
+  align-items: start;
 }
 
 .feature {
   display: block;
+  width: 100%;
+  min-width: 0;
   overflow: hidden;
   border: 1px solid #24455c;
   border-radius: 17px;
   background: #0b1726;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
   transition: transform .16s ease;
 }
 
@@ -275,15 +288,23 @@ a {
   transform: scale(.985);
 }
 
+/*
+ * PERBAIKAN UTAMA:
+ * Gambar kartu mengikuti dimensi intrinsik file.
+ * Tidak memaksakan rasio 321/223 atau memotong gambar.
+ */
+
 .feature img {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 321 / 223;
-  object-fit: cover;
+  max-width: 100%;
+  aspect-ratio: auto;
+  object-fit: contain;
+  object-position: center;
 }
 
-/* WIDE BANNERS MADE WITH HTML/CSS */
+/* KARTU IDE DAN PROMPT */
 
 .wide-card {
   position: relative;
@@ -384,7 +405,7 @@ a {
   font-size: 17px;
 }
 
-/* BOTTOM NAVIGATION */
+/* NAVIGASI BAWAH */
 
 .bottom-nav {
   position: fixed;
@@ -392,7 +413,7 @@ a {
   bottom: 0;
   left: 50%;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   width: min(100%, 720px);
   padding: 8px 8px calc(7px + env(safe-area-inset-bottom));
   transform: translateX(-50%);
@@ -407,6 +428,7 @@ a {
   justify-content: center;
   flex-direction: column;
   gap: 3px;
+  min-width: 0;
   min-height: 46px;
   color: #9aabc1;
   font-size: 10px;
@@ -428,7 +450,7 @@ a {
   filter: drop-shadow(0 0 6px #ffcf26);
 }
 
-/* SMALL SCREENS */
+/* LAYAR KECIL */
 
 @media (max-width: 420px) {
   .header {
@@ -486,6 +508,14 @@ a {
   .avatar {
     width: 29px;
     height: 29px;
+  }
+
+  .cards {
+    gap: 9px;
+  }
+
+  .feature {
+    border-radius: 14px;
   }
 
   .wide-card {
@@ -600,6 +630,7 @@ a {
   <header class="header">
 
     <a class="brand" href="index.html" aria-label="Beranda Kamisah AI">
+
       <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
         <defs>
           <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
@@ -616,19 +647,25 @@ a {
         <span class="brand-name">Kamisah <span>AI</span></span>
         <span class="tagline">Buat Cerita, Visualkan, Jadi Nyata</span>
       </span>
+
     </a>
 
     <div class="credit" aria-label="Saldo kredit">
+
       <span class="coin">◉</span>
+
       <span class="balance">
         <span id="balance">—</span>
         <small>Kredit</small>
       </span>
+
       <a class="topup" href="video-generator.html#/akun">Top Up</a>
+
     </div>
 
     <button class="icon-btn" id="notifications" type="button" aria-label="Notifikasi">
-      ♟<span class="dot"></span>
+      ♟
+      <span class="dot"></span>
     </button>
 
     <a class="avatar" id="profile" href="video-generator.html#/akun" aria-label="Akun">
@@ -640,90 +677,112 @@ a {
   <div class="content">
 
     <!-- BANNER UTAMA -->
-    <!-- Menggunakan file yang tersedia di folder assets -->
+
     <a class="banner" href="chat.html" aria-label="Chat dulu sama AI">
+
       <img
         src="./assets/kamisah-hero.webp"
         alt="Teman cerita kamu. Cerita aja, kita ngobrol dulu dengan Kamisah AI."
         fetchpriority="high"
       >
+
     </a>
 
-    <!-- JUDUL FITUR -->
+    <!-- JUDUL BERANDA -->
+
     <section class="section-title">
+
       <h1>
         <span class="spark">✨</span>
         Mau Bikin <span class="gradient">Apa Hari Ini?</span>
       </h1>
+
       <p>Semua alat AI ada di sini. Pilih sesuai kebutuhanmu!</p>
+
     </section>
 
     <!-- KARTU FITUR -->
-    <!-- Nama file disesuaikan dengan folder assets -->
+
     <section class="cards" aria-label="Fitur Kamisah AI">
 
       <a class="feature" href="studio-film.html" aria-label="Studio Pembuat Film AI">
+
         <img
           src="./assets/card-film.webp"
           alt="Studio Pembuat Film AI"
           loading="lazy"
         >
+
       </a>
 
       <a class="feature" href="ai-film-analyzer.html" aria-label="Buat Alur Cerita Film">
+
         <img
           src="./assets/card-analyzer.webp"
           alt="Buat Alur Cerita Film"
           loading="lazy"
         >
+
       </a>
 
       <a class="feature" href="music.html" aria-label="Buat Lagu dengan AI">
+
         <img
           src="./assets/card-music.webp"
           alt="Buat Lagu dengan AI"
           loading="lazy"
         >
+
       </a>
 
       <a class="feature" href="video-generator.html" aria-label="Buat Video AI">
+
         <img
           src="./assets/card-video.webp"
           alt="Buat Video AI"
           loading="lazy"
         >
+
       </a>
 
       <a class="feature" href="story.html" aria-label="Buat Cerita dan Naskah">
+
         <img
           src="./assets/card-story.webp"
           alt="Buat Cerita dan Naskah"
           loading="lazy"
         >
+
       </a>
 
       <a class="feature" href="chat.html" aria-label="Chat dan Curhat dengan AI">
+
         <img
           src="./assets/card-chat.webp"
           alt="Chat dan Curhat dengan AI"
           loading="lazy"
         >
+
       </a>
 
     </section>
 
     <!-- CARI IDE KONTEN -->
-    <!-- Dibuat dengan HTML/CSS agar tidak memerlukan file gambar tambahan -->
+
     <a class="wide-card" href="ideas.html" aria-label="Cari Ide Konten">
 
       <span class="wide-icon" aria-hidden="true">💡</span>
 
       <span class="wide-copy">
+
         <span class="wide-label">IDE KONTEN</span>
+
         <span class="wide-title">Cari Ide Konten</span>
+
         <span class="wide-description">
           Temukan ide konten untuk YouTube, TikTok, dan Reels.
         </span>
+
       </span>
 
       <span class="wide-arrow" aria-hidden="true">→</span>
@@ -731,16 +790,19 @@ a {
     </a>
 
     <!-- KUMPULAN PROMPT DAN IDE -->
-    <!-- Dibuat dengan HTML/CSS agar tidak memerlukan file gambar tambahan -->
+
     <a class="wide-card prompts" href="ideas.html" aria-label="Buka Kumpulan Prompt dan Ide">
 
       <span class="wide-icon" aria-hidden="true">🧰</span>
 
       <span class="wide-copy">
+
         <span class="wide-title">Kumpulan Prompt dan Ide</span>
+
         <span class="wide-description">
           Temukan contoh prompt dan ide kreatif yang bisa langsung kamu salin dan gunakan.
         </span>
+
       </span>
 
       <span class="wide-arrow" aria-hidden="true">→</span>
@@ -748,9 +810,11 @@ a {
     </a>
 
   </div>
+
 </main>
 
 <!-- NAVIGASI BAWAH -->
+
 <nav class="bottom-nav" aria-label="Navigasi utama">
 
   <a class="nav-item active" href="index.html">
@@ -780,7 +844,8 @@ a {
 
 </nav>
 
-<!-- SUPABASE DAN PEMERIKSAAN SESI -->
+<!-- SUPABASE -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./config.js"></script>
 
@@ -788,10 +853,6 @@ a {
 (async () => {
   const config = window.KH || {};
 
-  /*
-   * Pertahankan pemeriksaan konfigurasi dan sesi yang digunakan
-   * oleh aplikasi sebelumnya.
-   */
   if (
     !window.supabase ||
     !config.SUPABASE_URL ||
@@ -846,10 +907,8 @@ a {
       document.getElementById("profile").replaceChildren(image);
     }
 
-    /*
-     * Membaca saldo dari tabel wallets.
-     * Tidak mengubah saldo atau membuat transaksi baru.
-     */
+    /* Membaca saldo kredit tanpa mengubah saldo. */
+
     const {
       data: wallet,
       error: walletError
@@ -870,9 +929,8 @@ a {
       ).toLocaleString("id-ID");
     }
 
-    /*
-     * Jika pengguna keluar dari akun, arahkan ke halaman welcome.
-     */
+    /* Arahkan pengguna ke Welcome jika keluar dari akun. */
+
     supabaseClient.auth.onAuthStateChange((event, nextSession) => {
       if (event === "SIGNED_OUT" || !nextSession) {
         location.replace("welcome.html");
@@ -885,10 +943,8 @@ a {
   }
 })();
 
-/*
- * Tombol notifikasi.
- * Perilakunya dipertahankan seperti kode sebelumnya.
- */
+/* Tombol notifikasi */
+
 document
   .getElementById("notifications")
   .addEventListener("click", () => {
