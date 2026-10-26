@@ -65,18 +65,102 @@
       min-height: 250px; display:flex; align-items:center;
     }
     .hero-glow { position:absolute; inset:0; background:linear-gradient(90deg,rgba(0,0,0,.2),transparent); pointer-events:none; }
-    .feature-card { min-height:220px; position:relative; display:flex; flex-direction:column; align-items:flex-start; padding:16px; border-radius:18px; border:1px solid rgba(255,255,255,.12); transition:transform .2s,border-color .2s; overflow:hidden; }
-    .feature-card:hover { transform:translateY(-3px); }
-    .feature-card h2 { font-size:1.05rem; font-weight:800; margin:8px 0 5px; color:#fff; }
-    .feature-card p { font-size:.78rem; line-height:1.5; color:#d4d4d8; padding-bottom:28px; }
+    .feature-card { min-height:220px; position:relative; display:flex; flex-direction:column; align-items:flex-start; padding:16px; border-radius:24px; border:1px solid rgba(255,255,255,.18); transition:transform .2s,border-color .2s; overflow:hidden; isolation:isolate; background-color:#07111f; background-size:cover; background-position:center; }
+    .feature-card::before{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(90deg,rgba(3,10,22,.97) 0%,rgba(3,10,22,.82) 42%,rgba(3,10,22,.12) 100%)} .feature-card:hover { transform:translateY(-3px); }
+    .feature-card h2 { max-width:72%; font-size:1.05rem; font-weight:800; margin:8px 0 5px; color:#fff; line-height:1.22; text-shadow:0 2px 8px #0008; }
+    .feature-card p { max-width:72%; font-size:.78rem; line-height:1.5; color:#d4dce8; padding-bottom:28px; text-shadow:0 1px 6px #000; }
     .feature-icon { font-size:2.5rem; filter:drop-shadow(0 4px 12px rgba(255,255,255,.15)); }
-    .feature-arrow { position:absolute; right:13px; bottom:13px; width:32px; height:32px; display:grid; place-items:center; border-radius:999px; font-size:1.25rem; font-weight:800; color:#09090b; background:var(--feature-color); }
+    .feature-arrow { position:absolute; right:22px; top:50%; transform:translateY(-50%); width:54px; height:54px; display:grid; place-items:center; border-radius:999px; font-size:1.8rem; font-weight:800; color:#07111f; background:var(--feature-color); box-shadow:0 0 25px color-mix(in srgb,var(--feature-color) 55%,transparent); }
     .feature-orange { --feature-color:#f59e0b; background:linear-gradient(145deg,rgba(245,158,11,.22),rgba(24,15,5,.95)); border-color:rgba(245,158,11,.6); }
     .feature-blue { --feature-color:#06b6d4; background:linear-gradient(145deg,rgba(6,182,212,.22),rgba(3,18,28,.95)); border-color:rgba(6,182,212,.6); }
     .feature-purple { --feature-color:#a855f7; background:linear-gradient(145deg,rgba(168,85,247,.24),rgba(18,10,31,.95)); border-color:rgba(168,85,247,.6); }
     .feature-green { --feature-color:#10b981; background:linear-gradient(145deg,rgba(16,185,129,.22),rgba(3,22,17,.95)); border-color:rgba(16,185,129,.6); }
-    @media(max-width:480px) { .hero-chat { min-height:230px; padding:18px; } .feature-card { min-height:205px; padding:13px; } .feature-card p { font-size:.72rem; } }
+    .feature-cyan { --feature-color:#22d3ee; background:linear-gradient(145deg,rgba(6,182,212,.28),rgba(3,18,28,.98)); border-color:rgba(34,211,238,.8); box-shadow:inset 0 0 24px rgba(6,182,212,.06); }
+    .feature-violet { --feature-color:#c084fc; background:linear-gradient(145deg,rgba(139,92,246,.25),rgba(22,10,38,.98)); border-color:rgba(192,132,252,.65); }
+    .feature-kicker { display:inline-flex; align-items:center; gap:5px; border:1px solid rgba(103,232,249,.32); background:rgba(8,145,178,.15); color:#a5f3fc; border-radius:999px; padding:4px 7px; font-size:.58rem; font-weight:800; letter-spacing:.07em; margin-top:7px; }
+    @media(max-width:480px) { .hero-chat { min-height:230px; padding:18px; } .feature-card { min-height:205px; padding:13px; border-radius:20px; } .feature-card h2{font-size:.94rem;max-width:78%}.feature-card p { font-size:.72rem;max-width:78%; } .feature-arrow{width:38px;height:38px;right:10px;font-size:1.3rem} .feature-icon{font-size:2rem} }
+    .feature-film-art{background-image:url("/assets/card-film.webp");--feature-color:#06b6d4;border-color:#277b98}.feature-analyzer-art{background-image:url("/assets/card-analyzer.webp");--feature-color:#a855f7;border-color:#8037a7}.feature-music-art{background-image:url("/assets/card-music.webp");--feature-color:#ec0cae;border-color:#9d237d}.feature-video-art{background-image:url("/assets/card-video.webp");--feature-color:#f59e0b;border-color:#9a6a22}.feature-story-art{background-image:url("/assets/card-story.webp");--feature-color:#06b6d4;border-color:#277b98}.feature-chat-art{background-image:url("/assets/card-chat.webp");--feature-color:#a855f7;border-color:#8037a7}.feature-card .feature-kicker{position:relative;z-index:1}.feature-card .feature-icon{position:relative;z-index:1}.feature-card h2,.feature-card p,.feature-card .feature-arrow{position:relative;z-index:1}.feature-card .feature-arrow{position:absolute}
   </style>
+
+  <style>
+    .kh-userbar{position:sticky;top:0;z-index:45;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px max(14px,env(safe-area-inset-left)) 10px;background:rgba(3,9,20,.94);border-bottom:1px solid rgba(103,232,249,.14);backdrop-filter:blur(18px)}
+    .kh-brand{display:flex;align-items:center;gap:9px;min-width:0;color:#f8fafc;text-decoration:none}.kh-logo{width:43px;height:43px;flex:0 0 43px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(135deg,#06b6d4,#4f46e5 60%,#d946ef);box-shadow:0 0 22px #0891b233}.kh-logo svg{width:28px;height:28px}.kh-brand-text{min-width:0}.kh-brand-text strong{display:block;font-size:18px;line-height:1.1;font-weight:900;white-space:nowrap}.kh-brand-text strong span{color:#a78bfa}.kh-brand-text small{display:block;margin-top:3px;color:#aab9cb;font-size:9px;white-space:nowrap}.kh-user-actions{display:flex;align-items:center;gap:7px}.kh-wallet{display:flex;align-items:center;gap:7px;padding:6px 8px;border:1px solid #4c1d9566;background:#101327;border-radius:15px;color:#f8fafc;min-width:0}.kh-coin{font-size:20px}.kh-wallet-copy{line-height:1.05;min-width:36px}.kh-wallet-copy strong{display:block;font-size:12px;font-weight:900}.kh-wallet-copy small{font-size:9px;color:#aeb9ce}.kh-topup{border:0;border-radius:10px;padding:9px 11px;background:linear-gradient(110deg,#8b5cf6,#c026d3);color:white;font-weight:800;font-size:11px;white-space:nowrap}.kh-notify{position:relative;border:0;background:transparent;color:#cbd5e1;font-size:20px;padding:5px}.kh-userbutton{width:39px;height:39px;flex:0 0 39px;border:1px solid #334155;border-radius:50%;overflow:hidden;background:#172033;color:#e2e8f0;font-weight:800;display:grid;place-items:center;padding:0}.kh-userbutton img{width:100%;height:100%;object-fit:cover}.kh-profile-menu{position:absolute;right:12px;top:65px;z-index:60;display:none;width:220px;padding:12px;border:1px solid #334155;border-radius:15px;background:#0b1220;box-shadow:0 18px 50px #0009}.kh-profile-menu.open{display:block}.kh-profile-menu strong{display:block;overflow-wrap:anywhere;font-size:12px}.kh-profile-menu small{display:block;color:#94a3b8;font-size:10px;margin:4px 0 10px}.kh-profile-menu a,.kh-profile-menu button{display:block;width:100%;text-align:left;padding:9px;border-radius:9px;color:#e2e8f0;font-size:12px;background:#111827;margin-top:5px}.kh-status{font-size:9px;color:#94a3b8;display:block;margin-top:3px}
+    @media(max-width:380px){.kh-brand-text strong{font-size:15px}.kh-brand-text small{font-size:8px}.kh-logo{width:37px;height:37px;flex-basis:37px}.kh-wallet{gap:4px;padding:5px}.kh-coin{font-size:16px}.kh-topup{padding:8px;font-size:10px}.kh-userbutton{width:34px;height:34px;flex-basis:34px}.kh-notify{display:none}}
+    /* Home mobile refinements: prompt collection stays compact until opened */
+    #directory{border:1px solid rgba(34,211,238,.12);border-radius:22px;padding:16px;background:linear-gradient(145deg,rgba(8,20,35,.78),rgba(10,10,15,.96));}
+    #directory .kh-directory-heading{display:flex;align-items:center;gap:12px;text-align:left;margin:0;max-width:none}
+    #directory .kh-directory-icon{width:52px;height:52px;flex:0 0 52px;display:grid;place-items:center;border:1px solid #164e63;background:#082f49;border-radius:17px;font-size:25px}
+    #directory .kh-directory-copy{min-width:0;flex:1}
+    #directory .kh-directory-copy h2{font-size:18px;line-height:1.25;font-weight:900;margin:0 0 5px}
+    #directory .kh-directory-copy p{font-size:12px;line-height:1.5;color:#aab6c6;margin:0}
+    #directory .kh-collection-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;margin-top:16px;padding:14px;border:1px solid #253447;border-radius:16px;background:#0b1422;text-align:left}
+    #directory .kh-collection-toggle strong{display:block;font-size:14px}
+    #directory .kh-collection-toggle small{display:block;color:#9caec1;font-size:11px;line-height:1.45;margin-top:4px}
+    #directory .kh-collection-toggle .kh-toggle-button{flex:0 0 auto;padding:9px 12px;border-radius:12px;background:#22d3ee;color:#06131d;font-size:11px;font-weight:900;white-space:nowrap}
+    #directory .kh-collection-content[hidden]{display:none!important}
+    #directory .kh-collection-content{padding-top:16px;display:grid;gap:16px}
+    #directory .cat-btn{white-space:nowrap}
+    @media(min-width:768px){#directory{padding:22px}#directory .kh-directory-copy h2{font-size:22px}#directory .kh-collection-toggle{max-width:760px;margin-left:auto;margin-right:auto}}
+  </style>
+
+<style id="kamisah-hero-reference">
+.hero-chat {
+  position:relative; isolation:isolate; min-height:430px; display:flex; align-items:center;
+  padding:34px 30px; border-radius:30px; overflow:hidden;
+  background-image:linear-gradient(90deg,rgba(4,8,17,.28) 0%,rgba(4,8,17,.12) 44%,rgba(4,8,17,0) 72%),url("assets/kamisah-hero.webp");
+  background-size:cover; background-position:center 43%; background-repeat:no-repeat;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 18px 48px rgba(0,0,0,.24);
+}
+.hero-chat .hero-glow{position:absolute;inset:0;z-index:0;background:linear-gradient(90deg,rgba(4,7,14,.28),transparent 72%);pointer-events:none}
+.hero-copy{width:min(58%,650px);color:#fff}
+.hero-label{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(255,209,116,.72);border-radius:999px;padding:9px 17px;background:rgba(9,10,16,.52);color:#ffda82;font-size:14px;font-weight:800;letter-spacing:.035em;margin:0 0 20px}
+.hero-label span{font-size:17px;color:#fff}
+.hero-title{font-size:clamp(30px,4.2vw,55px);font-weight:900;line-height:1.12;letter-spacing:-.035em;margin:0 0 18px;text-shadow:0 2px 18px rgba(0,0,0,.22)}
+.hero-subtitle{font-size:clamp(16px,1.8vw,24px);color:#dbeafe;margin:0 0 24px}
+.hero-cta{display:inline-flex;align-items:center;justify-content:center;gap:13px;min-height:62px;padding:15px 25px;border-radius:999px;background:#ffc400;color:#17120a;font-size:clamp(16px,1.8vw,23px);font-weight:900;text-decoration:none;box-shadow:0 8px 28px rgba(255,190,0,.28);transition:transform .2s,background .2s}
+.hero-cta:hover{transform:translateY(-2px);background:#ffd43b}
+.hero-arrow{font-size:26px;line-height:1}
+.hero-trust{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.hero-trust span{display:inline-flex;align-items:center;border:1px solid rgba(255,255,255,.09);background:rgba(13,17,27,.66);color:#e2e8f0;border-radius:999px;padding:8px 12px;font-size:13px;backdrop-filter:blur(8px)}
+.hero-quote{position:absolute;z-index:2;right:4.2%;bottom:15%;color:#fff;font-family:Georgia,serif;font-style:italic;font-weight:700;font-size:clamp(16px,2vw,27px);line-height:1.25;text-shadow:0 2px 12px #000;transform:rotate(-4deg)}
+.hero-quote i{display:block;width:90%;height:3px;background:#fff;border-radius:100%;margin:10px auto 0;transform:rotate(-2deg)}
+@media(max-width:700px){
+ .hero-chat{min-height:500px;padding:23px 17px 18px;align-items:flex-start;background-position:59% center;background-image:linear-gradient(90deg,rgba(4,7,14,.66) 0%,rgba(4,7,14,.38) 60%,rgba(4,7,14,.06) 100%),url("assets/kamisah-hero.webp");border-radius:22px}
+ .hero-copy{width:100%;max-width:95%}.hero-label{font-size:11px;padding:7px 12px;margin-bottom:17px}
+ .hero-title{font-size:clamp(27px,7.5vw,39px);line-height:1.13;max-width:430px;margin-bottom:15px}
+ .hero-subtitle{font-size:16px;margin-bottom:19px}
+ .hero-cta{font-size:16px;min-height:54px;padding:12px 17px;gap:9px}
+ .hero-trust{gap:6px;margin-top:18px;max-width:100%}.hero-trust span{font-size:10px;padding:7px 9px}
+ .hero-quote{right:15px;bottom:18px;font-size:15px}.mobile-break{display:none}
+}
+</style>
+
+<style id="kamisah-ideas-reference">
+  .kh-idea-banner{position:relative;isolation:isolate;display:flex;align-items:center;gap:clamp(12px,2vw,24px);width:100%;min-height:132px;padding:18px 20px;border:1.5px solid rgba(52,211,153,.72);border-radius:26px;overflow:hidden;text-decoration:none;color:#f8fafc;background:radial-gradient(ellipse at 88% 45%,rgba(6,182,212,.22),transparent 30%),linear-gradient(110deg,rgba(4,80,58,.96),rgba(2,36,39,.97) 48%,rgba(3,22,37,.98));box-shadow:inset 0 0 22px rgba(16,185,129,.12),0 0 16px rgba(16,185,129,.08);margin:0 0 16px}
+  .kh-idea-bulb{display:grid;place-items:center;flex:0 0 78px;width:78px;height:82px;border:1px solid rgba(52,211,153,.55);border-radius:23px;background:linear-gradient(145deg,rgba(8,75,56,.9),rgba(3,24,31,.95));font-size:48px;filter:drop-shadow(0 0 10px rgba(250,204,21,.35))}
+  .kh-idea-copy{display:flex;flex-direction:column;align-items:flex-start;min-width:0;flex:1;gap:5px}
+  .kh-idea-label{display:inline-flex;align-items:center;border:1px solid rgba(52,211,153,.65);border-radius:999px;padding:5px 12px;font-size:12px;line-height:1.2;font-weight:800;letter-spacing:.03em;color:#e5fff4;background:rgba(2,44,34,.55)}
+  .kh-idea-copy strong{font-size:clamp(18px,2.1vw,25px);line-height:1.2;font-weight:900;letter-spacing:-.025em}
+  .kh-idea-desc{font-size:clamp(12px,1.4vw,16px);line-height:1.45;color:#c7d7e5}
+  .kh-social-icons{display:flex;align-items:center;gap:8px;flex:0 0 auto;transform:rotate(-4deg)}
+  .kh-social-icons span{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;font-size:27px;font-weight:900;box-shadow:0 0 18px rgba(56,189,248,.18)}
+  .kh-social-youtube{background:#ef4444;color:white;font-size:20px!important}
+  .kh-social-tiktok{background:#05070d;color:#f8fafc;text-shadow:2px 2px #ec4899,-2px -1px #22d3ee}
+  .kh-social-insta{background:linear-gradient(135deg,#facc15,#ec4899 55%,#7c3aed);color:white}
+  .kh-idea-arrow{display:grid;place-items:center;flex:0 0 54px;width:54px;height:54px;border-radius:50%;background:#10b981;color:#03281f;font-size:30px;font-weight:900;box-shadow:0 0 22px rgba(16,185,129,.32)}
+  #directory{border:1px solid #1d3349!important;border-radius:27px!important;padding:20px!important;background:linear-gradient(110deg,rgba(4,15,29,.98),rgba(3,17,31,.98))!important;margin-bottom:20px}
+  #directory .kh-prompt-row{display:flex;align-items:center;gap:18px;min-width:0}
+  #directory .kh-directory-icon{width:76px;height:76px;flex:0 0 76px;display:grid;place-items:center;border:1px solid #1b5675;background:linear-gradient(145deg,#092b43,#071a2c);border-radius:23px;font-size:42px}
+  #directory .kh-directory-copy{min-width:0;flex:1}
+  #directory .kh-directory-copy h2{font-size:clamp(17px,2.2vw,25px);line-height:1.2;font-weight:900;letter-spacing:-.025em;margin:0 0 7px}
+  #directory .kh-directory-copy p{font-size:clamp(12px,1.5vw,16px);line-height:1.45;color:#aab9cb;margin:0}
+  #directory .kh-collection-toggle{display:flex;align-items:center;justify-content:center;flex:0 0 auto;width:auto;margin:0;padding:0;border:0;background:transparent;text-align:center}
+  #directory .kh-toggle-button{display:inline-flex;align-items:center;gap:14px;padding:13px 22px;border:1.5px solid #64748b;border-radius:999px;background:transparent;color:#dce7f8;font-size:16px;font-weight:800;white-space:nowrap}
+  #directory .kh-collection-content{padding-top:18px}
+  @media(max-width:640px){.kh-idea-banner{min-height:116px;padding:12px;gap:10px;border-radius:22px;margin-bottom:14px}.kh-idea-bulb{width:62px;height:66px;flex-basis:62px;border-radius:18px;font-size:38px}.kh-idea-label{font-size:10px;padding:4px 9px}.kh-idea-copy strong{font-size:17px}.kh-idea-desc{font-size:11px;line-height:1.35}.kh-social-icons{gap:4px}.kh-social-icons span{width:29px;height:29px;border-radius:8px;font-size:19px}.kh-social-youtube{font-size:14px!important}.kh-idea-arrow{width:38px;height:38px;flex-basis:38px;font-size:23px}#directory{padding:15px!important;border-radius:22px!important}#directory .kh-prompt-row{gap:12px}#directory .kh-directory-icon{width:58px;height:62px;flex-basis:58px;border-radius:18px;font-size:32px}#directory .kh-directory-copy h2{font-size:16px;line-height:1.22}#directory .kh-directory-copy p{font-size:11px;line-height:1.4}#directory .kh-toggle-button{font-size:12px;padding:11px 13px;gap:7px}#directory .kh-collection-toggle{max-width:132px}}
+  @media(max-width:390px){.kh-idea-banner{gap:7px;padding:10px}.kh-idea-bulb{width:50px;height:56px;flex-basis:50px;font-size:31px}.kh-idea-copy strong{font-size:15px}.kh-idea-desc{font-size:10px}.kh-social-icons{display:none}.kh-idea-arrow{width:34px;height:34px;flex-basis:34px}#directory .kh-prompt-row{gap:8px}#directory .kh-directory-icon{width:48px;height:54px;flex-basis:48px;font-size:28px}#directory .kh-directory-copy h2{font-size:14px}#directory .kh-directory-copy p{font-size:10px}#directory .kh-toggle-button{font-size:10px;padding:10px 9px}#directory .kh-collection-toggle{max-width:112px}}
+</style>
+
 </head>
 <body class="bg-neutral-950 text-neutral-100 min-h-screen selection:bg-amber-500 selection:text-black">
 
@@ -88,62 +172,71 @@
     </div>
   </div>
 
+
+  <header class="kh-userbar">
+    <a class="kh-brand" href="/" aria-label="Kamisah AI Beranda">
+      <span class="kh-logo" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M9 5.5c0-2.2 2.4-3.5 4.3-2.3l22 13.3c2 1.2 2 4.1 0 5.3l-22 13.3C11.4 36.3 9 35 9 32.8V5.5Z" fill="#071322"/><path d="M15 12.5c0-1.5 1.7-2.4 3-1.6l13 7.8c1.4.8 1.4 2.8 0 3.6l-13 7.8c-1.3.8-3-.1-3-1.6V12.5Z" fill="#22D3EE"/></svg></span>
+      <span class="kh-brand-text"><strong>Kamisah <span>AI</span></strong><small>Buat Cerita, Visualkan, Jadi Nyata</small></span>
+    </a>
+    <div class="kh-user-actions">
+      <div class="kh-wallet" aria-label="Saldo kredit pengguna"><span class="kh-coin">🪙</span><span class="kh-wallet-copy"><strong id="khCreditBalance">—</strong><small>Kredit</small></span><button class="kh-topup" id="khTopupBtn" type="button">Top Up</button></div>
+      <button class="kh-notify" type="button" id="khNotifyBtn" aria-label="Notifikasi">♟<span style="position:absolute;width:6px;height:6px;border-radius:50%;background:#fb7185;right:4px;top:4px"></span></button>
+      <button class="kh-userbutton" type="button" id="khUserButton" aria-label="Profil pengguna"><span id="khAvatarInitial">?</span></button>
+      <div class="kh-profile-menu" id="khProfileMenu"><strong id="khProfileName">Memuat akun…</strong><small id="khProfileEmail">Saldo kredit dimuat dari akun</small><a href="/video-generator#/akun">Akun &amp; Top Up →</a><button type="button" id="khSignOutBtn">Keluar</button></div>
+    </div>
+  </header>
+
   <main class="max-w-7xl mx-auto px-4 py-5 pb-24 md:pb-8 space-y-8">
 
-    <!-- Banner Chat AI Kamisah -->
-    <section class="hero-chat relative overflow-hidden rounded-2xl border border-amber-500/30 p-5 md:p-8">
+    <!-- Banner Teman Cerita Kamisah — revisi visual sesuai referensi -->
+    <section class="hero-chat relative overflow-hidden rounded-2xl border border-amber-400/40">
       <div class="hero-glow" aria-hidden="true"></div>
-      <div class="relative z-10 max-w-xl">
-        <p class="inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-black/40 px-3 py-1 text-[11px] font-bold text-amber-300 mb-3">💬 TEMAN CERITA KAMU</p>
-        <h1 class="text-2xl md:text-4xl font-black leading-tight mb-3">
+      <div class="hero-copy relative z-10">
+        <p class="hero-label"><span aria-hidden="true">●</span> TEMAN CERITA KAMU</p>
+        <h1 class="hero-title">
           Cinta bikin <span class="text-rose-400">pusing?</span><br>
-          Kepikiran buat <span class="text-purple-300">selingkuh?</span><br>
+          Kepikiran buat<br class="mobile-break"> <span class="text-purple-400">selingkuh?</span><br>
           Pengen <span class="text-amber-400">cepat kaya?</span>
         </h1>
-        <p class="text-sm md:text-base text-neutral-300 mb-5">Cerita aja, kita ngobrol dulu!</p>
-        <a href="/chat" class="inline-flex items-center gap-2 rounded-full bg-amber-400 px-5 py-3 text-sm font-extrabold text-black shadow-lg shadow-amber-500/20 hover:bg-amber-300 transition">
-          💬 Chat dulu sama kita <span aria-hidden="true">›</span>
-        </a>
+        <p class="hero-subtitle">Cerita aja, kita ngobrol dulu!</p>
+        <a href="/chat" class="hero-cta"><span aria-hidden="true">💬</span> Cerita sama Kamisah <span class="hero-arrow" aria-hidden="true">→</span></a>
+        <div class="hero-trust">
+          <span>♧ &nbsp; Rahasia terjaga</span>
+          <span>♙ &nbsp; Tanpa menghakimi</span>
+          <span>♥ &nbsp; Selalu ada untukmu</span>
+        </div>
       </div>
-      <div class="hero-thoughts absolute right-4 bottom-4 md:right-8 md:bottom-8 hidden sm:flex flex-col gap-2 text-right" aria-hidden="true">
-        <span class="rounded-2xl border border-rose-400/50 bg-rose-950/60 px-3 py-2 text-xs text-rose-200">💔 Masalah asmara..</span>
-        <span class="rounded-2xl border border-amber-400/50 bg-amber-950/60 px-3 py-2 text-xs text-amber-200">💸 Pengen uang banyak..</span>
-      </div>
+      <div class="hero-quote" aria-hidden="true">“Dari Ide<br>Menjadi Karya Nyata”<i></i></div>
     </section>
 
-    <!-- Fitur utama -->
-    <section aria-label="Fitur utama Kamisah" class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-      <a href="/video-generator" class="feature-card feature-orange">
-        <span class="feature-icon">🎬</span><h2>Video AI</h2><p>Buat video AI dari ide, gambar, atau cerita.</p><span class="feature-arrow">→</span>
+    <!-- Semua fitur utama dalam satu grid. Studio AI Film ditempatkan pertama karena merupakan fitur unggulan. -->
+    <section aria-label="Fitur utama Kamisah" class="feature-grid grid grid-cols-2 lg:grid-cols-2 gap-4">
+      <a href="/studio-film" class="feature-card feature-film-art">
+        <span class="feature-icon">🎬</span><span class="feature-kicker">STUDIO FILM</span><h2>Studio Pembuat Film AI</h2><p>Susun cerita, adegan, dan pengambilan gambar untuk membuat film.</p><span class="feature-arrow">→</span>
       </a>
-      <a href="/story" class="feature-card feature-blue">
-        <span class="feature-icon">📝</span><h2>Story AI</h2><p>Ubah ide jadi naskah, alur cerita, dan storyboard.</p><span class="feature-arrow">→</span>
+      <a href="/ai-film-analyzer.html" class="feature-card feature-analyzer-art">
+        <span class="feature-icon">🎞️</span><span class="feature-kicker">ANALISIS OTOMATIS</span><h2>Buat Alur Cerita Film</h2><p>Ubah video film menjadi alur cerita secara otomatis.</p><span class="feature-arrow">→</span>
       </a>
-      <a href="/chat" class="feature-card feature-purple">
-        <span class="feature-icon">🤖</span><h2>Chat AI</h2><p>Tanya, diskusi, riset, atau cerita dengan AI.</p><span class="feature-arrow">→</span>
+      <a href="/music" class="feature-card feature-music-art">
+        <span class="feature-icon">🎵</span><span class="feature-kicker">STUDIO MUSIK</span><h2>Buat Lagu dengan AI</h2><p>Ciptakan lagu, lirik, dan musik sesuai keinginanmu.</p><span class="feature-arrow">→</span>
       </a>
-      <a href="/ideas" class="feature-card feature-green">
-        <span class="feature-icon">💡</span><h2>Generator Ide</h2><p>Temukan ide konten untuk YouTube, TikTok, dan Reels.</p><span class="feature-arrow">→</span>
+      <a href="/video-generator" class="feature-card feature-video-art">
+        <span class="feature-icon">📹</span><span class="feature-kicker">VIDEO AI</span><h2>Buat Video AI</h2><p>Buat video dari teks, gambar, atau cerita.</p><span class="feature-arrow">→</span>
+      </a>
+      <a href="/story" class="feature-card feature-story-art">
+        <span class="feature-icon">📝</span><span class="feature-kicker">CERITA &amp; NASKAH</span><h2>Buat Cerita dan Naskah</h2><p>Ubah ide menjadi cerita, naskah, dan storyboard.</p><span class="feature-arrow">→</span>
+      </a>
+      <a href="/chat" class="feature-card feature-chat-art">
+        <span class="feature-icon">💬</span><span class="feature-kicker">CHAT AI</span><h2>Chat dan Curhat dengan AI</h2><p>Tanya apa saja, diskusi, atau ceritakan masalahmu.</p><span class="feature-arrow">→</span>
+      </a>
+      <a href="/ideas" class="kh-idea-banner" aria-label="Cari Ide Konten">
+        <span class="kh-idea-bulb" aria-hidden="true">💡</span>
+        <span class="kh-idea-copy"><span class="kh-idea-label">IDE KONTEN</span><strong>Cari Ide Konten</strong><span class="kh-idea-desc">Temukan ide konten untuk YouTube, TikTok, dan Reels.</span></span>
+        <span class="kh-social-icons" aria-hidden="true"><span class="kh-social-youtube">▶</span><span class="kh-social-tiktok">♪</span><span class="kh-social-insta">◎</span></span>
+        <span class="kh-idea-arrow" aria-hidden="true">→</span>
       </a>
     </section>
 
-    <!-- Akses tambahan: Studio Musik AI (kartu utama tetap empat sesuai desain yang disepakati) -->
-    <div class="flex justify-center -mt-1">
-      <a href="/music" class="inline-flex items-center gap-3 rounded-2xl border border-violet-500/30 bg-violet-950/20 px-4 py-3 hover:border-violet-400/60 transition">
-        <span class="grid h-10 w-10 place-items-center rounded-xl bg-violet-500/15 text-xl">🎵</span>
-        <span class="text-left"><span class="block text-sm font-bold text-violet-200">Studio Musik AI</span><span class="block text-xs text-neutral-400">Siapkan lagu, lirik, genre, dan prompt musik</span></span>
-        <span class="ml-2 text-violet-300">→</span>
-      </a>
-    </div>
-
-    <!-- Top Responsive Ad Slot (728x90) -->
-    <div class="w-full flex justify-center">
-      <div class="w-full max-w-4xl min-h-[90px] rounded-xl border border-dashed border-neutral-800 bg-neutral-900/50 p-3 flex flex-col items-center justify-center text-center relative hover:border-amber-500/40 transition">
-        <span class="text-[9px] uppercase tracking-widest font-bold text-neutral-500">Sponsored Ad / Google AdSense (Leaderboard 728x90)</span>
-        <p class="text-xs text-neutral-300 font-semibold mt-1">Hosting High-Speed & Domain Kreator Diskon s.d 75%</p>
-        <span class="text-[11px] text-amber-400 hover:underline mt-0.5 cursor-pointer font-medium">Klaim Kupon Spesial Kreator &rarr;</span>
-      </div>
-    </div>
 
     <!-- Fitur AI tersedia melalui halaman khusus; beranda hanya menampilkan kartu akses. -->
     <section class="rounded-2xl border border-neutral-800 bg-neutral-900/50 p-4 md:p-5">
@@ -156,66 +249,37 @@
     <!-- ========================================== -->
     <!-- FITUR 3: DIREKTORI TOOLS AI & ASET GRATIS  -->
     <!-- ========================================== -->
-    <section id="directory" class="space-y-6">
-      <div class="text-center max-w-xl mx-auto">
-        <h2 class="text-xl md:text-2xl font-black text-neutral-100 mb-1">Prompt & Resource Kreator</h2>
-        <p class="text-xs text-neutral-400">Kumpulan prompt dan ide yang bisa langsung disalin untuk membantu proses kreatif.</p>
-      </div>
-
-      <!-- Search Bar -->
-      <div class="max-w-2xl mx-auto">
-        <div class="relative">
-          <input 
-            type="text" 
-            id="searchInput" 
-            placeholder="Cari prompt atau ide (contoh: cyberpunk, anime, hook viral)..." 
-            class="w-full pl-12 pr-10 py-3.5 rounded-xl bg-neutral-900 border border-neutral-800 text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-amber-500 transition text-xs md:text-sm shadow-inner"
-          />
-          <svg class="w-5 h-5 absolute left-4 top-3.5 text-neutral-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
-          </svg>
-          <button id="clearSearch" class="hidden absolute right-3.5 top-3.5 text-neutral-500 hover:text-white text-xs">✕</button>
+    <section id="directory" class="space-y-0">
+      <div class="kh-prompt-row">
+        <span class="kh-directory-icon" aria-hidden="true">🧰</span>
+        <div class="kh-directory-copy">
+          <h2>Kumpulan Prompt dan Ide</h2>
+          <p>Temukan contoh prompt dan ide kreatif yang bisa langsung kamu salin dan gunakan.</p>
         </div>
-      </div>
-
-      <!-- Kategori Filter Tab -->
-      <div class="flex flex-wrap items-center justify-center gap-2">
-        <button onclick="setCategory('all')" data-cat="all" class="cat-btn px-4 py-2 rounded-lg text-xs font-bold transition bg-amber-500 text-black">
-          🌟 Semua
-        </button>
-        
-        <button onclick="setCategory('prompts')" data-cat="prompts" class="cat-btn px-4 py-2 rounded-lg text-xs font-bold transition bg-neutral-900 border border-neutral-800 text-neutral-300 hover:bg-neutral-800">
-          📝 Prompt & Ide Viral
-        </button>
-        
-        <button onclick="setCategory('saved')" data-cat="saved" class="cat-btn px-4 py-2 rounded-lg text-xs font-bold transition bg-neutral-900 border border-neutral-800 text-neutral-300 hover:bg-neutral-800 flex items-center gap-1">
-          ⭐ Tersimpan (<span id="savedCount">0</span>)
+        <button id="khCollectionToggle" class="kh-collection-toggle" type="button" aria-expanded="false" aria-controls="khCollectionContent">
+          <span class="kh-toggle-button" id="khCollectionToggleLabel">Buka Koleksi <span aria-hidden="true">→</span></span>
         </button>
       </div>
-
-      <!-- Grid Cards -->
-      <div id="itemsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
-
-      <!-- Empty State -->
-      <div id="emptyState" class="hidden text-center py-16">
-        <div class="text-4xl mb-3">🔍</div>
-        <h3 class="text-sm font-bold text-neutral-200">Tidak ada resource yang cocok</h3>
-        <p class="text-xs text-neutral-500 mt-1">Coba kata kunci lain atau pilih tab kategori 'Semua'.</p>
+      <div id="khCollectionContent" class="kh-collection-content" hidden>
+        <div class="max-w-2xl mx-auto w-full">
+          <label for="searchInput" class="block text-xs font-bold text-neutral-300 mb-2">Cari prompt atau ide</label>
+          <div class="relative">
+            <input type="text" id="searchInput" placeholder="Contoh: gambar anime, video sinematik, hook viral..." class="w-full pl-11 pr-10 py-3.5 rounded-xl bg-neutral-950 border border-neutral-800 text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-cyan-400 transition text-sm shadow-inner" />
+            <svg class="w-5 h-5 absolute left-3.5 top-3.5 text-neutral-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <button id="clearSearch" class="hidden absolute right-3.5 top-3.5 text-neutral-500 hover:text-white text-xs">✕</button>
+          </div>
+        </div>
+        <div class="flex flex-nowrap overflow-x-auto items-center gap-2 pb-1" aria-label="Pilih kategori prompt">
+          <button onclick="setCategory('all')" data-cat="all" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition bg-cyan-400 text-slate-950">🌟 Semua</button>
+          <button onclick="setCategory('prompts')" data-cat="prompts" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition bg-neutral-900 border border-neutral-800 text-neutral-300">📝 Prompt &amp; Ide Viral</button>
+          <button onclick="setCategory('saved')" data-cat="saved" class="cat-btn px-4 py-2 rounded-full text-xs font-bold transition bg-neutral-900 border border-neutral-800 text-neutral-300">⭐ Tersimpan (<span id="savedCount">0</span>)</button>
+        </div>
+        <div id="itemsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        <div id="emptyState" class="hidden text-center py-12"><div class="text-4xl mb-3">🔍</div><h3 class="text-sm font-bold text-neutral-200">Tidak ada prompt yang cocok</h3><p class="text-xs text-neutral-500 mt-1">Coba kata kunci lain atau pilih kategori Semua.</p></div>
       </div>
     </section>
 
-    <!-- Bottom Sponsor Grid (300x250) -->
-    <div class="w-full pt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="h-32 rounded-xl border border-dashed border-neutral-800 bg-neutral-900/40 p-3 flex flex-col items-center justify-center text-center">
-        <span class="text-[9px] uppercase tracking-wider font-bold text-neutral-500">Iklan Sponsor / Afiliasi Creator</span>
-        <p class="text-xs text-neutral-300 font-semibold mt-1">Preset LUT Sinematik DaVinci & CapCut Pro</p>
-        <span class="text-[11px] text-amber-500 mt-0.5 cursor-pointer hover:underline">Download Pack Gratis &rarr;</span>
-      </div>
-      <div class="h-32 rounded-xl border border-dashed border-neutral-800 bg-neutral-900/40 p-3 flex flex-col items-center justify-center text-center">
-        <span class="text-[9px] uppercase tracking-wider font-bold text-neutral-500">Iklan Kursus & Mentorship</span>
-        <p class="text-xs text-neutral-300 font-semibold mt-1">Kelas Rahasia Alur Cerita & Monetisasi Faceless Channel</p>
-        <span class="text-[11px] text-amber-500 mt-0.5 cursor-pointer hover:underline">Pelajari Kurikulum &rarr;</span>
-      </div>
+
     </div>
   </main>
 
@@ -270,6 +334,42 @@
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="auth.js"></script>
+<script>
+(function(){
+  const $=id=>document.getElementById(id); let client=null, currentUser=null;
+  const fmt=n=>Number(n||0).toLocaleString('id-ID');
+  function showAccount(user){
+    currentUser=user||null;
+    const meta=user?.user_metadata||{}; const name=meta.full_name||meta.name||meta.user_name||user?.email?.split('@')[0]||'Pengguna';
+    const avatar=meta.avatar_url||meta.picture||meta.photo_url||'';
+    $('khProfileName').textContent=user?name:'Belum login'; $('khProfileEmail').textContent=user?.email||'Masuk untuk melihat kredit akun';
+    $('khAvatarInitial').textContent=(name.trim()[0]||'?').toUpperCase();
+    const button=$('khUserButton'); const old=button.querySelector('img'); if(old)old.remove();
+    if(avatar){const img=document.createElement('img');img.src=avatar;img.alt='Foto profil';img.referrerPolicy='no-referrer';img.onerror=()=>img.remove();button.prepend(img);}
+    $('khCreditBalance').textContent=user?'…':'—';
+    if(user&&client){client.from('wallets').select('balance').eq('user_id',user.id).maybeSingle().then(({data,error})=>{if(currentUser?.id!==user.id)return;if(!error&&data&&Number.isFinite(Number(data.balance))) $('khCreditBalance').textContent=fmt(data.balance);else $('khCreditBalance').textContent='—';});}
+    $('khSignOutBtn').textContent=user?'Keluar':'Masuk';
+  }
+  async function init(){const c=window.KH||{}; if(!window.supabase||!c.SUPABASE_URL||!c.SUPABASE_PUBLISHABLE_KEY){showAccount(null);return;}
+    client=window.supabase.createClient(c.SUPABASE_URL,c.SUPABASE_PUBLISHABLE_KEY);
+    const {data}=await client.auth.getSession();showAccount(data?.session?.user||null);
+    client.auth.onAuthStateChange((_event,session)=>showAccount(session?.user||null));
+  }
+  const collectionToggle=$('khCollectionToggle');
+  collectionToggle?.addEventListener('click',()=>{
+    const content=$('khCollectionContent'); const opening=content.hidden;
+    content.hidden=!opening; collectionToggle.setAttribute('aria-expanded',String(opening));
+    $('khCollectionToggleLabel').textContent=opening?'Tutup Koleksi ↑':'Buka Koleksi →';
+    if(opening) setTimeout(()=>content.scrollIntoView({behavior:'smooth',block:'nearest'}),40);
+  });
+  $('khUserButton').addEventListener('click',()=> $('khProfileMenu').classList.toggle('open'));
+  $('khTopupBtn').addEventListener('click',()=>location.href='/video-generator#/akun');
+  $('khNotifyBtn').addEventListener('click',()=>notify('Notifikasi akun akan ditampilkan di sini.','🔔'));
+  $('khSignOutBtn').addEventListener('click',async()=>{if(currentUser&&client){await client.auth.signOut();location.reload();}else location.href='/video-generator#/akun';});
+  document.addEventListener('click',e=>{if(!$('khProfileMenu').contains(e.target)&&!$('khUserButton').contains(e.target))$('khProfileMenu').classList.remove('open');});
+  init().catch(()=>{ $('khCreditBalance').textContent='—'; });
+})();
+</script>
   <!-- Navigasi bawah (HP) -->
   <nav class="md:hidden fixed inset-x-0 bottom-0 z-40 border-t border-neutral-800 bg-neutral-950" style="padding-bottom:env(safe-area-inset-bottom)" aria-label="Menu utama">
     <div class="grid grid-cols-5 h-14 text-[10px] font-semibold">
