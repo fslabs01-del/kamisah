@@ -1,0 +1,19 @@
+HASIL PEMERIKSAAN PAKET KAMISAH ARENHOST
+
+Lulus pemeriksaan lokal:
+- Arsip ZIP dapat diekstrak.
+- Sintaks server.js dan modul netlify/functions/*.mjs diperiksa menggunakan node --check.
+- Endpoint yang dirujuk frontend dibandingkan dengan modul fungsi yang tersedia; frontend merujuk chat, film-analyze, film-voice, generate, seedance, topup, video, dan voice.
+- Ditambahkan pemblokiran akses statis untuk modul .mjs dan beberapa file internal.
+- Ditambahkan instruksi instalasi dan variabel lingkungan.
+
+Belum diverifikasi:
+- npm install dan start di hosting ArenHost.
+- Login dan autentikasi Supabase.
+- Skema database/RPC/ledger kredit.
+- Generasi video Seedance dan upload file sungguhan.
+- Gemini/TTS dengan kunci API aktif.
+- Pembayaran QRIS dan webhook.
+- Performa, batas upload, dan kesiapan produksi.
+
+Jangan mengaktifkan PAYMENTS_ENABLED atau VIDEO_GEN_ENABLED sebelum integrasi terkait diuji dan konfigurasi rahasia dimasukkan di panel hosting.
